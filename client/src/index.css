@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fcb-red: #dc052d;
+  --color-fcb-darkred: #9e0018;
+  --color-fcb-deep: #1e0207;
+  --color-fcb-navy: #0b0f17;
+  --color-fcb-blue: #0066b2;
+  --color-fcb-surface: #121824;
+  --color-fcb-border: #222c3d;
+  --color-pitch-dark: #0a1410;
+  --color-pitch-line: rgba(255, 255, 255, 0.12);
+  --font-display: "Oswald", sans-serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+:root {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: #0b0f17;
+  color: #f1f5f9;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle, authentic football grid background */
+.subtle-football-pattern {
+  background-color: #0b0f17;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Pitch stripe texture */
+.pitch-pattern {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 28px,
+    transparent 28px,
+    transparent 56px
+  );
+}
+
+/* Subtle sports card border hover */
+.sports-card {
+  background-color: #121824;
+  border: 1px solid #222c3d;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.sports-card:hover {
+  border-color: #3b4861;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

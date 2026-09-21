@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production Build Outputs
+client/dist/
+server/dist/
+dist/
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Raw Backup Reference Assets
+Bproject/
+
+# Unused Download Artifacts in Client Public
+client/public/images/players/gomez.html
+client/public/images/players/gomez_files/

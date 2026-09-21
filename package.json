@@ -1,0 +1,12 @@
+{
+  "name": "bayern-draft",
+  "version": "1.0.0",
+  "description": "Full-stack FC Bayern Munich draft game",
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "server": "node server/src/server.js",
+    "client": "npm run dev --prefix client",
+    "test:server": "node server/src/test-draft.js",
+    "build:client": "npm run build --prefix client"
+  }
+}

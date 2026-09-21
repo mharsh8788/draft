@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 580" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#182232" />
+      <stop offset="70%" stop-color="#0b0f17" />
+      <stop offset="100%" stop-color="#06080d" />
+    </radialGradient>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#222c3d" stroke-width="0.75" opacity="0.4" />
+    </pattern>
+    <linearGradient id="redAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dc052d" />
+      <stop offset="100%" stop-color="#99021e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="460" height="580" fill="url(#bgGrad)" />
+  <rect width="460" height="580" fill="url(#grid)" />
+
+  <!-- Stadium Floodlight Geometry -->
+  <circle cx="230" cy="220" r="160" fill="none" stroke="#dc052d" stroke-width="1.5" opacity="0.25" />
+  <circle cx="230" cy="220" r="220" fill="none" stroke="#222c3d" stroke-width="1" stroke-dasharray="4 4" />
+  <path d="M 50 220 L 410 220" stroke="#222c3d" stroke-width="1" stroke-dasharray="4 4" />
+  <path d="M 230 40 L 230 400" stroke="#222c3d" stroke-width="1" stroke-dasharray="4 4" />
+
+  <!-- Top Museum Archival Header -->
+  <rect x="30" y="28" width="85" height="18" rx="3" fill="#dc052d" fill-opacity="0.15" stroke="#dc052d" stroke-opacity="0.4" />
+  <text x="72.5" y="40" font-family="'Chakra Petch', monospace" font-size="9" font-weight="700" fill="#dc052d" text-anchor="middle" letter-spacing="1.5">EXHIBIT '97</text>
+  <text x="430" y="40" font-family="'Chakra Petch', monospace" font-size="9" font-weight="600" fill="#64748b" text-anchor="end" letter-spacing="1">OLYMPIASTADION</text>
+
+  <!-- Centerpiece: The Iconic Sanyo Drum Silhouette -->
+  <g transform="translate(230, 220)">
+    <!-- Outer Drum Barrel -->
+    <ellipse cx="0" cy="70" rx="95" ry="32" fill="#0d1420" stroke="#374560" stroke-width="2" />
+    <path d="M -95 0 L -95 70 A 95 32 0 0 0 95 70 L 95 0 Z" fill="#111a29" stroke="#374560" stroke-width="1.5" />
+    <ellipse cx="0" cy="0" rx="95" ry="32" fill="#162236" stroke="#485b7d" stroke-width="2" />
+
+    <!-- Impact Fracture Accent on Drum Face -->
+    <path d="M -15 -10 L 25 8 L 10 18 L 35 32 L -5 22 L -28 35 L -18 12 Z" fill="#dc052d" fill-opacity="0.25" stroke="#dc052d" stroke-width="2" />
+    
+    <!-- Retro SANYO Typography on Barrel -->
+    <text x="0" y="52" font-family="'Chakra Petch', sans-serif" font-size="18" font-weight="900" fill="#ffffff" fill-opacity="0.85" text-anchor="middle" letter-spacing="6">SANYO</text>
+    
+    <!-- Year Stamp -->
+    <circle cx="0" cy="-65" r="30" fill="#0b0f17" stroke="#dc052d" stroke-width="2" />
+    <text x="0" y="-58" font-family="'Chakra Petch', sans-serif" font-size="19" font-weight="900" fill="#ffffff" text-anchor="middle">1997</text>
+  </g>
+
+  <!-- Bottom Archival Caption -->
+  <g transform="translate(30, 480)">
+    <text x="0" y="16" font-family="'Chakra Petch', sans-serif" font-size="11" font-weight="700" fill="#dc052d" letter-spacing="2">FC BAYERN MUSEUM COLLECTION</text>
+    <text x="0" y="38" font-family="'Chakra Petch', sans-serif" font-size="20" font-weight="900" fill="#ffffff" letter-spacing="0.5">THE ADVERTISING DRUM</text>
+    <text x="0" y="58" font-family="sans-serif" font-size="11" font-weight="400" fill="#94a3b8">Substituted in the 80th minute vs Freiburg · May 10, 1997</text>
+  </g>
+</svg>
