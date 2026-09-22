@@ -138,11 +138,6 @@ export const PLAYERS = [
     trophies: 20,
     championsLeagueTitles: 1,
     bundesligaTitles: 8,
-    images: [
-      "/images/players/kimmich.jpg",
-      "/images/players/kimmich-2.jpg",
-      "/images/players/kimmich-3.jpg"
-    ],
     imagePosition: "object-[center_top]",
     bio: "Tactical maestro with world-class crossing and leadership. Delivered the assist in the 2020 UCL Final.",
     achievements: ["1x UEFA Champions League Winner","8x Bundesliga Champion","Sextuple Winner 2020","UEFA Defender of the Season 2020"]
@@ -310,7 +305,7 @@ export const PLAYERS = [
     achievements: ["1x UEFA Champions League Winner 2013","3x Bundesliga Champion","2x DFB-Pokal Winner"]
   },
   {
-    id: "vanbuyten",
+    id: "van-buyten",
     name: "Daniel Van Buyten",
     position: "CB",
     secondaryPositions: [],
@@ -1002,7 +997,7 @@ export const PLAYERS = [
 
   // --- STRIKERS (ST) ---
   {
-    id: "gerd_muller",
+    id: "gerd-muller",
     name: "Gerd Müller",
     position: "ST",
     secondaryPositions: [],

@@ -43,8 +43,8 @@ export const HOMEPAGE_FEATURED_FACT = {
         label: "EUROPEAN CUP WINNER"
       },
       {
-        value: "1959",
-        label: "JOINED BAYERN'S YOUTH SETUP"
+        value: "2×",
+        label: "BALLON D'OR WINNER"
       }
     ]
   },

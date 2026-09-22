@@ -190,21 +190,11 @@ export default function RevealModal({
         {/* Concise Comparison Stats Table */}
         <div className="bg-[#0a0e14] rounded-lg border border-[#222c3d] overflow-hidden text-xs font-mono">
           <table className="w-full text-left">
-            <tbody className="divide-y divide-white/5">
+            <tbody>
               <tr className="bg-white/[0.01]">
-                <td className="py-1.5 px-3.5 text-gray-400 font-sans">Overall Rating</td>
-                <td className="py-1.5 px-3.5 text-center font-bold text-white">{userPick.overall}</td>
-                <td className="py-1.5 px-3.5 text-center font-bold text-gray-400">{opponentPick.overall}</td>
-              </tr>
-              <tr>
-                <td className="py-1.5 px-3.5 text-gray-400 font-sans">Appearances</td>
-                <td className="py-1.5 px-3.5 text-center text-gray-300">{userPick.appearances}</td>
-                <td className="py-1.5 px-3.5 text-center text-gray-400">{opponentPick.appearances}</td>
-              </tr>
-              <tr>
-                <td className="py-1.5 px-3.5 text-gray-400 font-sans">Silverware Titles</td>
-                <td className="py-1.5 px-3.5 text-center text-[#fdb913] font-bold">{userPick.trophies}</td>
-                <td className="py-1.5 px-3.5 text-center text-[#fdb913] font-bold">{opponentPick.trophies}</td>
+                <td className="py-2 px-3.5 text-gray-400 font-sans">Overall Rating</td>
+                <td className="py-2 px-3.5 text-center font-bold text-white">{userPick.overall}</td>
+                <td className="py-2 px-3.5 text-center font-bold text-gray-400">{opponentPick.overall}</td>
               </tr>
             </tbody>
           </table>

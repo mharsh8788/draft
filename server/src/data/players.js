@@ -302,7 +302,7 @@ export const PLAYERS = [
     achievements: ["1x UEFA Champions League Winner 2013","3x Bundesliga Champion","2x DFB-Pokal Winner"]
   },
   {
-    id: "vanbuyten",
+    id: "van-buyten",
     name: "Daniel Van Buyten",
     position: "CB",
     secondaryPositions: [],
@@ -980,7 +980,7 @@ export const PLAYERS = [
     achievements: ["1x UEFA Champions League Winner 2020","8x Bundesliga Champion","2x The Best FIFA Men's Player","European Golden Shoe Winner"]
   },
   {
-    id: "gerd_muller",
+    id: "gerd-muller",
     name: "Gerd Müller",
     position: "ST",
     secondaryPositions: [],

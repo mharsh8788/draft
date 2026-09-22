@@ -1,8 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TrophyIllustration from './TrophyIllustration';
 
+// Memory cache for processed transparent trophy images
+const processedTrophyCache = new Map();
+
+function processTrophyTransparency(src) {
+  if (!src) return Promise.resolve(null);
+  if (processedTrophyCache.has(src)) {
+    return Promise.resolve(processedTrophyCache.get(src));
+  }
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        // Threshold for neutralizing white / near-white background
+        const threshold = 238;
+        const feather = 18;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
+
+          if (a === 0) continue;
+
+          const minChannel = Math.min(r, g, b);
+
+          if (minChannel >= threshold) {
+            // White / near-white background pixel -> set fully transparent
+            data[i + 3] = 0;
+          } else if (minChannel > threshold - feather) {
+            // Smooth anti-aliasing edge blend
+            const factor = (threshold - minChannel) / feather;
+            data[i + 3] = Math.round(a * Math.min(1, Math.max(0, factor)));
+          }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        const transparentUrl = canvas.toDataURL('image/png');
+        processedTrophyCache.set(src, transparentUrl);
+        resolve(transparentUrl);
+      } catch {
+        // Fallback to raw source if canvas processing fails
+        processedTrophyCache.set(src, src);
+        resolve(src);
+      }
+    };
+    img.onerror = () => {
+      resolve(null);
+    };
+    img.src = src;
+  });
+}
+
 export default function TrophyCard({ trophy }) {
-  const [imgError, setImgError] = useState(false);
+  const [processedSrc, setProcessedSrc] = useState(null);
+  const [hasError, setHasError] = useState(false);
+
+  const rawImageSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
+
+  useEffect(() => {
+    let isMounted = true;
+    setHasError(false);
+
+    if (rawImageSrc) {
+      processTrophyTransparency(rawImageSrc).then((result) => {
+        if (!isMounted) return;
+        if (result) {
+          setProcessedSrc(result);
+          setHasError(false);
+        } else {
+          setHasError(true);
+        }
+      });
+    } else {
+      setHasError(true);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [rawImageSrc, trophy.id]);
 
   return (
     <div className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#222c3d] hover:border-[#3b4861] rounded-xl overflow-hidden flex flex-col transition-all duration-200 select-none hover:-translate-y-1">
@@ -16,11 +105,11 @@ export default function TrophyCard({ trophy }) {
 
         {/* Hero Trophy Asset */}
         <div className="relative z-10 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center w-full h-full">
-          {trophy.image && !imgError ? (
+          {processedSrc && !hasError ? (
             <img
-              src={trophy.image}
+              src={processedSrc}
               alt={trophy.name}
-              onError={() => setImgError(true)}
+              onError={() => setHasError(true)}
               className="max-h-36 sm:max-h-40 max-w-[88%] object-contain drop-shadow-md pointer-events-none"
               loading="lazy"
             />

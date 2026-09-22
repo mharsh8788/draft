@@ -6,7 +6,7 @@ export const HONOURS = [
     shortName: "GERMAN CHAMPIONSHIP",
     count: 35,
     unit: "TITLES",
-    image: "/images/trophies/bundesliga.png",
+    image: "/images/trophies/bundesliga.jpg",
     type: "meisterschale",
     detail: "Record German Champions"
   },
@@ -16,7 +16,7 @@ export const HONOURS = [
     shortName: "DFB GERMAN CUP",
     count: 21,
     unit: "TITLES",
-    image: "/images/trophies/dfb-pokal.png",
+    image: "/images/trophies/pokal.jpg",
     type: "dfb-pokal",
     detail: "German Cup Winners"
   },
@@ -26,7 +26,7 @@ export const HONOURS = [
     shortName: "CHAMPIONS LEAGUE",
     count: 6,
     unit: "TITLES",
-    image: "/images/trophies/champions-league.png",
+    image: "/images/trophies/champions.jpg",
     type: "ucl",
     detail: "European Champions"
   },
@@ -36,7 +36,7 @@ export const HONOURS = [
     shortName: "GERMAN SUPERCUP",
     count: 13,
     unit: "TITLES",
-    image: null,
+    image: "/images/trophies/supercup.jpg",
     type: "dfl-supercup",
     detail: "DFL-Supercup Winners"
   },
@@ -46,7 +46,7 @@ export const HONOURS = [
     shortName: "LEAGUE CUP",
     count: 6,
     unit: "TITLES",
-    image: null,
+    image: "/images/trophies/league.jpg",
     type: "dfl-supercup",
     detail: "DFL-Ligapokal Winners"
   },
@@ -56,7 +56,7 @@ export const HONOURS = [
     shortName: "UEFA CUP",
     count: 1,
     unit: "TITLE",
-    image: null,
+    image: "/images/trophies/uefa.jpg",
     type: "uefa-cup",
     detail: "1996 UEFA Cup Winners"
   },
@@ -66,7 +66,7 @@ export const HONOURS = [
     shortName: "CUP WINNERS' CUP",
     count: 1,
     unit: "TITLE",
-    image: null,
+    image: "/images/trophies/winners.jpg",
     type: "uefa-cup",
     detail: "1967 European Cup Winners' Cup"
   },
@@ -76,7 +76,7 @@ export const HONOURS = [
     shortName: "INTERCONTINENTAL CUP",
     count: 2,
     unit: "TITLES",
-    image: null,
+    image: "/images/trophies/intercontinental.jpg",
     type: "intercontinental",
     detail: "World Club Champions"
   },
@@ -86,7 +86,7 @@ export const HONOURS = [
     shortName: "FIFA CLUB WORLD CUP",
     count: 2,
     unit: "TITLES",
-    image: null,
+    image: "/images/trophies/clubworld.jpg",
     type: "fifa-cwc",
     detail: "Club World Champions"
   },
@@ -96,7 +96,7 @@ export const HONOURS = [
     shortName: "UEFA SUPERCUP",
     count: 2,
     unit: "TITLES",
-    image: null,
+    image: "/images/trophies/uefasupercup.jpg",
     type: "uefa-supercup",
     detail: "UEFA Super Cup Winners"
   }
