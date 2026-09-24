@@ -38,8 +38,8 @@ export default function Header({
           </span>
         </div>
 
-        {/* Right: Games / Archive / About Navigation */}
-        <nav aria-label="Global Navigation" className="flex items-center gap-4 sm:gap-6">
+        {/* Right: Games / Timeline / Archive / About Navigation */}
+        <nav aria-label="Global Navigation" className="flex items-center gap-3.5 sm:gap-6">
           <button
             onClick={() => onNavigate('/')}
             className={`text-sm sm:text-[15px] transition-colors cursor-pointer ${
@@ -49,6 +49,17 @@ export default function Header({
             }`}
           >
             Games
+          </button>
+
+          <button
+            onClick={() => onNavigate('/timeline')}
+            className={`text-sm sm:text-[15px] transition-colors cursor-pointer ${
+              currentPath === '/timeline' 
+                ? 'text-white font-bold border-b-2 border-white pb-0.5' 
+                : 'text-white/85 hover:text-white font-medium'
+            }`}
+          >
+            Timeline
           </button>
 
           <button

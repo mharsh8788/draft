@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import GamesHub from './pages/GamesHub';
 import ArchivePage from './pages/ArchivePage';
+import CareerPuzzlePage from './pages/CareerPuzzlePage';
+import TimelinePage from './pages/TimelinePage';
 import GameProgress from './components/GameProgress';
 import DraftCard from './components/DraftCard';
 import MysteryCard from './components/MysteryCard';
@@ -18,7 +20,7 @@ import { ArrowLeft, Volume2, VolumeX, Flame, Trophy, Shield } from 'lucide-react
 export default function App() {
   const [soundEnabled, setSoundEnabled] = useState(sounds.isEnabled());
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const { currentPath, navigate, isHome, isMysteryGame, isArchive } = useRouter();
+  const { currentPath, navigate, isHome, isMysteryGame, isCareerPuzzle, isTimeline, isArchive } = useRouter();
 
   const {
     gameStatus,
@@ -49,6 +51,10 @@ export default function App() {
       if (gameStatus === 'completed') {
         openFormationSelection();
       }
+    } else if (route === '/guess-player') {
+      navigate('/guess-player');
+    } else if (route === '/timeline') {
+      navigate('/timeline');
     } else if (route === '/archive') {
       navigate('/archive');
     }
@@ -241,7 +247,17 @@ export default function App() {
           </div>
         )}
 
-        {/* ROUTE 3: Dedicated Archive Page */}
+        {/* ROUTE 3: Career Puzzle (Who Am I?) */}
+        {isCareerPuzzle && (
+          <CareerPuzzlePage onBackToGames={handleBackToGames} onNavigate={navigate} />
+        )}
+
+        {/* ROUTE 4: Standalone Historical Timeline */}
+        {isTimeline && (
+          <TimelinePage onNavigate={navigate} />
+        )}
+
+        {/* ROUTE 5: Dedicated Archive Page */}
         {isArchive && (
           <ArchivePage onNavigate={navigate} />
         )}
@@ -251,7 +267,7 @@ export default function App() {
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
 
       {/* Editorial Footer */}
-      <footer className="w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-sans select-none">
+      <footer className="relative z-20 w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-sans select-none">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div className="space-y-0.5">
             <p className="font-display font-bold text-sm text-white tracking-wide uppercase">
@@ -267,6 +283,13 @@ export default function App() {
               className={`hover:text-white transition-colors cursor-pointer ${currentPath === '/' ? 'text-white font-bold' : 'text-white/85'}`}
             >
               Games
+            </button>
+            <span className="text-white/50">•</span>
+            <button 
+              onClick={() => navigate('/timeline')}
+              className={`hover:text-white transition-colors cursor-pointer ${currentPath === '/timeline' ? 'text-white font-bold' : 'text-white/85'}`}
+            >
+              Timeline
             </button>
             <span className="text-white/50">•</span>
             <button 

@@ -82,6 +82,13 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               </button>
 
               <button
+                onClick={() => onNavigate && onNavigate('/timeline')}
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 transition-colors cursor-pointer"
+              >
+                <span>BAYERN TIMELINE</span>
+              </button>
+
+              <button
                 onClick={() => onNavigate && onNavigate('/archive')}
                 className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 transition-colors cursor-pointer"
               >
@@ -379,9 +386,9 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
 
                   {/* Status Badge */}
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-white/5 text-gray-400 border border-white/10">
-                      <Clock size={10} />
-                      In Development
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono bg-[#dc052d]/20 text-[#dc052d] border border-[#dc052d]/40 font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d] animate-pulse" />
+                      Available Now
                     </span>
                   </div>
                 </div>
@@ -389,7 +396,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                 {/* Card Body */}
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-1.5">
-                    <span className="text-xs font-mono text-gray-400 block">
+                    <span className="text-xs font-mono text-[#dc052d] font-bold block uppercase tracking-wider">
                       Career Puzzle
                     </span>
                     <h4 className="font-display font-bold text-2xl text-white tracking-tight uppercase">
@@ -405,11 +412,10 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
 
                   <div>
                     <button
-                      disabled
-                      aria-disabled="true"
-                      className="w-full py-2.5 px-4 rounded-lg bg-white/5 text-gray-500 font-display font-bold text-xs tracking-wider uppercase border border-white/10 cursor-not-allowed flex items-center justify-center gap-2"
+                      onClick={() => onSelectGame ? onSelectGame('/guess-player') : onNavigate && onNavigate('/guess-player')}
+                      className="w-full py-2.5 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs tracking-wider uppercase transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
                     >
-                      <span>IN DEVELOPMENT</span>
+                      <span>PLAY NOW →</span>
                     </button>
                   </div>
                 </div>
@@ -447,17 +453,26 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
         <div className="absolute inset-x-0 bottom-0 h-16 sm:h-20 bg-gradient-to-t from-[#070b12] to-transparent pointer-events-none" />
 
         {/* Centered Constrained Content Container matching max-w-6xl */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3 sm:space-y-4 text-left">
-          <div className="space-y-0.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#dc052d] block">
-              CLUB ARCHIVE
-            </span>
-            <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-wide">
-              STORIES &amp; SILVERWARE
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-300 font-sans max-w-xl">
-              The trophies that shaped Bayern&apos;s history and the moments that defined Germany&apos;s greatest club.
-            </p>
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-left">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#dc052d] block">
+                CLUB ARCHIVE &amp; HISTORY
+              </span>
+              <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-wide">
+                STORIES &amp; SILVERWARE
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-300 font-sans max-w-xl">
+                The trophies that shaped Bayern&apos;s history and the moments that defined Germany&apos;s greatest club.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavigate && onNavigate('/timeline')}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#dc052d]/15 hover:bg-[#dc052d]/25 text-[#dc052d] hover:text-white border border-[#dc052d]/40 text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+            >
+              <span>EXPLORE TIMELINE</span>
+              <ArrowRight size={14} />
+            </button>
           </div>
 
           {/* One Featured Archive Card (Beckenbauer) */}

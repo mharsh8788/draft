@@ -27,6 +27,8 @@ export function useRouter() {
     navigate,
     isHome: currentPath === '/' || currentPath === '',
     isMysteryGame: currentPath === '/mystery-player',
+    isCareerPuzzle: currentPath === '/guess-player',
+    isTimeline: currentPath === '/timeline',
     isArchive: currentPath === '/archive'
   };
 }

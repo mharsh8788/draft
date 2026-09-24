@@ -27,11 +27,11 @@ export const GAMES = [
     title: "WHO AM I?",
     category: "CAREER PUZZLE",
     tagline: "Trace a Bayern player's career from clues.",
-    badges: ["CAREER", "PUZZLE"],
-    status: "development",
-    route: null,
+    badges: ["CAREER", "PUZZLE", "DEDUCTION"],
+    status: "available",
+    route: "/guess-player",
     featured: false,
-    actionText: "IN DEVELOPMENT"
+    actionText: "PLAY NOW →"
   }
 ];
 
