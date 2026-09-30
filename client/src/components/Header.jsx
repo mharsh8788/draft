@@ -72,6 +72,17 @@ export default function Header({
           >
             Archive
           </button>
+
+          <button
+            onClick={() => onNavigate('/feedback')}
+            className={`text-sm sm:text-[15px] transition-colors cursor-pointer ${
+              currentPath === '/feedback' 
+                ? 'text-white font-bold border-b-2 border-white pb-0.5' 
+                : 'text-white/85 hover:text-white font-medium'
+            }`}
+          >
+            Feedback
+          </button>
           
           <button
             onClick={onOpenAbout}
