@@ -48,7 +48,7 @@ export default function FunFactsSection({
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight uppercase leading-none">
             {title}
           </h2>
-          <p className="text-xs sm:text-sm text-gray-300 font-sans">
+          <p className="text-xs sm:text-sm text-gray-300 font-display">
             {subtitle}
           </p>
         </div>
@@ -56,10 +56,10 @@ export default function FunFactsSection({
       {/* 2. Single Featured-Card Carousel */}
       <div className="w-full">
         {/* Fixed Responsive Card Container (Exact same dimensions for every fact) */}
-        <div className="bg-[#121824] border border-[#222c3d] rounded-xl overflow-hidden text-left flex flex-col md:flex-row items-stretch md:h-[490px] w-full select-none">
+        <div className="bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden text-left flex flex-col md:flex-row items-stretch md:h-[490px] w-full select-none transition-all duration-200 ease-out hover:-translate-y-0.5 shadow-md">
           
           {/* Image Container (Fixed 40% Width Desktop, Fixed Height Mobile, Full-Cover Image) */}
-          <div className="w-full md:w-[40%] shrink-0 h-[240px] sm:h-[280px] md:h-full relative overflow-hidden bg-[#090e16] border-b md:border-b-0 md:border-r border-[#222c3d]">
+          <div className="w-full md:w-[40%] shrink-0 h-[240px] sm:h-[280px] md:h-full relative overflow-hidden bg-[#090e16] border-b md:border-b-0 md:border-r border-[#1c2535]">
             {/* Primary Cover Image with object-fit: cover */}
             <img
               key={currentFact.id}
@@ -74,7 +74,7 @@ export default function FunFactsSection({
 
             {/* Archival caption tag */}
             <div className="absolute bottom-3 left-3 z-30 flex items-center gap-1.5">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white drop-shadow">
+              <span className="text-[10px] font-display font-bold uppercase tracking-wider text-white drop-shadow">
                 {currentFact.imageCaption || currentFact.tag || 'BAYERN ARCHIVE'}
               </span>
             </div>
@@ -87,10 +87,10 @@ export default function FunFactsSection({
             <div className="space-y-2.5">
               {/* Category and Year Tag */}
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#dc052d]/10 border border-[#dc052d]/25 text-[10px] font-mono font-bold uppercase tracking-widest text-[#dc052d]">
+                <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#dc052d]/10 border border-[#dc052d]/25 text-[10px] font-display font-bold uppercase tracking-widest text-[#dc052d]">
                   {currentFact.category || 'FUN FACT'}
                 </span>
-                <span className="text-[10px] font-mono text-gray-400 uppercase tracking-wider">
+                <span className="text-[10px] font-display text-gray-400 uppercase tracking-wider">
                   {currentFact.year} • {currentFact.tag}
                 </span>
               </div>
@@ -105,7 +105,7 @@ export default function FunFactsSection({
               </h3>
 
               {/* Short Introduction */}
-              <div className={`space-y-1 font-sans text-gray-200 leading-relaxed ${
+              <div className={`space-y-1 font-display text-gray-200 leading-relaxed ${
                 currentFact.aftermath 
                   ? 'text-sm sm:text-[15px] md:text-base' 
                   : 'text-xs sm:text-sm'
@@ -124,16 +124,16 @@ export default function FunFactsSection({
             <div className="space-y-1.5 py-1">
               {/* Kicker with thin divider line */}
               <div className="flex items-center gap-2">
-                <span className={`font-mono font-bold uppercase tracking-widest text-[#dc052d] ${
+                <span className={`font-display font-bold uppercase tracking-widest text-[#dc052d] ${
                   currentFact.aftermath ? 'text-xs' : 'text-[10px]'
                 }`}>
                   THE STORY
                 </span>
-                <div className="h-px bg-[#222c3d] flex-1" />
+                <div className="h-px bg-[#1c2535] flex-1" />
               </div>
 
               {/* 3 Story Blocks: subtle borders, 3 cols desktop, stacked mobile */}
-              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#222c3d] py-1.5 border-b border-[#222c3d]">
+              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1c2535] py-1.5 border-b border-[#1c2535]">
                 {currentFact.storyBlocks?.map((block, idx) => (
                   <div 
                     key={idx} 
@@ -147,7 +147,7 @@ export default function FunFactsSection({
                   >
                     <div className="min-h-[28px] flex flex-col justify-end">
                       {block.kicker && (
-                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-[#dc052d] uppercase tracking-wider block leading-none mb-1">
+                        <span className="text-[10px] sm:text-[11px] font-display font-bold text-[#dc052d] uppercase tracking-wider block leading-none mb-1">
                           {block.kicker}
                         </span>
                       )}
@@ -158,7 +158,7 @@ export default function FunFactsSection({
                       </h4>
                     </div>
                     {/* Increased body text size and line-height */}
-                    <p className={`font-sans leading-relaxed pt-0.5 text-gray-300 ${
+                    <p className={`font-display leading-relaxed pt-0.5 text-gray-300 ${
                       currentFact.aftermath ? 'text-xs sm:text-[13px] md:text-[13.5px]' : 'text-[11px] sm:text-xs'
                     }`}>
                       {block.text}
@@ -173,25 +173,25 @@ export default function FunFactsSection({
               <div className="space-y-2 py-1">
                 {/* AFTERMATH heading */}
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#dc052d]">
+                  <span className="text-xs font-display font-bold uppercase tracking-widest text-[#dc052d]">
                     AFTERMATH
                   </span>
-                  <div className="h-px bg-[#222c3d] flex-1" />
+                  <div className="h-px bg-[#1c2535] flex-1" />
                 </div>
 
                 {/* Concise text */}
-                <p className="text-xs sm:text-sm md:text-[14.5px] text-gray-200 font-sans leading-relaxed">
+                <p className="text-xs sm:text-sm md:text-[14.5px] text-gray-200 font-display leading-relaxed">
                   {currentFact.aftermath.text}
                 </p>
 
                 {/* Compact archive statistic row */}
-                <div className="grid grid-cols-3 divide-x divide-[#222c3d] py-2 border-y border-[#222c3d]">
+                <div className="grid grid-cols-3 divide-x divide-[#1c2535] py-2 border-y border-[#1c2535]">
                   {currentFact.aftermath.stats.map((stat, idx) => (
                     <div key={idx} className={`space-y-0.5 ${idx === 0 ? 'pr-3' : idx === 1 ? 'px-3' : 'pl-3'}`}>
                       <span className="font-display font-black text-lg sm:text-xl md:text-2xl text-white leading-none block">
                         {stat.value}
                       </span>
-                      <span className="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider text-gray-400 block leading-tight pt-0.5">
+                      <span className="text-[9px] sm:text-[10px] font-display font-bold uppercase tracking-wider text-gray-400 block leading-tight pt-0.5">
                         {stat.label}
                       </span>
                     </div>
@@ -221,13 +221,13 @@ export default function FunFactsSection({
           <button
             onClick={handlePrev}
             aria-label="Previous fact"
-            className="w-10 h-10 rounded-lg bg-[#121824] border border-[#222c3d] hover:border-[#374560] text-gray-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-10 h-10 rounded-lg bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/50 text-gray-300 hover:text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
           >
             <ChevronLeft size={20} />
           </button>
 
           {/* Central Counter: 01 / 04 */}
-          <div className="flex items-center gap-3 font-mono">
+          <div className="flex items-center gap-3 font-display">
             <span className="text-sm sm:text-base font-bold text-white tracking-widest">
               {formatNumber(currentIndex + 1)} <span className="text-gray-500 font-normal">/</span> {formatNumber(FUN_FACTS.length)}
             </span>
@@ -253,7 +253,7 @@ export default function FunFactsSection({
           <button
             onClick={handleNext}
             aria-label="Next fact"
-            className="w-10 h-10 rounded-lg bg-[#121824] border border-[#222c3d] hover:border-[#374560] text-gray-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-10 h-10 rounded-lg bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/50 text-gray-300 hover:text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
           >
             <ChevronRight size={20} />
           </button>

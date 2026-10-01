@@ -13,9 +13,9 @@ export default function GameCard({ game, onPlay }) {
   };
 
   return (
-    <div className="flex flex-col bg-[#121824] border border-[#222c3d] hover:border-[#374560] rounded-xl overflow-hidden transition-all duration-200 group text-left">
+    <div className="flex flex-col bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 shadow-md group text-left">
       {/* Visual Centerpiece Banner - Distinct for each game! */}
-      <div className="relative h-48 bg-[#0a0e14] border-b border-[#222c3d] overflow-hidden flex items-center justify-center select-none">
+      <div className="relative h-48 bg-[#0a0e14] border-b border-[#1c2535] overflow-hidden flex items-center justify-center select-none">
         {/* Subtle field grid pattern */}
         <div className="absolute inset-0 opacity-10 pointer-events-none pitch-pattern" />
 
@@ -38,7 +38,7 @@ export default function GameCard({ game, onPlay }) {
               </div>
             </div>
 
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#dc052d] mt-1">
+            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-[#dc052d] mt-1">
               WHO IS THIS PLAYER?
             </span>
           </div>
@@ -48,29 +48,29 @@ export default function GameCard({ game, onPlay }) {
         {game.id === '38-0' && (
           <div className="relative z-10 flex flex-col items-center justify-center">
             {/* Bold 38 & 0 Football Season Display */}
-            <div className="flex items-center gap-3 bg-[#111927] px-5 py-3 rounded-lg border border-[#222c3d]">
+            <div className="flex items-center gap-3 bg-[#111927] px-5 py-3 rounded-lg border border-[#1c2535]">
               <div className="text-center">
                 <span className="font-display font-black text-4xl text-white tracking-tight block leading-none">
                   38
                 </span>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-gray-400">
+                <span className="text-[9px] font-display font-bold uppercase tracking-wider text-gray-400">
                   MATCHES
                 </span>
               </div>
 
-              <div className="text-xl font-mono font-bold text-gray-600 px-1">—</div>
+              <div className="text-xl font-display font-bold text-gray-600 px-1">—</div>
 
               <div className="text-center">
                 <span className="font-display font-black text-4xl text-[#dc052d] tracking-tight block leading-none">
                   0
                 </span>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[#dc052d]">
+                <span className="text-[9px] font-display font-bold uppercase tracking-wider text-[#dc052d]">
                   LOSSES
                 </span>
               </div>
             </div>
 
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-400 mt-2">
+            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-400 mt-2">
               BUNDESLIGA CHALLENGE
             </span>
           </div>
@@ -80,21 +80,21 @@ export default function GameCard({ game, onPlay }) {
         {game.id === 'who-am-i' && (
           <div className="relative z-10 flex flex-col items-center justify-center">
             {/* Stepping Stones / Transfer Trail Motif */}
-            <div className="flex items-center gap-2 bg-[#111927] px-4 py-3 rounded-lg border border-[#222c3d]">
-              <div className="w-8 h-8 rounded bg-[#1c2436] border border-white/10 flex items-center justify-center text-[10px] font-mono font-bold text-gray-300">
+            <div className="flex items-center gap-2 bg-[#111927] px-4 py-3 rounded-lg border border-[#1c2535]">
+              <div className="w-8 h-8 rounded bg-[#1c2436] border border-white/10 flex items-center justify-center text-[10px] font-display font-bold text-gray-300">
                 1999
               </div>
               <div className="w-3 h-0.5 bg-[#dc052d]" />
-              <div className="w-8 h-8 rounded bg-[#dc052d]/20 border border-[#dc052d]/40 flex items-center justify-center text-[10px] font-mono font-bold text-[#dc052d]">
+              <div className="w-8 h-8 rounded bg-[#dc052d]/20 border border-[#dc052d]/40 flex items-center justify-center text-[10px] font-display font-bold text-[#dc052d]">
                 FCB
               </div>
               <div className="w-3 h-0.5 bg-gray-600" />
-              <div className="w-8 h-8 rounded bg-[#1c2436] border border-white/10 flex items-center justify-center text-[10px] font-mono font-bold text-gray-400">
+              <div className="w-8 h-8 rounded bg-[#1c2436] border border-white/10 flex items-center justify-center text-[10px] font-display font-bold text-gray-400">
                 ?
               </div>
             </div>
 
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-400 mt-2">
+            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-400 mt-2">
               CAREER DEDUCTION
             </span>
           </div>
@@ -103,12 +103,12 @@ export default function GameCard({ game, onPlay }) {
         {/* Top-Right Status Badge */}
         <div className="absolute top-3 right-3">
           {isAvailable ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-[#dc052d]/15 text-[#dc052d] border border-[#dc052d]/30">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-display font-bold uppercase tracking-wider bg-[#dc052d]/15 text-[#dc052d] border border-[#dc052d]/30">
               <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
               AVAILABLE NOW
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-white/5 text-gray-400 border border-white/10">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-display font-bold uppercase tracking-wider bg-white/5 text-gray-400 border border-white/10">
               <Clock size={10} />
               {game.badge}
             </span>
@@ -121,11 +121,11 @@ export default function GameCard({ game, onPlay }) {
         <div className="space-y-2">
           {/* Metadata pill */}
           <div className="flex items-center justify-between text-xs">
-            <span className="font-mono font-bold uppercase tracking-wider text-gray-400 text-[11px]">
+            <span className="font-display font-bold uppercase tracking-wider text-gray-400 text-[11px]">
               {game.category}
             </span>
             {game.meta?.rounds && (
-              <span className="font-mono font-bold text-gray-400 text-[11px]">
+              <span className="font-display font-bold text-gray-400 text-[11px]">
                 {game.meta.rounds} ROUNDS
               </span>
             )}
@@ -137,7 +137,7 @@ export default function GameCard({ game, onPlay }) {
           </h3>
 
           {/* One-Line Description */}
-          <p className="text-sm text-gray-300 leading-relaxed font-sans">
+          <p className="text-sm text-gray-300 leading-relaxed font-display">
             {game.description}
           </p>
         </div>
@@ -147,10 +147,10 @@ export default function GameCard({ game, onPlay }) {
           {isAvailable ? (
             <button
               onClick={handleAction}
-              className="w-full py-3 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-3 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 shadow-sm group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             >
               <span>PLAY GAME</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={16} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
             </button>
           ) : (
             <button

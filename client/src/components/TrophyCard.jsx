@@ -94,9 +94,9 @@ export default function TrophyCard({ trophy }) {
   }, [rawImageSrc, trophy.id]);
 
   return (
-    <div className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#222c3d] hover:border-[#3b4861] rounded-xl overflow-hidden flex flex-col transition-all duration-200 select-none hover:-translate-y-1">
+    <div className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md">
       {/* 1. Trophy Visual Area: 58% of height with subtle museum backlight */}
-      <div className="relative h-48 sm:h-52 bg-[#0a0f18] border-b border-[#222c3d] flex items-center justify-center overflow-hidden p-4">
+      <div className="relative h-48 sm:h-52 bg-[#0a0f18] border-b border-[#1c2535] flex items-center justify-center overflow-hidden p-4">
         {/* Very subtle dark radial spotlight */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(220,5,45,0.06)_0%,transparent_70%)] pointer-events-none" />
         
@@ -104,7 +104,7 @@ export default function TrophyCard({ trophy }) {
         <div className="absolute bottom-2 inset-x-8 h-px bg-white/10" />
 
         {/* Hero Trophy Asset */}
-        <div className="relative z-10 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center w-full h-full">
+        <div className="relative z-10 transition-transform duration-200 ease-out group-hover:scale-[1.025] flex items-center justify-center w-full h-full">
           {processedSrc && !hasError ? (
             <img
               src={processedSrc}
@@ -131,7 +131,7 @@ export default function TrophyCard({ trophy }) {
           <span className="font-display font-black text-3xl sm:text-4xl text-white tracking-tight leading-none">
             {trophy.count !== undefined && trophy.count !== null ? trophy.count : '—'}
           </span>
-          <span className="text-[10px] font-mono font-bold tracking-widest text-[#dc052d] uppercase mt-1">
+          <span className="text-[10px] font-display font-bold tracking-widest text-[#dc052d] uppercase mt-1">
             {trophy.unit || 'TITLES'}
           </span>
         </div>

@@ -28,7 +28,7 @@ export default function ArchivePage({ onNavigate }) {
         {/* Header Content Container (Centered & Constrained to max-w-6xl) */}
         <div className="relative z-10 max-w-6xl mx-auto space-y-2">
           {/* Kicker */}
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-[#dc052d]/10 border border-[#dc052d]/25 text-[11px] font-mono font-bold uppercase tracking-widest text-[#dc052d]">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-[#dc052d]/10 border border-[#dc052d]/25 text-[11px] font-display font-bold uppercase tracking-widest text-[#dc052d]">
             <span>FC BAYERN MÜNCHEN</span>
           </div>
 

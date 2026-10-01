@@ -105,14 +105,14 @@ export default function FeedbackPage({ onNavigate }) {
         {/* Back Link */}
         <button
           onClick={() => onNavigate && onNavigate('/')}
-          className="inline-flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors mb-6 cursor-pointer select-none"
+          className="inline-flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-all duration-200 ease-out mb-6 cursor-pointer select-none hover:-translate-x-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
         >
           <ArrowLeft size={16} />
           <span>BACK TO GAMES</span>
         </button>
 
         {/* Main Card */}
-        <div className="bg-[#121824] border border-[#222c3d] rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div className="bg-[#121824] border border-[#1c2535] rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
           {/* Top Edge Red Accent */}
           <div className="absolute top-0 inset-x-0 h-1 bg-[#dc052d]" />
 
@@ -130,7 +130,7 @@ export default function FeedbackPage({ onNavigate }) {
                 <h2 className="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
                   FEEDBACK SUBMITTED
                 </h2>
-                <p className="text-sm sm:text-base text-gray-300 font-sans max-w-md mx-auto leading-relaxed">
+                <p className="text-sm sm:text-base text-gray-300 font-display max-w-md mx-auto leading-relaxed">
                   Thank you for helping us improve this fan-made FC Bayern project. Your insights directly shape upcoming features and gameplay.
                 </p>
               </div>
@@ -138,13 +138,13 @@ export default function FeedbackPage({ onNavigate }) {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
                 <button
                   onClick={() => onNavigate && onNavigate('/')}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-colors cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                 >
                   RETURN TO GAMES
                 </button>
                 <button
                   onClick={handleReset}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase border border-white/10 transition-colors cursor-pointer"
+                  className="w-full sm:w-auto px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
                 >
                   SUBMIT ANOTHER RESPONSE
                 </button>
@@ -154,7 +154,7 @@ export default function FeedbackPage({ onNavigate }) {
             /* Feedback Form */
             <form onSubmit={handleSubmit} className="space-y-6 text-left">
               {/* Header */}
-              <div className="space-y-2 border-b border-[#222c3d] pb-6">
+              <div className="space-y-2 border-b border-[#1c2535] pb-6">
                 <div className="flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-[#dc052d]">
                   <span className="w-2 h-2 rounded-full bg-[#dc052d]" />
                   <span>COMMUNITY VOICE</span>
@@ -162,7 +162,7 @@ export default function FeedbackPage({ onNavigate }) {
                 <h1 className="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
                   SHARE YOUR FEEDBACK
                 </h1>
-                <p className="text-sm text-gray-300 font-sans">
+                <p className="text-sm text-gray-300 font-display">
                   Help improve this fan-made Bayern project.
                 </p>
               </div>
@@ -201,10 +201,10 @@ export default function FeedbackPage({ onNavigate }) {
                         onClick={() => setRating(val)}
                         onMouseEnter={() => setHoverRating(val)}
                         onMouseLeave={() => setHoverRating(0)}
-                        className={`flex-1 py-3 px-2 rounded-lg border text-center transition-all cursor-pointer select-none flex flex-col items-center justify-center gap-1 ${
+                        className={`flex-1 py-3 px-2 rounded-lg border text-center transition-all duration-200 ease-out cursor-pointer select-none flex flex-col items-center justify-center gap-1 hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${
                           isActive
                             ? 'bg-[#dc052d]/20 border-[#dc052d] text-white shadow-sm'
-                            : 'bg-[#0b1017] border-[#222c3d] text-gray-400 hover:border-gray-500'
+                            : 'bg-[#0b1017] border-[#1c2535] text-gray-400 hover:border-gray-500 hover:text-gray-200'
                         }`}
                       >
                         <Star
@@ -238,10 +238,10 @@ export default function FeedbackPage({ onNavigate }) {
                         type="button"
                         onClick={() => togglePart(part.id)}
                         aria-pressed={isSelected}
-                        className={`py-2.5 px-3 rounded-lg border text-center transition-all cursor-pointer select-none text-xs font-display font-bold uppercase tracking-wider ${
+                        className={`py-2.5 px-3 rounded-lg border text-center transition-all duration-200 ease-out cursor-pointer select-none text-xs font-display font-bold uppercase tracking-wider hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${
                           isSelected
-                            ? 'bg-[#dc052d] border-[#dc052d] text-white shadow-md'
-                            : 'bg-[#0b1017] border-[#222c3d] text-gray-400 hover:text-white hover:border-[#374560]'
+                            ? 'bg-[#dc052d] border-[#dc052d] text-white shadow-sm'
+                            : 'bg-[#0b1017] border-[#1c2535] hover:border-[#dc052d]/40 text-gray-400 hover:text-white'
                         }`}
                       >
                         {part.label}
@@ -262,7 +262,7 @@ export default function FeedbackPage({ onNavigate }) {
                   value={whatLiked}
                   onChange={(e) => setWhatLiked(e.target.value)}
                   placeholder="The games, historical archive, presentation, player puzzles, visual details..."
-                  className="w-full bg-[#0b1017] border border-[#222c3d] focus:border-[#dc052d] rounded-lg p-3 text-sm text-gray-200 placeholder-gray-500 font-sans focus:outline-none transition-colors"
+                  className="w-full bg-[#0b1017] border border-[#1c2535] focus:border-[#dc052d]/80 rounded-lg p-3 text-sm text-gray-200 placeholder-gray-500 font-display focus:outline-none focus:ring-1 focus:ring-[#dc052d]/50 transition-all duration-200"
                 />
               </div>
 
@@ -277,7 +277,7 @@ export default function FeedbackPage({ onNavigate }) {
                   value={whatImproved}
                   onChange={(e) => setWhatImproved(e.target.value)}
                   placeholder="Features you'd like to see, bugs, tricky questions, pacing, mobile navigation..."
-                  className="w-full bg-[#0b1017] border border-[#222c3d] focus:border-[#dc052d] rounded-lg p-3 text-sm text-gray-200 placeholder-gray-500 font-sans focus:outline-none transition-colors"
+                  className="w-full bg-[#0b1017] border border-[#1c2535] focus:border-[#dc052d]/80 rounded-lg p-3 text-sm text-gray-200 placeholder-gray-500 font-display focus:outline-none focus:ring-1 focus:ring-[#dc052d]/50 transition-all duration-200"
                 />
               </div>
 
@@ -292,7 +292,7 @@ export default function FeedbackPage({ onNavigate }) {
                   value={comments}
                   onChange={(e) => setComments(e.target.value)}
                   placeholder="Any other thoughts, ideas, or notes for the project..."
-                  className="w-full bg-[#0b1017] border border-[#222c3d] focus:border-[#dc052d] rounded-lg p-3 text-sm text-gray-200 placeholder-gray-500 font-sans focus:outline-none transition-colors"
+                  className="w-full bg-[#0b1017] border border-[#1c2535] focus:border-[#dc052d]/80 rounded-lg p-3 text-sm text-gray-200 placeholder-gray-500 font-display focus:outline-none focus:ring-1 focus:ring-[#dc052d]/50 transition-all duration-200"
                 />
               </div>
 
@@ -301,7 +301,7 @@ export default function FeedbackPage({ onNavigate }) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 px-6 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-150 shadow-md cursor-pointer flex items-center justify-center gap-2 select-none disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 px-6 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out shadow-md cursor-pointer flex items-center justify-center gap-2 select-none disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                 >
                   <Send size={16} />
                   <span>{isSubmitting ? 'SUBMITTING FEEDBACK...' : 'SUBMIT FEEDBACK'}</span>
@@ -309,7 +309,7 @@ export default function FeedbackPage({ onNavigate }) {
               </div>
 
               {/* Privacy Note */}
-              <p className="text-[11px] text-gray-400 font-sans text-center">
+              <p className="text-[11px] text-gray-400 font-display text-center">
                 Submissions are stored securely and used solely to refine this fan-made project. No personal login or tracking required.
               </p>
             </form>

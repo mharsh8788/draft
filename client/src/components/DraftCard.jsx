@@ -24,7 +24,7 @@ export default function DraftCard({ player, onSelect, disabled }) {
   const surname = player.name.split(' ').pop();
 
   return (
-    <div className="group relative flex flex-col h-full bg-[#121824] rounded-xl border border-[#222c3d] hover:border-[#374560] overflow-hidden transition-all shadow-sm text-left">
+    <div className="group relative flex flex-col h-full bg-[#121824] rounded-xl border border-[#1c2535] hover:border-[#dc052d]/40 overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 shadow-sm text-left">
       {/* 1. Full-Bleed Historical Player Image (Fills 100% of card) */}
       {hasImage && (
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -32,7 +32,7 @@ export default function DraftCard({ player, onSelect, disabled }) {
             src={displayImage}
             alt={player.name}
             onError={() => setImageError(true)}
-            className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-700 group-hover:scale-105`}
+            className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
           />
 
           {/* Natural cinematic bottom-to-top gradient:
@@ -45,7 +45,7 @@ export default function DraftCard({ player, onSelect, disabled }) {
 
       {/* 2. Floating Position Badge in Top-Right */}
       <div className="absolute top-3.5 right-3.5 z-20 pointer-events-none">
-        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-black/60 text-gray-200 border border-white/15 backdrop-blur-xs">
+        <span className="px-2 py-0.5 rounded text-[10px] font-display font-bold uppercase tracking-wider bg-black/60 text-gray-200 border border-white/10 backdrop-blur-xs">
           {player.position}
         </span>
       </div>
@@ -57,11 +57,11 @@ export default function DraftCard({ player, onSelect, disabled }) {
           {/* Nationality / Era */}
           <div className="flex items-center gap-2 text-xs font-medium text-gray-200 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
             <span className="text-xl leading-none">{player.flag}</span>
-            <span className="font-mono uppercase tracking-wider font-bold text-white">
+            <span className="font-display uppercase tracking-wider font-bold text-white">
               {player.nationality}
             </span>
             <span className="text-gray-400">•</span>
-            <span className="font-mono text-gray-300 text-[11px]">{player.era}</span>
+            <span className="font-display text-gray-300 text-[11px]">{player.era}</span>
           </div>
 
           {/* Player Name */}
@@ -70,7 +70,7 @@ export default function DraftCard({ player, onSelect, disabled }) {
           </h3>
 
           {/* Player Description */}
-          <p className="text-xs sm:text-sm text-gray-200 italic border-l-2 border-[#dc052d] pl-3 py-0.5 font-sans leading-relaxed line-clamp-3 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+          <p className="text-xs sm:text-sm text-gray-200 italic border-l-2 border-[#dc052d] pl-3 py-0.5 font-display leading-relaxed line-clamp-3 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
             "{player.bio}"
           </p>
         </div>
@@ -80,10 +80,10 @@ export default function DraftCard({ player, onSelect, disabled }) {
           <button
             onClick={handleChoose}
             disabled={disabled}
-            className="w-full py-3.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/20 hover:border-white/30 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-sm group/btn"
+            className="w-full py-3.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/20 hover:border-white/35 transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-sm group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
           >
             <span>CHOOSE {surname}</span>
-            <ArrowRight size={16} className="transition-transform duration-150 group-hover/btn:translate-x-0.5" />
+            <ArrowRight size={16} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
           </button>
         </div>
       </div>

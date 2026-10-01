@@ -56,7 +56,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
             {/* Red Accent Line & Club Kicker */}
             <div className="flex items-center gap-2.5">
               <span className="w-8 h-0.5 bg-[#dc052d]" />
-              <span className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#dc052d]">
+              <span className="text-xs sm:text-sm font-display font-bold uppercase tracking-widest text-[#dc052d]">
                 FC BAYERN MÜNCHEN
               </span>
             </div>
@@ -67,7 +67,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
             </h1>
 
             {/* Subheading / Description */}
-            <p className="text-sm sm:text-base md:text-lg text-gray-200 font-sans leading-relaxed max-w-xl font-normal">
+            <p className="text-sm sm:text-base md:text-lg text-gray-200 font-display leading-relaxed max-w-xl font-normal">
               Test your Bayern knowledge. Build your XI. Discover the club&apos;s history.
             </p>
 
@@ -75,22 +75,22 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
             <div className="pt-2 sm:pt-3 flex flex-wrap items-center gap-3 sm:gap-4">
               <button
                 onClick={handleScrollToGames}
-                className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-150 shadow-lg cursor-pointer hover:translate-y-[-1px] select-none"
+                className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out shadow-lg cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] group/btn select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
               >
                 <span>EXPLORE GAMES</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={18} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
               </button>
 
               <button
                 onClick={() => onNavigate && onNavigate('/timeline')}
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
               >
                 <span>BAYERN TIMELINE</span>
               </button>
 
               <button
                 onClick={() => onNavigate && onNavigate('/archive')}
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
               >
                 <span>CLUB ARCHIVE</span>
               </button>
@@ -136,7 +136,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
             </div>
 
             {/* Featured Game Card: Desktop Horizontal / Mobile Stacked */}
-            <div className="bg-[#121824]/95 backdrop-blur-sm border border-[#222c3d] hover:border-[#374560] rounded-xl overflow-hidden transition-all duration-200 shadow-2xl">
+            <div className="bg-[#121824]/95 backdrop-blur-sm border border-[#1c2535] hover:border-[#dc052d]/35 rounded-xl overflow-hidden transition-all duration-200 ease-out shadow-2xl hover:-translate-y-0.5">
               {/* Desktop Layout (Horizontal Grid) */}
               <div className="hidden lg:grid lg:grid-cols-12 items-stretch">
                 {/* Left Column (7 cols): Game Metadata, Typography & CTA */}
@@ -182,16 +182,16 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   <div className="pt-2">
                     <button
                       onClick={handlePlayFeatured}
-                      className="inline-flex items-center gap-3 px-7 py-3.5 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-150 shadow-md cursor-pointer hover:translate-x-0.5 select-none"
+                      className="inline-flex items-center gap-3 px-7 py-3.5 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-200 ease-out shadow-md cursor-pointer group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                     >
                       <span>PLAY NOW</span>
-                      <ArrowRight size={18} />
+                      <ArrowRight size={18} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
                     </button>
                   </div>
                 </div>
 
                 {/* Right Column (5 cols): Tactical Pitch Silhouette Centerpiece */}
-                <div className="lg:col-span-5 relative bg-[#090e16]/80 border-l border-[#222c3d] flex items-center justify-center p-8 overflow-hidden select-none">
+                <div className="lg:col-span-5 relative bg-[#090e16]/80 border-l border-[#1c2535] flex items-center justify-center p-8 overflow-hidden select-none">
                   {/* Subtle Pitch Geometry Overlay */}
                   <div className="absolute inset-0 opacity-15 pointer-events-none pitch-pattern" />
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
@@ -238,7 +238,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                 </div>
 
                 {/* 2. Visual Centerpiece */}
-                <div className="relative h-44 bg-[#090e16]/80 border border-[#222c3d] rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="relative h-44 bg-[#090e16]/80 border border-[#1c2535] rounded-lg flex items-center justify-center overflow-hidden">
                   <div className="absolute inset-0 opacity-15 pointer-events-none pitch-pattern" />
                   <div className="relative z-10 flex flex-col items-center justify-center">
                     <div className="relative w-28 h-28 flex items-center justify-center">
@@ -283,10 +283,10 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                 {/* 5. Primary CTA */}
                 <button
                   onClick={handlePlayFeatured}
-                  className="w-full py-3 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-200 ease-out shadow-sm cursor-pointer flex items-center justify-center gap-2 group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                 >
                   <span>PLAY NOW</span>
-                  <ArrowRight size={16} />
+                  <ArrowRight size={16} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
                 </button>
               </div>
             </div>
@@ -297,7 +297,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               ========================================================= */}
           <div className="space-y-6">
             {/* Header: Kicker, Title, Description, and Badges */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/15 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#1c2535] pb-4">
               <div className="space-y-1 text-left">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-0.5 bg-[#dc052d]" />
@@ -308,7 +308,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                 <h3 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-white uppercase tracking-tight">
                   MORE GAMES
                 </h3>
-                <p className="text-xs sm:text-sm text-gray-200 font-sans leading-relaxed max-w-xl">
+                <p className="text-xs sm:text-sm text-gray-200 font-display leading-relaxed max-w-xl">
                   Upcoming tactical challenges and archive career puzzles entering through the tunnel.
                 </p>
               </div>
@@ -323,9 +323,9 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
             {/* Foreground Game Cards Grid: 38-0 and WHO AM I? */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* GAME 1: 38–0 */}
-              <div className="bg-[#121824] border border-[#222c3d] hover:border-[#374560] rounded-xl overflow-hidden flex flex-col justify-between transition-colors shadow-2xl">
+              <div className="bg-[#121824] border border-[#1c2535] hover:border-[#2a3548] rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-200 ease-out shadow-2xl hover:-translate-y-0.5">
                 {/* Visual Treatment: Bundesliga 38-0 Tracker Motif */}
-                <div className="relative h-40 sm:h-44 bg-[#090e16] border-b border-[#222c3d] flex items-center justify-center select-none overflow-hidden">
+                <div className="relative h-40 sm:h-44 bg-[#090e16] border-b border-[#1c2535] flex items-center justify-center select-none overflow-hidden">
                   <div className="absolute inset-0 opacity-10 pointer-events-none pitch-pattern" />
                   
                   {/* Category Kicker (Top-Left) */}
@@ -334,7 +334,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   </span>
 
                   {/* 38 and 0 Centered Scoreboard Graphic */}
-                  <div className="relative z-10 flex items-center gap-4 bg-[#111927] px-6 py-3 rounded-lg border border-[#222c3d]">
+                  <div className="relative z-10 flex items-center gap-4 bg-[#111927] px-6 py-3 rounded-lg border border-[#1c2535]">
                     <div className="text-center">
                       <span className="font-display font-black text-3xl sm:text-4xl text-white tracking-tight block leading-none">
                         38
@@ -374,7 +374,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                     <h4 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight uppercase leading-tight">
                       38–0
                     </h4>
-                    <p className="text-sm text-gray-300 font-sans leading-relaxed">
+                    <p className="text-sm text-gray-300 font-display leading-relaxed">
                       Can you guide Bayern through an unbeaten Bundesliga campaign?
                     </p>
                     <div className="flex flex-wrap gap-2 pt-1">
@@ -401,9 +401,9 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               </div>
 
               {/* GAME 2: WHO AM I? */}
-              <div className="bg-[#121824] border border-[#222c3d] hover:border-[#374560] rounded-xl overflow-hidden flex flex-col justify-between transition-colors shadow-2xl">
+              <div className="bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-200 ease-out shadow-2xl hover:-translate-y-0.5">
                 {/* Visual Treatment: Career Deduction Trail Motif */}
-                <div className="relative h-40 sm:h-44 bg-[#090e16] border-b border-[#222c3d] flex items-center justify-center select-none overflow-hidden">
+                <div className="relative h-40 sm:h-44 bg-[#090e16] border-b border-[#1c2535] flex items-center justify-center select-none overflow-hidden">
                   <div className="absolute inset-0 opacity-10 pointer-events-none pitch-pattern" />
 
                   {/* Category Kicker (Top-Left) */}
@@ -412,7 +412,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   </span>
 
                   {/* Transfer Trail / Career Milestones */}
-                  <div className="relative z-10 flex items-center gap-2.5 bg-[#111927] px-5 py-3 rounded-lg border border-[#222c3d]">
+                  <div className="relative z-10 flex items-center gap-2.5 bg-[#111927] px-5 py-3 rounded-lg border border-[#1c2535]">
                     <div className="px-2.5 py-1.5 rounded bg-[#1c2436] border border-white/10 flex flex-col items-center justify-center min-w-[50px]">
                       <span className="text-[11px] font-display font-bold text-gray-300 leading-none">1999</span>
                       <span className="text-[8px] font-display font-bold uppercase tracking-wider text-gray-500 mt-0.5">DEBUT</span>
@@ -446,7 +446,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                     <h4 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight uppercase leading-tight">
                       WHO AM I?
                     </h4>
-                    <p className="text-sm text-gray-300 font-sans leading-relaxed">
+                    <p className="text-sm text-gray-300 font-display leading-relaxed">
                       Trace a Bayern player's career from clues.
                     </p>
                     <div className="flex flex-wrap gap-2 pt-1">
@@ -465,9 +465,10 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   <div className="pt-2">
                     <button
                       onClick={() => onSelectGame ? onSelectGame('/guess-player') : onNavigate && onNavigate('/guess-player')}
-                      className="w-full py-3 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs tracking-wider uppercase transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm select-none"
+                      className="w-full py-3 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 shadow-sm select-none group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                     >
-                      <span>PLAY NOW →</span>
+                      <span>PLAY NOW</span>
+                      <ArrowRight size={14} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
                     </button>
                   </div>
                 </div>
@@ -508,19 +509,19 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-left">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-0.5">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#dc052d] block">
+              <span className="text-[10px] font-display font-bold uppercase tracking-wider text-[#dc052d] block">
                 CLUB ARCHIVE &amp; HISTORY
               </span>
               <h3 className="font-display font-bold text-xl sm:text-2xl text-white uppercase tracking-wide">
                 STORIES &amp; SILVERWARE
               </h3>
-              <p className="text-xs sm:text-sm text-gray-300 font-sans max-w-xl">
+              <p className="text-xs sm:text-sm text-gray-300 font-display max-w-xl">
                 The trophies that shaped Bayern&apos;s history and the moments that defined Germany&apos;s greatest club.
               </p>
             </div>
             <button
               onClick={() => onNavigate && onNavigate('/timeline')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#dc052d]/15 hover:bg-[#dc052d]/25 text-[#dc052d] hover:text-white border border-[#dc052d]/40 text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer shrink-0"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#dc052d]/15 hover:bg-[#dc052d]/25 text-[#dc052d] hover:text-white border border-[#dc052d]/40 hover:border-[#dc052d]/60 text-xs font-display font-bold uppercase tracking-wider transition-all duration-200 ease-out cursor-pointer shrink-0 hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
             >
               <span>EXPLORE TIMELINE</span>
               <ArrowRight size={14} />

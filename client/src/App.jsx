@@ -78,7 +78,7 @@ export default function App() {
   const totalFormatted = totalRounds < 10 ? `0${totalRounds}` : totalRounds;
 
   return (
-    <div className="min-h-screen w-full m-0 p-0 bg-[#0b0f17] text-white flex flex-col font-sans selection:bg-[#dc052d] selection:text-white">
+    <div className="min-h-screen w-full m-0 p-0 bg-[#0b0f17] text-white flex flex-col font-display selection:bg-[#dc052d] selection:text-white">
       {/* 1. Global Club Header (Full-Width Bayern Red Navigation Bar) */}
       <Header
         currentPath={currentPath}
@@ -124,25 +124,25 @@ export default function App() {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#070b12]/90 via-[#070b12]/75 to-[#070b12]/90 pointer-events-none" />
 
                 {/* In-Game Sub-Header Bar (Active Game) */}
-                <div className="relative z-10 bg-[#0e141f]/85 border-b border-[#222c3d] px-4 sm:px-6 lg:px-8 py-2.5">
+                <div className="relative z-10 bg-[#0e141f]/85 border-b border-[#1c2535] px-4 sm:px-6 lg:px-8 py-2.5">
                   <div className="max-w-7xl mx-auto flex items-center justify-between">
                     {/* Back Link */}
                     <button
                       onClick={handleBackToGames}
-                      className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-all duration-200 ease-out cursor-pointer hover:-translate-x-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
                     >
                       <ArrowLeft size={14} />
                       <span>Back to Games</span>
                     </button>
 
                     {/* In-Game Live Metrics & Sound */}
-                    <div className="flex items-center gap-3 sm:gap-5 font-mono text-xs">
+                    <div className="flex items-center gap-3 sm:gap-5 font-display text-xs">
                       <div className="flex items-center gap-1 text-gray-300">
                         <span className="text-gray-500 uppercase text-[10px]">XP</span>
                         <strong className="text-white text-sm">{score}</strong>
                       </div>
 
-                      <div className="w-px h-4 bg-[#222c3d]" />
+                      <div className="w-px h-4 bg-[#1c2535]" />
 
                       <div className="flex items-center gap-1.5 text-[#fdb913]">
                         <Flame size={14} />
@@ -150,13 +150,13 @@ export default function App() {
                         <strong className="text-sm">{streak}</strong>
                       </div>
 
-                      <div className="w-px h-4 bg-[#222c3d]" />
+                      <div className="w-px h-4 bg-[#1c2535]" />
 
                       {/* Sound Toggle */}
                       <button
                         onClick={handleToggleSound}
                         aria-label="Toggle Sound"
-                        className="p-1 rounded text-gray-400 hover:text-white transition-colors cursor-pointer"
+                        className="p-1 rounded text-gray-400 hover:text-white transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
                         title={soundEnabled ? "Mute audio" : "Enable audio"}
                       >
                         {soundEnabled ? <Volume2 size={16} className="text-[#dc052d]" /> : <VolumeX size={16} />}
@@ -169,7 +169,7 @@ export default function App() {
                 <div className="relative z-10 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1">
                   {/* Top Round Header */}
                   <div className="text-center space-y-2 max-w-xl mx-auto">
-                    <div className="flex items-center justify-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-[#dc052d]">
+                    <div className="flex items-center justify-center gap-2 text-xs font-display font-bold uppercase tracking-widest text-[#dc052d]">
                       <span>ROUND {roundFormatted} / {totalFormatted}</span>
                       <span>•</span>
                       <span className="text-gray-300">
@@ -209,7 +209,7 @@ export default function App() {
                   </div>
 
                   {/* Tactical Pitch Progression */}
-                  <div className="pt-8 border-t border-[#222c3d] max-w-4xl mx-auto">
+                  <div className="pt-8 border-t border-[#1c2535] max-w-4xl mx-auto">
                     <PitchView 
                       userTeam={userTeam} 
                       opponentTeam={opponentTeam} 
@@ -273,7 +273,7 @@ export default function App() {
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
 
       {/* Editorial Footer */}
-      <footer className="relative z-20 w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-sans select-none">
+      <footer className="relative z-20 w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-display select-none">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div className="space-y-0.5">
             <p className="font-display font-bold text-sm text-white tracking-wide uppercase">
@@ -283,31 +283,31 @@ export default function App() {
               Fan-made project · Not affiliated with FC Bayern München.
             </p>
           </div>
-          <div className="flex items-center gap-4 text-xs font-semibold text-white/85">
+          <div className="flex items-center gap-4 text-xs font-display font-semibold text-white/85">
             <button 
               onClick={() => navigate('/')}
-              className={`hover:text-white transition-colors cursor-pointer ${currentPath === '/' ? 'text-white font-bold' : 'text-white/85'}`}
+              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/' ? 'text-white font-bold' : 'text-white/85'}`}
             >
               Games
             </button>
             <span className="text-white/50">•</span>
             <button 
               onClick={() => navigate('/timeline')}
-              className={`hover:text-white transition-colors cursor-pointer ${currentPath === '/timeline' ? 'text-white font-bold' : 'text-white/85'}`}
+              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/timeline' ? 'text-white font-bold' : 'text-white/85'}`}
             >
               Timeline
             </button>
             <span className="text-white/50">•</span>
             <button 
               onClick={() => navigate('/archive')}
-              className={`hover:text-white transition-colors cursor-pointer ${currentPath === '/archive' ? 'text-white font-bold' : 'text-white/85'}`}
+              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/archive' ? 'text-white font-bold' : 'text-white/85'}`}
             >
               Archive
             </button>
             <span className="text-white/50">•</span>
             <button 
               onClick={() => setIsAboutOpen(true)}
-              className="hover:text-white transition-colors cursor-pointer text-white/85"
+              className="transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white text-white/85 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs"
             >
               About
             </button>

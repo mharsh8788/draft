@@ -70,7 +70,7 @@ export default function HonoursSection() {
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight uppercase leading-none">
             HONOURS
           </h2>
-          <p className="text-xs sm:text-sm text-gray-300 font-sans">
+          <p className="text-xs sm:text-sm text-gray-300 font-display">
             The trophies that shaped Bayern's history.
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function HonoursSection() {
             onClick={() => handleScroll('left')}
             disabled={!canScrollLeft}
             aria-label="Previous trophies"
-            className="w-8 h-8 rounded-lg bg-[#121824] border border-[#222c3d] hover:border-[#374560] text-gray-300 hover:text-white flex items-center justify-center transition-colors disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/50 text-gray-300 hover:text-white flex items-center justify-center transition-all duration-200 ease-out disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
           >
             <ChevronLeft size={16} />
           </button>
@@ -126,7 +126,7 @@ export default function HonoursSection() {
             onClick={() => handleScroll('right')}
             disabled={!canScrollRight}
             aria-label="Next trophies"
-            className="w-8 h-8 rounded-lg bg-[#121824] border border-[#222c3d] hover:border-[#374560] text-gray-300 hover:text-white flex items-center justify-center transition-colors disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/50 text-gray-300 hover:text-white flex items-center justify-center transition-all duration-200 ease-out disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
           >
             <ChevronRight size={16} />
           </button>

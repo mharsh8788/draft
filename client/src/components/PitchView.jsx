@@ -29,7 +29,7 @@ function PitchPlayerSlot({ player, isLatest, slot, isComputer = false, compact =
         <div className={`relative ${cardDimClass} rounded-xl overflow-hidden shadow-2xl transition-all duration-200 group-hover:scale-105 group-hover:z-30 bg-[#121824] ${
           isLatest 
             ? `ring-3 ${ringHighlight} ring-offset-2 ring-offset-[#0a160f] shadow-xl` 
-            : `border-2 border-[#2b3a52]/90 ${borderHighlight}`
+            : `border border-[#1c2535] ${borderHighlight}`
         }`}>
           <img
             src={playerImg}
@@ -42,12 +42,12 @@ function PitchPlayerSlot({ player, isLatest, slot, isComputer = false, compact =
           <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
 
           {/* Top-left position pill */}
-          <span className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 bg-black/80 text-gray-200 text-[7px] xs:text-[8px] sm:text-[9px] md:text-xs font-mono font-bold px-1 py-0.5 sm:px-1.5 rounded border border-white/15 leading-none backdrop-blur-xs">
+          <span className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 bg-black/80 text-gray-200 text-[7px] xs:text-[8px] sm:text-[9px] md:text-xs font-display font-bold px-1 py-0.5 sm:px-1.5 rounded border border-white/10 leading-none backdrop-blur-xs">
             {slot.position.split('/')[0]}
           </span>
 
           {/* Bottom-right rating badge */}
-          <span className={`absolute bottom-0 right-0 ${ratingBg} text-white text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-black px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-tl-lg font-mono leading-none shadow-md`}>
+          <span className={`absolute bottom-0 right-0 ${ratingBg} text-white text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-black px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-tl-lg font-display leading-none shadow-md`}>
             {player.overall}
           </span>
         </div>
@@ -55,15 +55,15 @@ function PitchPlayerSlot({ player, isLatest, slot, isComputer = false, compact =
         <div className={`relative ${cardDimClass} rounded-xl flex flex-col items-center justify-between p-1.5 sm:p-2.5 font-display shadow-2xl transition-transform group-hover:scale-105 ${
           isLatest 
             ? `${ratingBg} text-white border-2 border-white` 
-            : `bg-[#121824] text-white border-2 border-[#2b3a52] ${borderHighlight}`
+            : `bg-[#121824] text-white border border-[#1c2535] ${borderHighlight}`
         }`}>
-          <span className="text-[8px] xs:text-[9px] sm:text-xs font-mono font-bold uppercase tracking-wider text-gray-300">
+          <span className="text-[8px] xs:text-[9px] sm:text-xs font-display font-bold uppercase tracking-wider text-gray-300">
             {slot.position}
           </span>
           <span className="text-base xs:text-lg sm:text-2xl md:text-3xl font-black leading-none">
             {player.overall}
           </span>
-          <span className="text-[8px] xs:text-[9px] sm:text-xs font-mono text-gray-400 uppercase">
+          <span className="text-[8px] xs:text-[9px] sm:text-xs font-display text-gray-400 uppercase">
             {player.position}
           </span>
         </div>
@@ -118,7 +118,7 @@ export default function PitchView({
     }`}>
       {/* Tactical Header Bar */}
       {showStatsHeader && (
-        <div className="flex items-center justify-between bg-[#121824] px-4 py-2.5 rounded-lg border border-[#222c3d]">
+        <div className="flex items-center justify-between bg-[#121824] px-4 py-2.5 rounded-lg border border-[#1c2535]">
           <div className="flex items-center gap-2">
             {isComputer ? (
               <Bot size={16} className="text-[#3b82f6]" />
@@ -128,12 +128,12 @@ export default function PitchView({
             <span className="font-display font-bold text-sm sm:text-base text-white uppercase tracking-wider">
               {displayTitle}
             </span>
-            <span className="text-xs sm:text-sm font-mono text-gray-400">
+            <span className="text-xs sm:text-sm font-display text-gray-400">
               ({currentTeam.length} / 11)
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-xs sm:text-sm font-mono">
+          <div className="flex items-center gap-3 text-xs sm:text-sm font-display">
             <span className="text-gray-400">
               FORMATION: <strong className="text-white">{formation.name}</strong>
             </span>
@@ -146,7 +146,7 @@ export default function PitchView({
       )}
 
       {/* The Football Pitch Graphic */}
-      <div className={`relative w-full aspect-[3/4] sm:aspect-[4/4.8] md:aspect-[4/4.4] lg:aspect-[1/1.08] ${pitchMinHClass} bg-[#0a160f] rounded-2xl border border-[#222c3d] overflow-hidden pitch-pattern shadow-2xl`}>
+      <div className={`relative w-full aspect-[3/4] sm:aspect-[4/4.8] md:aspect-[4/4.4] lg:aspect-[1/1.08] ${pitchMinHClass} bg-[#0a160f] rounded-2xl border border-[#1c2535] overflow-hidden pitch-pattern shadow-2xl`}>
         {/* Pitch Field Markings (SVG Overlay) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-white/12 fill-none" strokeWidth="1.2">
           <rect x="4%" y="4%" width="92%" height="92%" rx="8" />
@@ -166,7 +166,7 @@ export default function PitchView({
         </svg>
 
         {/* Pitch Watermark */}
-        <div className="absolute top-3 right-4 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest text-white/20 pointer-events-none">
+        <div className="absolute top-3 right-4 text-[10px] sm:text-xs font-display font-bold uppercase tracking-widest text-white/20 pointer-events-none">
           {displayTitle} • {formation.name}
         </div>
 
@@ -194,9 +194,9 @@ export default function PitchView({
                 <div className="flex flex-col items-center">
                   <div className={`${cardDimClass} rounded-xl border-2 border-dashed border-white/25 bg-black/45 backdrop-blur-xs flex flex-col items-center justify-center text-white/50 space-y-1`}>
                     <span className="text-base sm:text-xl md:text-2xl font-bold leading-none text-white/40">?</span>
-                    <span className="text-[8px] sm:text-xs md:text-sm font-mono font-bold uppercase tracking-wider text-white/60">{slot.position}</span>
+                    <span className="text-[8px] sm:text-xs md:text-sm font-display font-bold uppercase tracking-wider text-white/60">{slot.position}</span>
                   </div>
-                  <span className="text-[8px] sm:text-xs font-mono uppercase text-white/30 mt-1">
+                  <span className="text-[8px] sm:text-xs font-display uppercase text-white/30 mt-1">
                     {slot.label}
                   </span>
                 </div>

@@ -209,7 +209,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
   if (!currentPuzzle || !targetPlayer) {
     return (
       <div className="flex-1 flex items-center justify-center p-8 bg-[#070b12] text-white">
-        <span className="font-mono text-sm text-gray-400">Loading Who Am I?...</span>
+        <span className="font-display text-sm text-gray-400">Loading Who Am I?...</span>
       </div>
     );
   }
@@ -235,27 +235,27 @@ export default function CareerPuzzlePage({ onBackToGames }) {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button
             onClick={onBackToGames}
-            className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-all duration-200 ease-out cursor-pointer hover:-translate-x-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
           >
             <ArrowLeft size={14} />
             <span>Back to Games</span>
           </button>
 
           {/* Metrics */}
-          <div className="flex items-center gap-3 sm:gap-5 font-mono text-xs">
+          <div className="flex items-center gap-3 sm:gap-5 font-display text-xs">
             <div className="flex items-center gap-1.5 text-gray-300">
               <span className="text-gray-500 uppercase text-[10px]">PUZZLE</span>
               <strong className="text-white text-sm">{puzzleIndex + 1}/{puzzles.length}</strong>
             </div>
 
-            <div className="w-px h-4 bg-[#202b3d]" />
+            <div className="w-px h-4 bg-[#1c2535]" />
 
             <div className="flex items-center gap-1.5 text-gray-300">
               <span className="text-gray-500 uppercase text-[10px]">TOTAL XP</span>
               <strong className="text-white text-sm">{score}</strong>
             </div>
 
-            <div className="w-px h-4 bg-[#202b3d]" />
+            <div className="w-px h-4 bg-[#1c2535]" />
 
             <div className="flex items-center gap-1.5 text-[#fdb913]">
               <Flame size={14} />
@@ -263,7 +263,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
               <strong className="text-sm">{streak}</strong>
             </div>
 
-            <div className="w-px h-4 bg-[#202b3d]" />
+            <div className="w-px h-4 bg-[#1c2535]" />
 
             <button
               onClick={handleToggleSound}
@@ -293,7 +293,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
             {/* REVEAL SHOWCASE (Displayed upon answer selection) */}
             {gameState === 'revealed' && (
-              <div className="w-full bg-[#0d131f] rounded-2xl border-2 border-[#202b3d] p-5 sm:p-7 space-y-5 shadow-2xl animate-in fade-in duration-300">
+              <div className="w-full bg-[#0d131f] rounded-2xl border border-[#1c2535] p-5 sm:p-7 space-y-5 shadow-2xl animate-in fade-in duration-300">
                 {/* Top Reveal Status Bar */}
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div className="flex items-center gap-3">
@@ -309,7 +309,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       <h3 className="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-wide">
                         {lastResult?.isCorrect ? `CORRECT! +${lastResult.earnedXp} XP` : "INCORRECT GUESS"}
                       </h3>
-                      <p className="text-xs font-mono text-gray-400">
+                      <p className="text-xs font-display text-gray-400">
                         {lastResult?.isCorrect 
                           ? `Deducted on Clue 0${lastResult.clueStepUsed} of 4`
                           : `You guessed ${lastResult?.chosenPlayer?.name || 'Unknown'}`}
@@ -320,7 +320,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                   <button
                     onClick={handleNextPuzzle}
                     autoFocus
-                    className="px-6 py-2.5 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-colors cursor-pointer flex items-center gap-2 shadow-lg"
+                    className="px-6 py-2.5 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center gap-2 shadow-lg hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                   >
                     <span>{puzzleIndex + 1 >= puzzles.length ? "VIEW FINAL SUMMARY" : "NEXT PLAYER"}</span>
                     <ArrowRight size={16} />
@@ -328,7 +328,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                 </div>
 
                 {/* Player Spotlight Profile */}
-                <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl bg-[#080d14] border border-[#222c3d]">
+                <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl bg-[#080d14] border border-[#1c2535]">
                   {targetImage && (
                     <div className="w-24 h-32 sm:w-28 sm:h-36 rounded-xl overflow-hidden border-2 border-[#dc052d] shrink-0 bg-[#121824] shadow-[0_0_18px_rgba(220,5,45,0.35)]">
                       <img
@@ -340,7 +340,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                   )}
 
                     <div className="space-y-1.5 flex-1 text-center sm:text-left">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#dc052d]">
+                      <span className="text-[10px] font-display font-bold uppercase tracking-widest text-[#dc052d]">
                         THE PLAYER WAS
                       </span>
 
@@ -348,7 +348,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                         {targetPlayer.name}
                       </h4>
 
-                      <div className="flex items-center gap-2 pt-0.5 flex-wrap justify-center sm:justify-start text-xs font-mono">
+                      <div className="flex items-center gap-2 pt-0.5 flex-wrap justify-center sm:justify-start text-xs font-display">
                         <span className="text-base">{targetPlayer.flag}</span>
                         <span className="text-gray-300 uppercase font-bold">{targetPlayer.nationality}</span>
                         <span className="text-gray-600">•</span>
@@ -360,7 +360,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       </div>
 
                       {targetPlayer.bio && (
-                        <p className="text-xs text-gray-300 italic pt-1.5 font-sans border-t border-white/5 max-w-2xl leading-relaxed">
+                        <p className="text-xs text-gray-300 italic pt-1.5 font-display border-t border-white/5 max-w-2xl leading-relaxed">
                           &ldquo;{targetPlayer.bio}&rdquo;
                         </p>
                       )}
@@ -372,7 +372,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
             {/* 2 & 3. CHRONOLOGICAL CLUES AREA (All revealed clues remain visible from oldest to newest) */}
             <div className="space-y-3">
               <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                <div className="flex items-center gap-2 text-gray-300 font-mono text-xs">
+                <div className="flex items-center gap-2 text-gray-300 font-display text-xs">
                   <span className="text-[#dc052d] font-bold">CLUE 0{clueStep + 1} / 04</span>
                   <span className="text-gray-600">•</span>
                   <div className="flex items-center gap-1.5" aria-label={`Clue ${clueStep + 1} of 4`}>
@@ -395,7 +395,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                   </div>
                 </div>
 
-                <span className="text-[11px] font-mono text-gray-400 uppercase tracking-wider">
+                <span className="text-[11px] font-display text-gray-400 uppercase tracking-wider">
                   CHRONOLOGICAL CLUES
                 </span>
               </div>
@@ -411,18 +411,18 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       className={`px-4 py-3 sm:px-5 sm:py-3.5 rounded-xl border transition-all duration-300 text-left ${
                         isActive
                           ? 'bg-[#0f1726] border-2 border-[#dc052d]/70 shadow-lg ring-1 ring-[#dc052d]/30'
-                          : 'bg-[#0b101a] border border-[#1b2535] opacity-85'
+                          : 'bg-[#0b101a] border border-[#1c2535] opacity-85'
                       }`}
                     >
                       {/* Clue Header: Step & Milestone Label */}
                       <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
                         <div className="flex items-center gap-2.5">
-                          <span className={`px-2.5 py-0.5 rounded font-mono font-bold text-xs uppercase tracking-wider ${
+                          <span className={`px-2.5 py-0.5 rounded font-display font-bold text-xs uppercase tracking-wider ${
                             isActive ? 'bg-[#dc052d] text-white' : 'bg-white/10 text-gray-300'
                           }`}>
                             CLUE 0{clue.step}
                           </span>
-                          <span className={`text-xs font-mono uppercase tracking-widest ${
+                          <span className={`text-xs font-display uppercase tracking-widest ${
                             isActive ? 'text-white font-bold' : 'text-gray-400 font-semibold'
                           }`}>
                             {clue.year} • {clue.label}
@@ -430,11 +430,11 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                         </div>
 
                         {isActive ? (
-                          <span className="px-2 py-0.5 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-[#dc052d] font-mono text-[10px] font-bold uppercase tracking-wider">
+                          <span className="px-2 py-0.5 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-[#dc052d] font-display text-[10px] font-bold uppercase tracking-wider">
                             ACTIVE CLUE
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+                          <span className="flex items-center gap-1 text-[11px] font-display text-emerald-400">
                             <Check size={12} />
                             <span>REVEALED</span>
                           </span>
@@ -443,7 +443,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
                       {/* Clue Body Quote */}
                       <div className="pt-2">
-                        <p className={`font-sans leading-relaxed italic ${
+                        <p className={`font-display leading-relaxed italic ${
                           isActive 
                             ? 'text-white font-medium text-base sm:text-lg' 
                             : 'text-gray-300 text-sm sm:text-base'
@@ -458,15 +458,15 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
               {/* 3. REVEAL NEXT CLUE BUTTON (−25 XP) */}
               {gameState === 'playing' && clueStep < 3 && (
-                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-[#0c121d] border border-[#202b3d]">
-                  <p className="text-xs font-mono text-gray-400 text-center sm:text-left">
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-[#0c121d] border border-[#1c2535]">
+                  <p className="text-xs font-display text-gray-400 text-center sm:text-left">
                     Need another hint? Reveals Clue 0{clueStep + 2} (reduces reward to +{[75, 50, 25][clueStep]} XP).
                   </p>
 
                   <button
                     onClick={handleRevealNextClue}
                     disabled={isLocking}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-mono text-xs font-bold uppercase tracking-wider border border-white/10 hover:border-white/20 transition-all cursor-pointer flex items-center justify-center gap-2 shrink-0 shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-display text-xs font-bold uppercase tracking-wider border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 shrink-0 shadow-xs disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
                   >
                     <Eye size={14} className="text-[#fdb913]" />
                     <span>REVEAL NEXT CLUE</span>
@@ -483,12 +483,12 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                   <h3 className="font-display font-black text-lg sm:text-xl text-white uppercase tracking-tight">
                     WHO IS THIS PLAYER?
                   </h3>
-                  <p className="text-xs font-mono text-gray-400">
+                  <p className="text-xs font-display text-gray-400">
                     Select 1 of 4 Bayern players to lock in your answer
                   </p>
                 </div>
 
-                <div className="px-2.5 py-1 rounded bg-[#fdb913]/10 border border-[#fdb913]/30 text-[#fdb913] font-mono font-bold text-xs">
+                <div className="px-2.5 py-1 rounded bg-[#fdb913]/10 border border-[#fdb913]/30 text-[#fdb913] font-display font-bold text-xs">
                   +{currentRewardXp} XP
                 </div>
               </div>
@@ -500,8 +500,8 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                   const isRevealedState = gameState === 'revealed';
                   const isCorrectChoice = choice.isCorrect;
 
-                  let borderClass = "border-[#202b3d] hover:border-[#dc052d]";
-                  let bgClass = "bg-[#0e1422] hover:bg-[#141d2d]";
+                  let borderClass = "border-[#1c2535] hover:border-[#dc052d]/50";
+                  let bgClass = "bg-[#0e1422] hover:bg-[#131b2b]";
 
                   // Lock-in interaction visual states
                   if (isLocking && isSelected) {
@@ -525,7 +525,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       key={choice.id}
                       onClick={() => handleSelectChoice(choice.id)}
                       disabled={gameState !== 'playing' || isLocking}
-                      className={`w-full group p-4 sm:p-5 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer disabled:cursor-default flex items-center justify-between gap-4 shadow-lg ${bgClass} ${borderClass}`}
+                      className={`w-full group p-4 sm:p-5 rounded-2xl border text-left transition-all duration-200 ease-out cursor-pointer disabled:cursor-default flex items-center justify-between gap-4 shadow-lg hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${bgClass} ${borderClass}`}
                     >
                       <div className="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
                         {/* Large Player Image */}
@@ -548,7 +548,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                             }`}>
                               {choice.label}
                             </span>
-                            <span className="text-[11px] font-mono text-gray-400 uppercase tracking-wider">
+                            <span className="text-[11px] font-display text-gray-400 uppercase tracking-wider">
                               OPTION {choice.label}
                             </span>
                           </div>
@@ -557,7 +557,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                             {choice.name}
                           </h4>
 
-                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300 font-mono">
+                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300 font-display">
                             <span className="text-base">{choice.flag}</span>
                             <span className="uppercase font-semibold text-[11px] sm:text-xs">{choice.nationality}</span>
                             <span className="text-gray-600">•</span>
@@ -569,7 +569,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       {/* Right-Side State Badges */}
                       <div className="shrink-0 flex items-center">
                         {isLocking && isSelected && (
-                          <span className="px-2.5 py-1 rounded bg-[#fdb913]/20 border border-[#fdb913]/40 text-[#fdb913] font-mono font-bold text-xs tracking-wider animate-pulse flex items-center gap-1">
+                          <span className="px-2.5 py-1 rounded bg-[#fdb913]/20 border border-[#fdb913]/40 text-[#fdb913] font-display font-bold text-xs tracking-wider animate-pulse flex items-center gap-1">
                             <Lock size={12} />
                             <span>LOCKED IN</span>
                           </span>
@@ -606,35 +606,35 @@ export default function CareerPuzzlePage({ onBackToGames }) {
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#dc052d] block">
+              <span className="text-xs font-display font-bold uppercase tracking-widest text-[#dc052d] block">
                 CHALLENGE COMPLETED
               </span>
               <h2 className="font-display font-black text-3xl sm:text-4xl text-white uppercase tracking-tight">
                 WHO AM I? MASTER
               </h2>
-              <p className="text-sm text-gray-300 font-sans">
+              <p className="text-sm text-gray-300 font-display">
                 You have completed all {puzzles.length} historical Bayern player career deduction puzzles!
               </p>
             </div>
 
             {/* Scorecard Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-left">
-              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#202b3d]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-display text-left">
+              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#1c2535]">
                 <span className="text-[10px] text-gray-400 uppercase block">TOTAL SCORE</span>
                 <span className="font-display font-black text-2xl text-[#dc052d]">{score.toLocaleString()} XP</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#202b3d]">
+              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#1c2535]">
                 <span className="text-[10px] text-gray-400 uppercase block">ACCURACY</span>
                 <span className="font-display font-black text-2xl text-white">{correctCount} / {puzzles.length}</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#202b3d]">
+              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#1c2535]">
                 <span className="text-[10px] text-gray-400 uppercase block">BEST STREAK</span>
                 <span className="font-display font-black text-2xl text-[#fdb913]">{bestStreak}</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#202b3d]">
+              <div className="p-3.5 rounded-xl bg-[#080d14] border border-[#1c2535]">
                 <span className="text-[10px] text-gray-400 uppercase block">SUCCESS RATE</span>
                 <span className="font-display font-black text-2xl text-emerald-400">
                   {Math.round((correctCount / (puzzles.length || 1)) * 100)}%
@@ -646,7 +646,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
                 onClick={handleRestart}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-200 ease-out hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#dc052d]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080d14]"
               >
                 <RotateCcw size={16} />
                 <span>PLAY AGAIN</span>
@@ -654,7 +654,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
               <button
                 onClick={onBackToGames}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm tracking-wider uppercase border border-white/10 transition-colors cursor-pointer flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm tracking-wider uppercase border border-white/10 hover:border-white/20 transition-all duration-200 ease-out hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080d14]"
               >
                 <ArrowLeft size={16} />
                 <span>BACK TO GAMES</span>

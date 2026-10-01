@@ -104,23 +104,23 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
     return (
       <div 
         onClick={onClick}
-        className="relative w-full h-36 sm:h-44 bg-[#0a101b] border-b border-[#1f293d] flex flex-col items-center justify-center group cursor-pointer overflow-hidden select-none"
+        className="relative w-full h-36 sm:h-44 bg-[#0a101b] border-b border-[#1c2535] flex flex-col items-center justify-center group cursor-pointer overflow-hidden select-none"
         title="Click to view historical moment"
       >
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d131f] via-transparent to-transparent opacity-80" />
         <Shield size={28} className="text-white/20 group-hover:scale-105 transition-transform" />
-        <span className="text-[11px] font-mono text-gray-400 uppercase tracking-wider mt-2 group-hover:text-gray-200 transition-colors">
+        <span className="text-[11px] font-display text-gray-400 uppercase tracking-wider mt-2 group-hover:text-gray-200 transition-colors">
           HISTORICAL ARCHIVE • {event.year}
         </span>
 
         {event.trophyBadge && (
-          <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 border border-white/15 text-[10px] font-mono font-bold text-[#fdb913] flex items-center gap-1 shadow-sm">
+          <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 border border-white/10 text-[10px] font-display font-bold text-[#fdb913] flex items-center gap-1 shadow-sm">
             <Trophy size={11} />
             <span>{event.trophyBadge}</span>
           </div>
         )}
 
-        <span className="absolute bottom-2 left-3 text-[10px] font-mono uppercase text-gray-400 tracking-wider">
+        <span className="absolute bottom-2 left-3 text-[10px] font-display uppercase text-gray-400 tracking-wider">
           {event.exactDate}
         </span>
       </div>
@@ -131,7 +131,7 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
     <div 
       ref={containerRef}
       onClick={onClick}
-      className="relative w-full h-36 sm:h-44 bg-[#080d15] overflow-hidden border-b border-[#1f293d] cursor-pointer group select-none"
+      className="relative w-full h-36 sm:h-44 bg-[#080d15] overflow-hidden border-b border-[#1c2535] cursor-pointer group select-none"
       title="Click image to open historical viewer"
     >
       {/* Historical Images with subtle 500ms Crossfade Transition */}
@@ -141,7 +141,7 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
           src={src} 
           alt={event.title}
           onError={() => handleImageError(src)}
-          className={`absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-opacity duration-500 ease-in-out ${
+          className={`absolute inset-0 w-full h-full object-cover object-center group-hover:scale-[1.025] transition-all duration-200 ease-out ${
             idx === currentIndex 
               ? 'opacity-90 group-hover:opacity-100 z-10' 
               : 'opacity-0 pointer-events-none z-0'
@@ -155,19 +155,19 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
       
       {/* Trophy / Event Badge Overlay */}
       {event.trophyBadge && (
-        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 border border-white/15 text-[10px] font-mono font-bold text-[#fdb913] flex items-center gap-1 shadow-sm pointer-events-none z-20">
+        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 border border-white/10 text-[10px] font-display font-bold text-[#fdb913] flex items-center gap-1 shadow-sm pointer-events-none z-20">
           <Trophy size={11} />
           <span>{event.trophyBadge}</span>
         </div>
       )}
 
       {/* Hover Enlarge Indicator */}
-      <div className="absolute bottom-2 right-2.5 px-2 py-0.5 rounded bg-black/70 border border-white/15 text-[10px] font-mono text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 pointer-events-none z-20">
+      <div className="absolute bottom-2 right-2.5 px-2 py-0.5 rounded bg-black/70 border border-white/10 text-[10px] font-display text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 pointer-events-none z-20">
         <Maximize2 size={10} />
         <span>VIEW</span>
       </div>
 
-      <span className="absolute bottom-2 left-3 text-[10px] font-mono uppercase text-gray-300 tracking-wider pointer-events-none z-20">
+      <span className="absolute bottom-2 left-3 text-[10px] font-display uppercase text-gray-300 tracking-wider pointer-events-none z-20">
         {event.exactDate}
       </span>
     </div>
@@ -365,7 +365,7 @@ export default function TimelinePage({ onNavigate }) {
   const activeEra = selectedEra !== 'all' ? selectedEra : (currentEventInView?.era || 'foundation');
 
   return (
-    <div className="relative flex-1 w-full bg-[#070b12] text-white flex flex-col text-left font-sans">
+    <div className="relative flex-1 w-full bg-[#070b12] text-white flex flex-col text-left font-display">
       
       {/* =========================================================
           1. COMPACT PAGE HERO
@@ -392,7 +392,7 @@ export default function TimelinePage({ onNavigate }) {
             THE BAYERN TIMELINE
           </h1>
 
-          <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto font-sans leading-relaxed">
+          <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto font-display leading-relaxed">
             More than a century of moments, eras and turning points that shaped FC Bayern München into Germany&apos;s record champions.
           </p>
         </div>
@@ -450,7 +450,7 @@ export default function TimelinePage({ onNavigate }) {
           
           {/* Top Row: Centered "EXPLORE BY ERA" Kicker */}
           <div className="flex items-center justify-center">
-            <span className="text-[11px] font-mono tracking-wider text-gray-400 uppercase font-semibold flex items-center gap-1.5">
+            <span className="text-[11px] font-display tracking-wider text-gray-400 uppercase font-semibold flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
               <span>EXPLORE BY ERA</span>
             </span>
@@ -464,10 +464,10 @@ export default function TimelinePage({ onNavigate }) {
                 <button
                   key={era.id}
                   onClick={() => handleEraClick(era.id)}
-                  className="group relative pb-1.5 flex flex-col items-center transition-all cursor-pointer shrink-0 text-center"
+                  className="group relative pb-1.5 flex flex-col items-center transition-all duration-200 ease-out cursor-pointer shrink-0 text-center hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 focus-visible:rounded-xs"
                 >
                   {/* Era Title */}
-                  <span className={`text-xs sm:text-[13px] font-sans tracking-wide transition-colors ${
+                  <span className={`text-xs sm:text-[13px] font-display tracking-wide transition-colors ${
                     isSelected 
                       ? 'text-white font-semibold' 
                       : 'text-gray-400 group-hover:text-gray-200 font-medium'
@@ -476,7 +476,7 @@ export default function TimelinePage({ onNavigate }) {
                   </span>
 
                   {/* Year Range underneath */}
-                  <span className={`text-[10px] font-mono tracking-normal leading-tight transition-colors ${
+                  <span className={`text-[10px] font-display tracking-normal leading-tight transition-colors ${
                     isSelected 
                       ? 'text-gray-300' 
                       : 'text-gray-500 group-hover:text-gray-400'
@@ -546,11 +546,11 @@ export default function TimelinePage({ onNavigate }) {
                       className={`absolute left-8 sm:left-1/2 top-5 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center z-20 transition-all duration-200 ${
                         isPast 
                           ? 'bg-[#0b1019] border-2 border-[#dc052d]/80 text-[#dc052d]' 
-                          : 'bg-[#070b12] border-2 border-[#202b3d] text-gray-500'
+                          : 'bg-[#070b12] border-2 border-[#1c2535] text-gray-500'
                       }`}
                       title={event.year}
                     >
-                      <span className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-[#dc052d]' : 'bg-[#2b374e]'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-[#dc052d]' : 'bg-[#1c2535]'}`} />
                     </div>
                   )}
 
@@ -560,10 +560,10 @@ export default function TimelinePage({ onNavigate }) {
                   }`}>
                     <article
                       onClick={() => setActiveEvent(event)}
-                      className={`group rounded-xl overflow-hidden transition-all duration-200 cursor-pointer shadow-lg hover:shadow-xl border ${
+                      className={`group rounded-xl overflow-hidden transition-all duration-200 ease-out cursor-pointer shadow-lg hover:shadow-xl border hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${
                         isCurrentActive
-                          ? 'border-[#dc052d] bg-[#121927] shadow-[0_4px_24px_rgba(220,5,45,0.18)] ring-1 ring-[#dc052d]/40 opacity-100 scale-[1.01]'
-                          : 'border-[#1f293d] bg-[#0d131f] opacity-80 hover:opacity-100 hover:border-[#dc052d]/60 scale-100'
+                          ? 'border-[#dc052d] bg-[#121927] shadow-[0_4px_24px_rgba(220,5,45,0.18)] ring-1 ring-[#dc052d]/40 opacity-100'
+                          : 'border-[#1c2535] bg-[#0d131f] opacity-80 hover:opacity-100 hover:border-[#dc052d]/50'
                       }`}
                     >
                       {/* Image Area with Automatic Numbered Loading & Clean Fallback */}
@@ -579,7 +579,7 @@ export default function TimelinePage({ onNavigate }) {
                           <span className="font-display font-black text-2xl sm:text-3xl text-[#dc052d] tracking-tight">
                             {event.year}
                           </span>
-                          <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                          <span className="text-[10px] font-display font-semibold uppercase tracking-wider text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
                             {event.eraLabel}
                           </span>
                         </div>
@@ -588,14 +588,14 @@ export default function TimelinePage({ onNavigate }) {
                           {event.title}
                         </h3>
 
-                        <p className="text-xs sm:text-sm text-gray-300 font-sans leading-relaxed line-clamp-3">
+                        <p className="text-xs sm:text-sm text-gray-300 font-display leading-relaxed line-clamp-3">
                           {event.summary}
                         </p>
 
                         {/* Event CTA: "VIEW MOMENT →" */}
-                        <div className="pt-2 flex items-center justify-between text-xs font-mono font-bold text-[#dc052d] group-hover:text-[#ff385c] group-hover:translate-x-0.5 transition-all">
-                          <span>VIEW MOMENT →</span>
-                          <ChevronRight size={14} />
+                        <div className="pt-2 flex items-center justify-between text-xs font-display font-bold text-[#dc052d] group-hover:text-[#ff385c] transition-colors duration-200">
+                          <span>VIEW MOMENT</span>
+                          <ArrowRight size={14} className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
                         </div>
                       </div>
                     </article>
@@ -615,7 +615,7 @@ export default function TimelinePage({ onNavigate }) {
           ========================================================= */}
       {activeEvent && (
         <div 
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#070b12]/95 select-none"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#070b12]/95 select-none modal-backdrop-animate"
           onClick={() => setActiveEvent(null)}
           role="dialog"
           aria-modal="true"
@@ -624,7 +624,7 @@ export default function TimelinePage({ onNavigate }) {
           <button
             onClick={() => setActiveEvent(null)}
             aria-label="Close viewer"
-            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 p-2.5 rounded-full text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 border border-white/10 transition-colors cursor-pointer"
+            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 p-2.5 rounded-full text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             title="Close (Esc)"
           >
             <X size={20} />
@@ -638,7 +638,7 @@ export default function TimelinePage({ onNavigate }) {
             }}
             disabled={activeIndexInModal <= 0 && activeImageIndex <= 0}
             aria-label="Previous photo"
-            className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60"
+            className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/10 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60 hover:-translate-y-0.5 disabled:hover:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             title="Previous (Arrow Left)"
           >
             <ChevronLeft size={22} className="sm:hidden" />
@@ -653,7 +653,7 @@ export default function TimelinePage({ onNavigate }) {
             }}
             disabled={activeIndexInModal >= TIMELINE_EVENTS.length - 1 && activeImageIndex >= eventImages.length - 1}
             aria-label="Next photo"
-            className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60"
+            className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/10 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60 hover:-translate-y-0.5 disabled:hover:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             title="Next (Arrow Right)"
           >
             <ChevronRight size={22} className="sm:hidden" />
@@ -663,7 +663,7 @@ export default function TimelinePage({ onNavigate }) {
           {/* Centered Archival Image & Caption Content */}
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default"
+            className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default modal-content-animate"
           >
             {eventImages.length > 0 ? (
               <div className="relative flex flex-col items-center">
@@ -676,13 +676,13 @@ export default function TimelinePage({ onNavigate }) {
 
                 {/* 1 / 2 Image Counter Badge (when multiple images exist for the event) */}
                 {eventImages.length > 1 && (
-                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded bg-black/75 border border-white/20 text-[11px] font-mono font-bold text-gray-200 shadow-md">
+                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded bg-black/75 border border-white/10 text-[11px] font-display font-bold text-gray-200 shadow-md">
                     {activeImageIndex + 1} / {eventImages.length}
                   </div>
                 )}
               </div>
             ) : (
-              <div className="p-8 text-center text-gray-400 font-mono text-xs flex flex-col items-center justify-center gap-2">
+              <div className="p-8 text-center text-gray-400 font-display text-xs flex flex-col items-center justify-center gap-2">
                 <Shield size={36} className="text-white/20" />
                 <span className="uppercase tracking-wider">HISTORICAL ARCHIVE RECORD • {activeEvent.year}</span>
               </div>
@@ -691,15 +691,15 @@ export default function TimelinePage({ onNavigate }) {
             {/* Editorial Caption & Navigation Dots Underneath */}
             <div className="mt-3 sm:mt-4 text-center max-w-2xl px-4 space-y-1.5 select-none">
               {/* Year & Event Title */}
-              <div className="flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-wider text-gray-400">
+              <div className="flex items-center justify-center gap-2 text-xs font-display uppercase tracking-wider text-gray-400">
                 <span className="text-[#dc052d] font-bold">{activeEvent.year}</span>
                 <span>•</span>
-                <span className="text-gray-200 font-sans font-semibold tracking-normal">{activeEvent.title}</span>
+                <span className="text-gray-200 font-display font-semibold tracking-normal">{activeEvent.title}</span>
               </div>
 
               {/* Archival Photo Caption */}
               {activeEvent.imageCaption && (
-                <p className="text-xs sm:text-[13px] font-sans text-gray-300 italic tracking-wide">
+                <p className="text-xs sm:text-[13px] font-display text-gray-300 italic tracking-wide">
                   {activeEvent.imageCaption}
                 </p>
               )}
@@ -732,7 +732,7 @@ export default function TimelinePage({ onNavigate }) {
       {/* =========================================================
           5. END OF TIMELINE CLOSING SECTION
           ========================================================= */}
-      <section className="relative z-10 w-full overflow-hidden bg-[#0a0f18] border-t border-[#1b2535] py-12 sm:py-16 text-center">
+      <section className="relative z-10 w-full overflow-hidden bg-[#0a0f18] border-t border-[#1c2535] py-12 sm:py-16 text-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 space-y-6">
           <img
             src="/images/bayern-crest.png"
@@ -744,7 +744,7 @@ export default function TimelinePage({ onNavigate }) {
             <h2 className="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
               125+ YEARS OF MIA SAN MIA
             </h2>
-            <p className="text-sm text-gray-300 font-sans max-w-lg mx-auto">
+            <p className="text-sm text-gray-300 font-display max-w-lg mx-auto">
               From a Munich football club founded in 1900 to one of Europe&apos;s most decorated and revered clubs.
             </p>
           </div>
@@ -752,7 +752,7 @@ export default function TimelinePage({ onNavigate }) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
               onClick={scrollToTop}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-mono text-xs font-bold uppercase tracking-wider border border-white/10 transition-colors cursor-pointer flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display text-xs font-bold uppercase tracking-wider border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
             >
               <ArrowUp size={15} />
               <span>BACK TO TOP</span>
@@ -760,7 +760,7 @@ export default function TimelinePage({ onNavigate }) {
 
             <button
               onClick={() => onNavigate && onNavigate('/archive')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             >
               <span>EXPLORE THE ARCHIVE</span>
               <ArrowRight size={16} />

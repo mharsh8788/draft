@@ -38,15 +38,15 @@ export default function RevealModal({
   const opponentImage = getPlayerImage(opponentPick);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-[#121824] rounded-xl border border-[#2b374e] shadow-2xl overflow-hidden space-y-5 p-6 sm:p-7 text-left">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm modal-backdrop-animate">
+      <div className="w-full max-w-lg bg-[#121824] rounded-xl border border-[#1c2535] shadow-2xl overflow-hidden space-y-5 p-6 sm:p-7 text-left modal-content-animate">
         {/* Top Header: Round Complete Kicker & Streak Status */}
-        <div className="flex items-center justify-between border-b border-[#222c3d] pb-3">
+        <div className="flex items-center justify-between border-b border-[#1c2535] pb-3">
           <div className="space-y-0.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-400 block">
+            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-400 block">
               ROUND {roundNumber < 10 ? `0${roundNumber}` : roundNumber} COMPLETE
             </span>
-            <span className="text-xs font-mono font-bold uppercase text-[#dc052d]">
+            <span className="text-xs font-display font-bold uppercase text-[#dc052d]">
               DECISION REVEAL
             </span>
           </div>
@@ -55,16 +55,16 @@ export default function RevealModal({
           <div className="flex items-center gap-2">
             {isCorrect ? (
               <>
-                <span className="px-2.5 py-1 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-[#dc052d] font-mono font-bold text-xs">
+                <span className="px-2.5 py-1 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-[#dc052d] font-display font-bold text-xs">
                   +{xpEarned} XP
                 </span>
-                <span className="px-2.5 py-1 rounded bg-[#fdb913]/15 border border-[#fdb913]/30 text-[#fdb913] font-mono font-bold text-xs flex items-center gap-1">
+                <span className="px-2.5 py-1 rounded bg-[#fdb913]/15 border border-[#fdb913]/30 text-[#fdb913] font-display font-bold text-xs flex items-center gap-1">
                   <Flame size={13} />
                   STREAK {streak}
                 </span>
               </>
             ) : (
-              <span className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-gray-400 font-mono font-bold text-xs">
+              <span className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-gray-400 font-display font-bold text-xs">
                 STREAK ENDED • BEST: {bestStreak}
               </span>
             )}
@@ -72,7 +72,7 @@ export default function RevealModal({
         </div>
 
         {/* The Central Reveal Statement */}
-        <div className="p-4 rounded-lg bg-[#0a0e14] border border-[#222c3d] flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+        <div className="p-4 rounded-lg bg-[#0a0e14] border border-[#1c2535] flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
           {mysteryImage && !mysteryImgErr ? (
             <div className="relative w-20 h-24 sm:w-24 sm:h-28 rounded-lg overflow-hidden border-2 border-[#dc052d] shadow-lg shrink-0 bg-[#121824]">
               <img
@@ -81,19 +81,19 @@ export default function RevealModal({
                 onError={() => setMysteryImgErr(true)}
                 className={`w-full h-full object-cover ${mysteryPlayer.imagePosition || 'object-top'} filter contrast-105`}
               />
-              <span className="absolute bottom-0 right-0 bg-[#dc052d] text-white text-[9px] font-black px-1.5 py-0.5 rounded-tl font-mono">
+              <span className="absolute bottom-0 right-0 bg-[#dc052d] text-white text-[9px] font-black px-1.5 py-0.5 rounded-tl font-display">
                 {mysteryPlayer.position}
               </span>
             </div>
           ) : (
             <div className="w-20 h-24 sm:w-24 sm:h-28 rounded-lg border-2 border-[#dc052d] bg-[#121824] flex flex-col items-center justify-center shrink-0">
               <span className="font-display font-black text-2xl text-white">{mysteryPlayer.overall}</span>
-              <span className="font-mono text-[9px] text-[#dc052d] font-bold uppercase">{mysteryPlayer.position}</span>
+              <span className="font-display text-[9px] text-[#dc052d] font-bold uppercase">{mysteryPlayer.position}</span>
             </div>
           )}
 
           <div className="space-y-1 flex-1">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-gray-400 block">
+            <span className="text-[11px] font-display font-bold uppercase tracking-widest text-gray-400 block">
               THE MYSTERY PLAYER WAS
             </span>
             <h2 className="font-display font-black text-2xl sm:text-3xl text-white uppercase tracking-tight">
@@ -101,21 +101,21 @@ export default function RevealModal({
             </h2>
             <div className="inline-flex items-center gap-2 pt-0.5 flex-wrap justify-center sm:justify-start">
               <span className="text-base">{mysteryPlayer.flag}</span>
-              <span className="font-mono text-xs text-gray-400 uppercase">{mysteryPlayer.nationality}</span>
+              <span className="font-display text-xs text-gray-400 uppercase">{mysteryPlayer.nationality}</span>
               <span className="text-gray-600">•</span>
-              <span className="font-mono font-bold text-sm text-[#dc052d]">
+              <span className="font-display font-bold text-sm text-[#dc052d]">
                 {mysteryPlayer.overall} OVR
               </span>
               <span className="text-gray-600">•</span>
-              <span className="font-mono text-xs text-gray-400">{mysteryPlayer.era}</span>
+              <span className="font-display text-xs text-gray-400">{mysteryPlayer.era}</span>
             </div>
           </div>
         </div>
 
         {/* Head-to-Head Comparison: Your Pick vs Mystery Option */}
-        <div className="grid grid-cols-2 gap-3 font-mono">
+        <div className="grid grid-cols-2 gap-3 font-display">
           {/* User's Choice */}
-          <div className="p-3.5 rounded-lg bg-[#0c121c] border border-[#222c3d] flex items-start gap-3">
+          <div className="p-3.5 rounded-lg bg-[#0c121c] border border-[#1c2535] flex items-start gap-3">
             {userImage && !userImgErr ? (
               <img
                 src={userImage}
@@ -124,7 +124,7 @@ export default function RevealModal({
                 className="w-11 h-13 sm:w-12 sm:h-14 rounded object-cover object-top border border-[#dc052d]/40 shadow shrink-0 hidden xs:block"
               />
             ) : (
-              <span className="w-11 h-13 sm:w-12 sm:h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400 shrink-0 font-mono hidden xs:flex">
+              <span className="w-11 h-13 sm:w-12 sm:h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400 shrink-0 font-display hidden xs:flex">
                 {userPick.position}
               </span>
             )}
@@ -154,16 +154,16 @@ export default function RevealModal({
           </div>
 
           {/* Opponent Pick */}
-          <div className="p-3.5 rounded-lg bg-[#0c121c] border border-[#222c3d] flex items-start gap-3">
+          <div className="p-3.5 rounded-lg bg-[#0c121c] border border-[#1c2535] flex items-start gap-3">
             {opponentImage && !oppImgErr ? (
               <img
                 src={opponentImage}
                 alt={opponentPick.name}
                 onError={() => setOppImgErr(true)}
-                className="w-11 h-13 sm:w-12 sm:h-14 rounded object-cover object-top border border-white/20 shadow shrink-0 hidden xs:block"
+                className="w-11 h-13 sm:w-12 sm:h-14 rounded object-cover object-top border border-white/10 shadow shrink-0 hidden xs:block"
               />
             ) : (
-              <span className="w-11 h-13 sm:w-12 sm:h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400 shrink-0 font-mono hidden xs:flex">
+              <span className="w-11 h-13 sm:w-12 sm:h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400 shrink-0 font-display hidden xs:flex">
                 {opponentPick.position}
               </span>
             )}
@@ -188,11 +188,11 @@ export default function RevealModal({
         </div>
 
         {/* Concise Comparison Stats Table */}
-        <div className="bg-[#0a0e14] rounded-lg border border-[#222c3d] overflow-hidden text-xs font-mono">
+        <div className="bg-[#0a0e14] rounded-lg border border-[#1c2535] overflow-hidden text-xs font-display">
           <table className="w-full text-left">
             <tbody>
               <tr className="bg-white/[0.01]">
-                <td className="py-2 px-3.5 text-gray-400 font-sans">Overall Rating</td>
+                <td className="py-2 px-3.5 text-gray-400 font-display">Overall Rating</td>
                 <td className="py-2 px-3.5 text-center font-bold text-white">{userPick.overall}</td>
                 <td className="py-2 px-3.5 text-center font-bold text-gray-400">{opponentPick.overall}</td>
               </tr>
@@ -201,7 +201,7 @@ export default function RevealModal({
         </div>
 
         {/* Progression Notification */}
-        <div className="p-2.5 rounded bg-white/5 border border-white/5 flex items-center justify-between text-xs font-mono">
+        <div className="p-2.5 rounded bg-white/5 border border-white/5 flex items-center justify-between text-xs font-display">
           <span className="text-gray-300 flex items-center gap-1.5">
             <Check size={14} className="text-emerald-400" />
             <span><strong>{userSurname}</strong> added to your Bayern XI</span>
@@ -215,10 +215,10 @@ export default function RevealModal({
         <button
           onClick={onContinue}
           autoFocus
-          className="w-full py-3.5 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-colors cursor-pointer flex items-center justify-center gap-2"
+          className="w-full py-3.5 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] group/btn focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
         >
           <span>{isLastRound ? "VIEW FINAL BAYERN XI" : "CONTINUE TO NEXT ROUND"}</span>
-          <ArrowRight size={17} />
+          <ArrowRight size={17} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
         </button>
       </div>
     </div>
