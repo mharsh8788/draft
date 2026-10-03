@@ -79,7 +79,7 @@ export default function RevealModal({
                 src={mysteryImage}
                 alt={mysteryPlayer.name}
                 onError={() => setMysteryImgErr(true)}
-                className={`w-full h-full object-cover ${mysteryPlayer.imagePosition || 'object-top'} filter contrast-105`}
+                className={`w-full h-full object-cover ${mysteryPlayer.imagePosition || 'object-[center_top]'} filter contrast-105`}
               />
               <span className="absolute bottom-0 right-0 bg-[#dc052d] text-white text-[9px] font-black px-1.5 py-0.5 rounded-tl font-display">
                 {mysteryPlayer.position}
@@ -121,7 +121,7 @@ export default function RevealModal({
                 src={userImage}
                 alt={userPick.name}
                 onError={() => setUserImgErr(true)}
-                className="w-11 h-13 sm:w-12 sm:h-14 rounded object-cover object-top border border-[#dc052d]/40 shadow shrink-0 hidden xs:block"
+                className={`w-11 h-13 sm:w-12 sm:h-14 rounded object-cover ${userPick.imagePosition || 'object-[center_top]'} border border-[#dc052d]/40 shadow shrink-0 hidden xs:block`}
               />
             ) : (
               <span className="w-11 h-13 sm:w-12 sm:h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400 shrink-0 font-display hidden xs:flex">
@@ -160,7 +160,7 @@ export default function RevealModal({
                 src={opponentImage}
                 alt={opponentPick.name}
                 onError={() => setOppImgErr(true)}
-                className="w-11 h-13 sm:w-12 sm:h-14 rounded object-cover object-top border border-white/10 shadow shrink-0 hidden xs:block"
+                className={`w-11 h-13 sm:w-12 sm:h-14 rounded object-cover ${opponentPick.imagePosition || 'object-[center_top]'} border border-white/10 shadow shrink-0 hidden xs:block`}
               />
             ) : (
               <span className="w-11 h-13 sm:w-12 sm:h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400 shrink-0 font-display hidden xs:flex">

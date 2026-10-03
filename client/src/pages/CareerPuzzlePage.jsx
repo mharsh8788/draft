@@ -47,7 +47,7 @@ function PlayerThumbnail({ playerId, playerName }) {
         src={src}
         alt={playerName || 'Player'}
         onError={() => setImgError(true)}
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-cover object-[center_top]"
       />
     </div>
   );
@@ -227,8 +227,8 @@ export default function CareerPuzzlePage({ onBackToGames }) {
           backgroundSize: "cover"
         }}
       />
-      {/* Dark Navy/Black Contrast Overlay (adjusted to ~92% for subtle, atmospheric background visibility) */}
-      <div className="absolute inset-0 bg-[#070b12]/92 pointer-events-none" />
+      {/* Dark Navy/Black Contrast Overlay (adjusted to ~85% for subtle, atmospheric background visibility) */}
+      <div className="absolute inset-0 bg-[#070b12]/85 pointer-events-none" />
 
       {/* Sub-Header Navigation & Live Metrics Bar (Integrated with background + thin Bayern-red top border) */}
       <div className="relative z-10 bg-[#070b12]/70 backdrop-blur-sm border-t border-[#dc052d] border-b border-white/10 px-4 sm:px-6 lg:px-8 py-2.5">
@@ -293,7 +293,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
             {/* REVEAL SHOWCASE (Displayed upon answer selection) */}
             {gameState === 'revealed' && (
-              <div className="w-full bg-[#0d131f] rounded-2xl border border-[#1c2535] p-5 sm:p-7 space-y-5 shadow-2xl animate-in fade-in duration-300">
+              <div className="w-full bg-[#0d131f] rounded-xl border border-[#1c2535] p-5 sm:p-7 space-y-5 shadow-2xl animate-in fade-in duration-300">
                 {/* Top Reveal Status Bar */}
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div className="flex items-center gap-3">
@@ -330,7 +330,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                 {/* Player Spotlight Profile */}
                 <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl bg-[#080d14] border border-[#1c2535]">
                   {targetImage && (
-                    <div className="w-24 h-32 sm:w-28 sm:h-36 rounded-xl overflow-hidden border-2 border-[#dc052d] shrink-0 bg-[#121824] shadow-[0_0_18px_rgba(220,5,45,0.35)]">
+                    <div className="w-24 h-32 sm:w-28 sm:h-36 rounded-xl overflow-hidden border border-[#dc052d] shrink-0 bg-[#121824] shadow-md">
                       <img
                         src={targetImage}
                         alt={targetPlayer.name}
@@ -384,7 +384,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                           key={stepIdx}
                           className={`transition-all duration-300 ${
                             isCurrent
-                              ? 'w-2.5 h-2.5 rounded-full bg-[#dc052d] ring-2 ring-[#dc052d]/40 shadow-[0_0_8px_rgba(220,5,45,0.8)]'
+                              ? 'w-2.5 h-2.5 rounded-full bg-[#dc052d] ring-2 ring-[#dc052d]/40'
                               : isCompleted
                               ? 'w-2 h-2 rounded-full bg-white/70'
                               : 'w-2 h-2 rounded-full bg-white/20'
@@ -505,7 +505,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
                   // Lock-in interaction visual states
                   if (isLocking && isSelected) {
-                    borderClass = "border-[#fdb913] ring-2 ring-[#fdb913]/60 shadow-[0_0_20px_rgba(253,185,19,0.35)]";
+                    borderClass = "border-[#fdb913] ring-1 ring-[#fdb913]/50 shadow-md";
                     bgClass = "bg-[#182234]";
                   } else if (isRevealedState) {
                     if (isCorrectChoice) {
@@ -525,7 +525,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       key={choice.id}
                       onClick={() => handleSelectChoice(choice.id)}
                       disabled={gameState !== 'playing' || isLocking}
-                      className={`w-full group p-4 sm:p-5 rounded-2xl border text-left transition-all duration-200 ease-out cursor-pointer disabled:cursor-default flex items-center justify-between gap-4 shadow-lg hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${bgClass} ${borderClass}`}
+                      className={`w-full group p-4 sm:p-5 rounded-xl border text-left transition-all duration-200 ease-out cursor-pointer disabled:cursor-default flex items-center justify-between gap-4 shadow-md hover:-translate-y-0.5 disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${bgClass} ${borderClass}`}
                     >
                       <div className="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
                         {/* Large Player Image */}
@@ -569,7 +569,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       {/* Right-Side State Badges */}
                       <div className="shrink-0 flex items-center">
                         {isLocking && isSelected && (
-                          <span className="px-2.5 py-1 rounded bg-[#fdb913]/20 border border-[#fdb913]/40 text-[#fdb913] font-display font-bold text-xs tracking-wider animate-pulse flex items-center gap-1">
+                          <span className="px-2.5 py-1 rounded bg-[#fdb913]/20 border border-[#fdb913]/40 text-[#fdb913] font-display font-bold text-xs tracking-wider flex items-center gap-1">
                             <Lock size={12} />
                             <span>LOCKED IN</span>
                           </span>
@@ -600,7 +600,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
 
         {/* State 2: Completed All Puzzles Summary */}
         {gameState === 'completed' && (
-          <div className="max-w-2xl mx-auto bg-[#0d131f] rounded-2xl border-2 border-[#dc052d] p-7 sm:p-10 space-y-7 shadow-2xl text-center animate-in fade-in duration-300">
+          <div className="max-w-2xl mx-auto bg-[#0d131f] rounded-xl border border-[#dc052d]/60 p-7 sm:p-10 space-y-7 shadow-2xl text-center animate-in fade-in duration-300">
             <div className="w-16 h-16 rounded-full bg-[#dc052d]/20 border border-[#dc052d]/40 flex items-center justify-center mx-auto text-[#dc052d]">
               <Trophy size={32} />
             </div>

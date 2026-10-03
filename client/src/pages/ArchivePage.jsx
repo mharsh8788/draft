@@ -6,7 +6,7 @@ export default function ArchivePage({ onNavigate }) {
   return (
     <div className="flex-1 w-full flex flex-col text-left">
       {/* 1. Archive Header Banner (Full-Width Historical Olympiastadion Atmospheric Header) */}
-      <section className="relative w-full overflow-hidden bg-[#070b12] py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
+      <section className="relative w-full overflow-hidden bg-[#070b12] pt-8 sm:pt-10 md:pt-12 pb-10 sm:pb-12 min-h-[190px] sm:min-h-[230px] flex flex-col justify-start">
         {/* Full-width Olympiastadion Historical Background */}
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
@@ -25,8 +25,8 @@ export default function ArchivePage({ onNavigate }) {
         {/* 100-140px Smooth Dark Navy Gradient at Bottom to gradually dissolve Olympiastadion into dark navy */}
         <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-gradient-to-t from-[#070b12] via-[#070b12]/80 to-transparent pointer-events-none" />
 
-        {/* Header Content Container (Centered & Constrained to max-w-6xl) */}
-        <div className="relative z-10 max-w-6xl mx-auto space-y-2">
+        {/* Header Content Container (Upper-Left Aligned & Constrained to max-w-6xl) */}
+        <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-2 text-left">
           {/* Kicker */}
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-[#dc052d]/10 border border-[#dc052d]/25 text-[11px] font-display font-bold uppercase tracking-widest text-[#dc052d]">
             <span>FC BAYERN MÜNCHEN</span>

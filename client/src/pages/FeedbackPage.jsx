@@ -112,7 +112,7 @@ export default function FeedbackPage({ onNavigate }) {
         </button>
 
         {/* Main Card */}
-        <div className="bg-[#121824] border border-[#1c2535] rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
           {/* Top Edge Red Accent */}
           <div className="absolute top-0 inset-x-0 h-1 bg-[#dc052d]" />
 

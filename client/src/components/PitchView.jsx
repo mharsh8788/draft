@@ -35,11 +35,11 @@ function PitchPlayerSlot({ player, isLatest, slot, isComputer = false, compact =
             src={playerImg}
             alt={player.name}
             onError={() => setImgErr(true)}
-            className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-300 group-hover:scale-108`}
+            className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
           />
 
           {/* Cinematic bottom dark gradient for photo depth & badge clarity */}
-          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none" />
 
           {/* Top-left position pill */}
           <span className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 bg-black/80 text-gray-200 text-[7px] xs:text-[8px] sm:text-[9px] md:text-xs font-display font-bold px-1 py-0.5 sm:px-1.5 rounded border border-white/10 leading-none backdrop-blur-xs">
@@ -70,7 +70,7 @@ function PitchPlayerSlot({ player, isLatest, slot, isComputer = false, compact =
       )}
 
       {/* Player surname bar */}
-      <div className={`mt-1 px-1 py-0.5 sm:px-2 sm:py-0.5 rounded-md bg-black/95 border border-white/20 text-center ${surnameMaxWClass} truncate shadow-md backdrop-blur-xs`}>
+      <div className={`mt-1 px-1 py-0.5 sm:px-2 sm:py-0.5 rounded-md bg-black/95 border border-white/10 text-center ${surnameMaxWClass} truncate shadow-md backdrop-blur-xs`}>
         <span className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-white tracking-tight truncate block">
           {player.name.split(' ').pop()}
         </span>
@@ -146,7 +146,7 @@ export default function PitchView({
       )}
 
       {/* The Football Pitch Graphic */}
-      <div className={`relative w-full aspect-[3/4] sm:aspect-[4/4.8] md:aspect-[4/4.4] lg:aspect-[1/1.08] ${pitchMinHClass} bg-[#0a160f] rounded-2xl border border-[#1c2535] overflow-hidden pitch-pattern shadow-2xl`}>
+      <div className={`relative w-full aspect-[3/4] sm:aspect-[4/4.8] md:aspect-[4/4.4] lg:aspect-[1/1.08] ${pitchMinHClass} bg-[#0a160f] rounded-xl border border-[#1c2535] overflow-hidden pitch-pattern shadow-2xl`}>
         {/* Pitch Field Markings (SVG Overlay) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-white/12 fill-none" strokeWidth="1.2">
           <rect x="4%" y="4%" width="92%" height="92%" rx="8" />

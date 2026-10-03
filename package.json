@@ -2,6 +2,7 @@
   "name": "bayern-draft",
   "version": "1.0.0",
   "description": "Full-stack FC Bayern Munich draft game",
+  "type": "module",
   "scripts": {
     "install:all": "cd server && npm install && cd ../client && npm install",
     "server": "node server/src/server.js",

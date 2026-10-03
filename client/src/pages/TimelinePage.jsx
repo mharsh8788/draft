@@ -141,9 +141,9 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
           src={src} 
           alt={event.title}
           onError={() => handleImageError(src)}
-          className={`absolute inset-0 w-full h-full object-cover object-center group-hover:scale-[1.025] transition-all duration-200 ease-out ${
+          className={`absolute inset-0 w-full h-full object-cover ${event.imagePosition || 'object-[center_top]'} group-hover:scale-[1.025] transition-all duration-200 ease-out ${
             idx === currentIndex 
-              ? 'opacity-90 group-hover:opacity-100 z-10' 
+              ? 'opacity-90 group-hover:opacity-100 z-[5]' 
               : 'opacity-0 pointer-events-none z-0'
           }`}
           loading="lazy"
@@ -373,18 +373,17 @@ export default function TimelinePage({ onNavigate }) {
       <section className="relative z-10 w-full overflow-hidden bg-[#070b12]">
         {/* Background Archival Texture */}
         <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none select-none blur-[1px] opacity-25 scale-105"
+          className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none select-none blur-[0.5px] opacity-35 scale-105"
           style={{ 
             backgroundImage: "url('/images/bayern-historical-collage.jpg')",
             backgroundPosition: "center center"
           }}
         />
         {/* Smooth Dark Fade Transition into the dark navy color (#070b12) at the bottom */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#070b12]/60 via-[#070b12]/85 to-[#070b12] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070b12]/50 via-[#070b12]/75 to-[#070b12] pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dc052d]/10 border border-[#dc052d]/30 text-[#dc052d] text-xs font-display font-bold uppercase tracking-widest">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d] animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-[#dc052d]/10 border border-[#dc052d]/25 text-[11px] font-display font-bold uppercase tracking-widest text-[#dc052d]">
             <span>HISTORICAL ARCHIVE • 1900–PRESENT</span>
           </div>
 
@@ -515,7 +514,7 @@ export default function TimelinePage({ onNavigate }) {
           {/* Active Fill Line (Grows down to current position) */}
           <div 
             ref={progressLineRef} 
-            className="absolute top-6 left-8 sm:left-1/2 w-0.5 -translate-x-1/2 bg-[#dc052d] pointer-events-none transition-[height] duration-75 ease-out shadow-[0_0_8px_rgba(220,5,45,0.4)]" 
+            className="absolute top-6 left-8 sm:left-1/2 w-0.5 -translate-x-1/2 bg-[#dc052d] pointer-events-none transition-[height] duration-75 ease-out" 
             style={{ height: '0px' }} 
           />
 
@@ -536,10 +535,10 @@ export default function TimelinePage({ onNavigate }) {
                   {/* Timeline Milestone Marker Dot */}
                   {isCurrentActive ? (
                     <div 
-                      className="absolute left-8 sm:left-1/2 top-5 -translate-x-1/2 w-7 h-7 rounded-full bg-[#dc052d] border-2 border-white flex items-center justify-center z-20 shadow-[0_0_14px_rgba(220,5,45,0.7)] scale-110 transition-all duration-200"
+                      className="absolute left-8 sm:left-1/2 top-5 -translate-x-1/2 w-7 h-7 rounded-full bg-[#dc052d] border-2 border-white flex items-center justify-center z-20 shadow-md scale-110 transition-all duration-200"
                       title={`${event.year} - Active Moment`}
                     >
-                      <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-white" />
                     </div>
                   ) : (
                     <div 
@@ -666,7 +665,7 @@ export default function TimelinePage({ onNavigate }) {
             className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default modal-content-animate"
           >
             {eventImages.length > 0 ? (
-              <div className="relative flex flex-col items-center">
+              <div className="relative flex flex-col items-center justify-center min-h-[220px] sm:min-h-[320px] md:min-h-[400px]">
                 {/* Historical Photograph: Original aspect ratio, max-w-[90vw], max-h-[75vh], subtle shadow, no card box */}
                 <img
                   src={eventImages[activeImageIndex]}

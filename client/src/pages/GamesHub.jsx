@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GAMES } from '../data/games';
 import { HOMEPAGE_FEATURED_FACT } from '../data/facts';
 import FunFactCard from '../components/FunFactCard';
+import NextMatchBanner from '../components/NextMatchBanner';
 import { sounds } from '../utils/audio';
 import { ArrowRight, Clock, Shield } from 'lucide-react';
 
 export default function GamesHub({ onSelectGame, onNavigate }) {
   const featuredGame = GAMES.find((g) => g.featured) || GAMES[0];
   const moreGames = GAMES.filter((g) => !g.featured);
+
+  // Coordinated CTA button interaction group state
+  const [hoveredCta, setHoveredCta] = useState(null);
+  const activeCta = hoveredCta || 'games';
+
+  const handleCtaHover = (ctaKey) => {
+    // Only engage hover state on devices that support true hover (prevents touch devices getting stuck)
+    if (typeof window !== 'undefined' && window.matchMedia && !window.matchMedia('(hover: hover)').matches) {
+      return;
+    }
+    setHoveredCta(ctaKey);
+  };
+
+  const handleCtaLeave = () => {
+    setHoveredCta(null);
+  };
 
   const handlePlayFeatured = () => {
     sounds.playWhistle();
@@ -71,28 +88,82 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               Test your Bayern knowledge. Build your XI. Discover the club&apos;s history.
             </p>
 
-            {/* Action CTA Buttons */}
-            <div className="pt-2 sm:pt-3 flex flex-wrap items-center gap-3 sm:gap-4">
+            {/* Coordinated Interactive Action CTA Buttons */}
+            <div 
+              className="pt-2 sm:pt-3 flex flex-wrap items-center gap-3 sm:gap-4"
+              onPointerLeave={handleCtaLeave}
+              onTouchStart={handleCtaLeave}
+            >
+              {/* BUTTON 1: EXPLORE GAMES */}
               <button
                 onClick={handleScrollToGames}
-                className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out shadow-lg cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] group/btn select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
+                onPointerEnter={() => handleCtaHover('games')}
+                onFocus={() => handleCtaHover('games')}
+                className={`inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none ${
+                  activeCta === 'games'
+                    ? 'bg-[#dc052d] hover:bg-[#b80425] text-white border border-[#dc052d] shadow-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80'
+                    : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/25 shadow-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70'
+                }`}
               >
                 <span>EXPLORE GAMES</span>
-                <ArrowRight size={18} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
+                <span
+                  className={`inline-flex items-center overflow-hidden transition-all duration-200 ease-out ${
+                    activeCta === 'games'
+                      ? 'w-4.5 sm:w-5 opacity-100 translate-x-0 ml-2 sm:ml-2.5'
+                      : 'w-0 opacity-0 -translate-x-1.5 ml-0'
+                  }`}
+                  aria-hidden="true"
+                >
+                  <ArrowRight size={18} className="shrink-0" />
+                </span>
               </button>
 
+              {/* BUTTON 2: BAYERN TIMELINE */}
               <button
                 onClick={() => onNavigate && onNavigate('/timeline')}
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
+                onPointerEnter={() => handleCtaHover('timeline')}
+                onFocus={() => handleCtaHover('timeline')}
+                className={`inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none ${
+                  activeCta === 'timeline'
+                    ? 'bg-[#dc052d] hover:bg-[#b80425] text-white border border-[#dc052d] shadow-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80'
+                    : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/25 shadow-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70'
+                }`}
               >
                 <span>BAYERN TIMELINE</span>
+                <span
+                  className={`inline-flex items-center overflow-hidden transition-all duration-200 ease-out ${
+                    activeCta === 'timeline'
+                      ? 'w-4.5 sm:w-5 opacity-100 translate-x-0 ml-2 sm:ml-2.5'
+                      : 'w-0 opacity-0 -translate-x-1.5 ml-0'
+                  }`}
+                  aria-hidden="true"
+                >
+                  <ArrowRight size={18} className="shrink-0" />
+                </span>
               </button>
 
+              {/* BUTTON 3: CLUB ARCHIVE */}
               <button
                 onClick={() => onNavigate && onNavigate('/archive')}
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display font-bold text-sm sm:text-base tracking-wider uppercase border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
+                onPointerEnter={() => handleCtaHover('archive')}
+                onFocus={() => handleCtaHover('archive')}
+                className={`inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none ${
+                  activeCta === 'archive'
+                    ? 'bg-[#dc052d] hover:bg-[#b80425] text-white border border-[#dc052d] shadow-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80'
+                    : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/25 shadow-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70'
+                }`}
               >
                 <span>CLUB ARCHIVE</span>
+                <span
+                  className={`inline-flex items-center overflow-hidden transition-all duration-200 ease-out ${
+                    activeCta === 'archive'
+                      ? 'w-4.5 sm:w-5 opacity-100 translate-x-0 ml-2 sm:ml-2.5'
+                      : 'w-0 opacity-0 -translate-x-1.5 ml-0'
+                  }`}
+                  aria-hidden="true"
+                >
+                  <ArrowRight size={18} className="shrink-0" />
+                </span>
               </button>
             </div>
           </div>
@@ -102,7 +173,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
       {/* =========================================================
           2 & 3. CONTINUOUS FULL-WIDTH ALLIANZ ARENA GAMES ATMOSPHERE
           ========================================================= */}
-      <section id="games-section" className="relative w-full overflow-hidden bg-[#070b12] py-8 sm:py-10 md:py-12">
+      <section id="games-section" className="relative w-full overflow-hidden bg-[#070b12] -mt-10 sm:-mt-14 md:-mt-18 lg:-mt-22 pt-2 sm:pt-3 pb-8 sm:pb-10 md:pb-12">
         {/* Full-width Continuous Stadium Background across the entire Games area */}
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
@@ -124,14 +195,19 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
         <div className="absolute inset-x-0 bottom-0 h-16 sm:h-20 bg-gradient-to-t from-[#070b12] to-transparent pointer-events-none" />
 
         {/* Centered Constrained Content Container matching max-w-6xl */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5 sm:space-y-6">
           
+          {/* =========================================================
+              UPCOMING FIXTURE: NEXT MATCH
+              ========================================================= */}
+          <NextMatchBanner onNavigate={onNavigate} />
+
           {/* =========================================================
               FEATURED GAME: MYSTERY PLAYER
               ========================================================= */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-[#dc052d]">
-              <span className="w-2 h-2 rounded-full bg-[#dc052d] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#dc052d]" />
               <span>FEATURED CHALLENGE</span>
             </div>
 
@@ -194,10 +270,6 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                 <div className="lg:col-span-5 relative bg-[#090e16]/80 border-l border-[#1c2535] flex items-center justify-center p-8 overflow-hidden select-none">
                   {/* Subtle Pitch Geometry Overlay */}
                   <div className="absolute inset-0 opacity-15 pointer-events-none pitch-pattern" />
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                    <div className="w-52 h-52 rounded-full border border-white/20" />
-                    <div className="w-80 h-80 rounded-full border border-white/10 absolute" />
-                  </div>
 
                   {/* Tactical Silhouette & High-Contrast Question Mark */}
                   <div className="relative z-10 flex flex-col items-center justify-center text-center">
@@ -206,12 +278,12 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                       <img
                         src="/images/mystery-silhouette-white.png"
                         alt="Mystery Player Silhouette"
-                        className="w-full h-full object-contain filter drop-shadow-[0_4px_16px_rgba(220,5,45,0.45)]"
+                        className="w-full h-full object-contain filter drop-shadow-md"
                       />
 
                       {/* Prominent Question Mark Badge */}
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <span className="font-display font-black text-6xl text-white drop-shadow-[0_2px_10px_rgba(220,5,45,0.85)] -mt-1">
+                        <span className="font-display font-black text-6xl text-white drop-shadow-md -mt-1">
                           ?
                         </span>
                       </div>
@@ -245,10 +317,10 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                       <img
                         src="/images/mystery-silhouette-white.png"
                         alt="Mystery Player Silhouette"
-                        className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(220,5,45,0.45)]"
+                        className="w-full h-full object-contain filter drop-shadow-md"
                       />
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <span className="font-display font-black text-5xl text-white drop-shadow-[0_2px_8px_rgba(220,5,45,0.85)] -mt-1">
+                        <span className="font-display font-black text-5xl text-white drop-shadow-md -mt-1">
                           ?
                         </span>
                       </div>
@@ -295,14 +367,14 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
           {/* =========================================================
               MORE GAMES SECTION
               ========================================================= */}
-          <div className="space-y-6">
-            {/* Header: Kicker, Title, Description, and Badges */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#1c2535] pb-4">
+          <div className="space-y-6 pt-4 sm:pt-6">
+            {/* Header: Kicker, Title, Description */}
+            <div className="border-b border-[#1c2535] pb-4">
               <div className="space-y-1 text-left">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-0.5 bg-[#dc052d]" />
                   <span className="text-xs font-display font-bold uppercase tracking-wider text-[#dc052d]">
-                    EXPANDING CATALOG
+                    TACTICAL &amp; ARCHIVE
                   </span>
                 </div>
                 <h3 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-white uppercase tracking-tight">
@@ -312,12 +384,6 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   Upcoming tactical challenges and archive career puzzles entering through the tunnel.
                 </p>
               </div>
-
-              <div className="flex items-center gap-2 self-start sm:self-auto">
-                <span className="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-xs font-display font-bold text-gray-300 uppercase tracking-wider">
-                  {moreGames.length} in development
-                </span>
-              </div>
             </div>
 
             {/* Foreground Game Cards Grid: 38-0 and WHO AM I? */}
@@ -325,7 +391,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               {/* GAME 1: 38–0 */}
               <div className="bg-[#121824] border border-[#1c2535] hover:border-[#2a3548] rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-200 ease-out shadow-2xl hover:-translate-y-0.5">
                 {/* Visual Treatment: Bundesliga 38-0 Tracker Motif */}
-                <div className="relative h-40 sm:h-44 bg-[#090e16] border-b border-[#1c2535] flex items-center justify-center select-none overflow-hidden">
+                <div className="relative h-44 sm:h-48 bg-[#090e16] border-b border-[#1c2535] flex items-center justify-center select-none overflow-hidden">
                   <div className="absolute inset-0 opacity-10 pointer-events-none pitch-pattern" />
                   
                   {/* Category Kicker (Top-Left) */}
@@ -403,7 +469,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               {/* GAME 2: WHO AM I? */}
               <div className="bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-200 ease-out shadow-2xl hover:-translate-y-0.5">
                 {/* Visual Treatment: Career Deduction Trail Motif */}
-                <div className="relative h-40 sm:h-44 bg-[#090e16] border-b border-[#1c2535] flex items-center justify-center select-none overflow-hidden">
+                <div className="relative h-44 sm:h-48 bg-[#090e16] border-b border-[#1c2535] flex items-center justify-center select-none overflow-hidden">
                   <div className="absolute inset-0 opacity-10 pointer-events-none pitch-pattern" />
 
                   {/* Category Kicker (Top-Left) */}
@@ -431,7 +497,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   {/* Status Badge (Top-Right) */}
                   <div className="absolute top-3 right-3">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-display font-bold uppercase tracking-wider bg-[#dc052d]/20 text-[#dc052d] border border-[#dc052d]/40">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d] animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
                       AVAILABLE NOW
                     </span>
                   </div>

@@ -87,7 +87,7 @@ export default function ComparisonView({
       {/* Head-to-Head Summary Scoreboard Banner */}
       <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-stretch font-display">
         {/* User XI Card (5 cols) */}
-        <div className="md:col-span-5 bg-[#121824] rounded-xl border-2 border-[#dc052d]/60 p-5 space-y-4 shadow-lg">
+        <div className="md:col-span-5 bg-[#121824] rounded-xl border border-[#dc052d]/40 p-5 space-y-4 shadow-lg">
           <div className="flex items-center justify-between border-b border-[#1c2535] pb-3">
             <div className="flex items-center gap-2">
               <Shield size={18} className="text-[#dc052d]" />
@@ -131,7 +131,7 @@ export default function ComparisonView({
         </div>
 
         {/* Computer XI Card (5 cols) */}
-        <div className="md:col-span-5 bg-[#121824] rounded-xl border-2 border-[#2563eb]/60 p-5 space-y-4 shadow-lg">
+        <div className="md:col-span-5 bg-[#121824] rounded-xl border border-[#2563eb]/40 p-5 space-y-4 shadow-lg">
           <div className="flex items-center justify-between border-b border-[#1c2535] pb-3">
             <div className="flex items-center gap-2">
               <Bot size={18} className="text-[#3b82f6]" />

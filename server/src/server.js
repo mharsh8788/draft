@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import playerRoutes from './routes/playerRoutes.js';
 import draftRoutes from './routes/draftRoutes.js';
+import matchRoutes from './routes/matchRoutes.js';
+import matchDetailsRoutes from './routes/matchDetailsRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -29,6 +31,8 @@ app.get('/api/health', (req, res) => {
 // Mount Routes
 app.use('/api/players', playerRoutes);
 app.use('/api/drafts', draftRoutes);
+app.use('/api/next-match', matchRoutes);
+app.use('/api/match', matchDetailsRoutes);
 
 // 404 Handler for undefined routes
 app.use((req, res) => {

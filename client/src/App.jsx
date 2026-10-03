@@ -5,6 +5,7 @@ import ArchivePage from './pages/ArchivePage';
 import CareerPuzzlePage from './pages/CareerPuzzlePage';
 import TimelinePage from './pages/TimelinePage';
 import FeedbackPage from './pages/FeedbackPage';
+import MatchCentrePage from './pages/MatchCentrePage';
 import GameProgress from './components/GameProgress';
 import DraftCard from './components/DraftCard';
 import MysteryCard from './components/MysteryCard';
@@ -21,7 +22,18 @@ import { ArrowLeft, Volume2, VolumeX, Flame, Trophy, Shield } from 'lucide-react
 export default function App() {
   const [soundEnabled, setSoundEnabled] = useState(sounds.isEnabled());
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const { currentPath, navigate, isHome, isMysteryGame, isCareerPuzzle, isTimeline, isArchive, isFeedback } = useRouter();
+  const { 
+    currentPath, 
+    navigate,
+    isHome, 
+    isMysteryGame, 
+    isCareerPuzzle, 
+    isTimeline, 
+    isArchive, 
+    isFeedback,
+    isMatchCentre,
+    fixtureId 
+  } = useRouter();
 
   const {
     gameStatus,
@@ -266,6 +278,11 @@ export default function App() {
         {/* ROUTE 6: Community Feedback Page */}
         {isFeedback && (
           <FeedbackPage onNavigate={navigate} />
+        )}
+
+        {/* ROUTE 7: Dedicated Match Centre Page */}
+        {isMatchCentre && (
+          <MatchCentrePage fixtureId={fixtureId} onBack={() => navigate('/')} onNavigate={navigate} />
         )}
       </main>
 

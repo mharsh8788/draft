@@ -65,7 +65,7 @@ export default function FunFactsSection({
               key={currentFact.id}
               src={currentFact.image}
               alt={currentFact.title}
-              className={`w-full h-full object-cover ${currentFact.imagePosition || 'object-center'} transition-opacity duration-200`}
+              className={`w-full h-full object-cover ${currentFact.imagePosition || 'object-[center_top]'} transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
               loading="eager"
             />
 

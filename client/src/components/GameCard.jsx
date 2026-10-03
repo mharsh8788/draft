@@ -27,12 +27,12 @@ export default function GameCard({ game, onPlay }) {
               <img
                 src="/images/mystery-silhouette-white.png"
                 alt="Mystery Player Silhouette"
-                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(220,5,45,0.45)]"
+                className="w-full h-full object-contain filter drop-shadow-md"
               />
 
-              {/* Glowing Center Question Mark */}
+              {/* Center Question Mark */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className="font-display font-black text-5xl text-white drop-shadow-[0_2px_8px_rgba(220,5,45,0.85)] -mt-1">
+                <span className="font-display font-black text-5xl text-white drop-shadow-md -mt-1">
                   ?
                 </span>
               </div>

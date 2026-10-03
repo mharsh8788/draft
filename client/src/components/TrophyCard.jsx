@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TrophyIllustration from './TrophyIllustration';
+import OdometerNumber from './OdometerNumber';
 
 // Memory cache for processed transparent trophy images
 const processedTrophyCache = new Map();
@@ -64,7 +65,14 @@ function processTrophyTransparency(src) {
   });
 }
 
-export default function TrophyCard({ trophy }) {
+export default function TrophyCard({
+  trophy,
+  index = 0,
+  isTriggered = false,
+  staggerDelay = 0,
+  cardRef,
+  isInView,
+}) {
   const [processedSrc, setProcessedSrc] = useState(null);
   const [hasError, setHasError] = useState(false);
 
@@ -94,7 +102,7 @@ export default function TrophyCard({ trophy }) {
   }, [rawImageSrc, trophy.id]);
 
   return (
-    <div className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md">
+    <div ref={cardRef} className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md">
       {/* 1. Trophy Visual Area: 58% of height with subtle museum backlight */}
       <div className="relative h-48 sm:h-52 bg-[#0a0f18] border-b border-[#1c2535] flex items-center justify-center overflow-hidden p-4">
         {/* Very subtle dark radial spotlight */}
@@ -129,7 +137,13 @@ export default function TrophyCard({ trophy }) {
         {/* Large Prominent Count */}
         <div className="flex flex-col items-center justify-center">
           <span className="font-display font-black text-3xl sm:text-4xl text-white tracking-tight leading-none">
-            {trophy.count !== undefined && trophy.count !== null ? trophy.count : '—'}
+            <OdometerNumber
+              value={trophy.count}
+              isTriggered={isTriggered}
+              isInView={isInView}
+              delay={staggerDelay}
+              index={index}
+            />
           </span>
           <span className="text-[10px] font-display font-bold tracking-widest text-[#dc052d] uppercase mt-1">
             {trophy.unit || 'TITLES'}

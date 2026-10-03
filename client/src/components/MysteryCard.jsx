@@ -17,7 +17,7 @@ export default function MysteryCard({ player, targetPosition, onSelect, disabled
       {/* Editorial Header Bar */}
       <div className="bg-[#0c121c] px-5 py-3 border-b border-[#1c2535] flex items-center justify-between">
         <span className="text-[11px] font-display font-bold uppercase tracking-wider text-[#dc052d] flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#dc052d] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[#dc052d]" />
           MYSTERY PLAYER
         </span>
         <span className="px-2 py-0.5 rounded text-[10px] font-display font-bold uppercase tracking-wider bg-white/5 text-gray-300 border border-white/10">
@@ -34,12 +34,12 @@ export default function MysteryCard({ player, targetPosition, onSelect, disabled
             <img
               src="/images/mystery-silhouette-white.png"
               alt="Mystery Player"
-              className="w-full h-full object-contain filter drop-shadow-[0_4px_16px_rgba(220,5,45,0.45)] transition-transform duration-200 ease-out group-hover:scale-[1.025] select-none pointer-events-none"
+              className="w-full h-full object-contain filter drop-shadow-md transition-transform duration-200 ease-out group-hover:scale-[1.025] select-none pointer-events-none"
             />
 
-            {/* Glowing Question Mark Overlay */}
+            {/* Question Mark Overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="font-display font-black text-5xl sm:text-6xl text-white drop-shadow-[0_2px_14px_rgba(220,5,45,0.9)] select-none">
+              <span className="font-display font-black text-5xl sm:text-6xl text-white drop-shadow-md select-none">
                 ?
               </span>
             </div>

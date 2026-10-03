@@ -19,7 +19,7 @@ export default function FunFactCard({ fact, onNavigate }) {
               <img
                 src={fact.image}
                 alt={fact.title}
-                className={`relative z-10 w-full h-full object-cover ${fact.imagePosition || 'object-top'} transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
+                className={`relative z-10 w-full h-full object-cover ${fact.imagePosition || 'object-[center_top]'} transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
                 loading="lazy"
               />
 

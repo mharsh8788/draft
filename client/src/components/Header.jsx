@@ -61,9 +61,6 @@ export default function Header({
               }`}
             >
               <span>{item.label}</span>
-              {item.isActive && (
-                <span className="absolute bottom-0.5 inset-x-2.5 sm:inset-x-3 h-[2px] bg-white rounded-full transition-all duration-200" />
-              )}
             </button>
           ))}
           
