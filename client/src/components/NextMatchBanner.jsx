@@ -445,21 +445,21 @@ export default function NextMatchBanner({ onNavigate }) {
   if (loading) {
     return (
       <div 
-        className="w-full bg-[#121824]/95 border border-[#1c2535] rounded-xl p-6 sm:p-8 lg:p-10 select-none animate-pulse shadow-2xl"
+        className="w-full text-left select-none animate-pulse relative pt-1 pb-4 sm:pb-6"
         aria-busy="true"
         aria-label="Loading upcoming FC Bayern match and form"
       >
         {/* Top Eyebrow Header Skeleton */}
         <div className="flex items-center justify-between border-b border-[#1c2535] pb-4">
           <div className="flex items-center gap-3">
-            <div className="h-6 w-28 bg-white/10 rounded-md" />
+            <div className="h-4 w-24 bg-white/10 rounded" />
             <div className="h-4 w-32 bg-white/5 rounded hidden sm:block" />
           </div>
-          <div className="h-6 w-36 bg-white/5 rounded-md" />
+          <div className="h-4 w-36 bg-white/5 rounded" />
         </div>
 
         {/* Center Head-to-Head Skeleton */}
-        <div className="py-7 sm:py-9 my-4 border-y border-[#1c2535]/60 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="py-8 sm:py-10 border-b border-[#1c2535] flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4 sm:gap-6 w-full md:w-auto justify-center md:justify-start">
             <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-white/10 shrink-0" />
             <div className="space-y-2">
@@ -469,7 +469,7 @@ export default function NextMatchBanner({ onNavigate }) {
           </div>
 
           <div className="flex flex-col items-center gap-2.5">
-            <div className="h-9 w-16 bg-white/10 rounded-lg" />
+            <div className="h-4 w-8 bg-white/10 rounded" />
             <div className="h-4 w-32 bg-white/5 rounded" />
             <div className="h-6 w-24 bg-white/10 rounded" />
             <div className="h-3.5 w-28 bg-white/5 rounded" />
@@ -485,7 +485,7 @@ export default function NextMatchBanner({ onNavigate }) {
         </div>
 
         {/* Recent Form Skeleton */}
-        <div className="py-3 border-b border-[#1c2535]/60 space-y-3">
+        <div className="py-5 sm:py-6 border-b border-[#1c2535] space-y-3">
           <div className="h-4 w-28 bg-white/10 rounded" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -506,7 +506,7 @@ export default function NextMatchBanner({ onNavigate }) {
         </div>
 
         {/* Footer Row Skeleton */}
-        <div className="flex items-center justify-between pt-4">
+        <div className="flex items-center justify-between pt-5 sm:pt-6">
           <div className="space-y-1.5">
             <div className="h-3.5 w-24 bg-white/5 rounded" />
             <div className="h-7 w-52 bg-white/10 rounded" />
@@ -520,10 +520,10 @@ export default function NextMatchBanner({ onNavigate }) {
   // 2. Fallback State: Editorial placeholder when fixture feed is synchronizing
   if (!match) {
     return (
-      <div className="w-full bg-[#121824]/95 border border-[#1c2535] rounded-xl p-6 sm:p-8 lg:p-10 select-none shadow-2xl text-left">
+      <div className="w-full text-left select-none relative pt-1 pb-4 sm:pb-6">
         <div className="flex items-center justify-between border-b border-[#1c2535] pb-4">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-xs font-display font-black uppercase tracking-widest text-[#dc052d]">
+            <span className="inline-flex items-center gap-1.5 text-xs font-display font-black uppercase tracking-widest text-[#dc052d]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
               NEXT MATCH
             </span>
@@ -532,12 +532,12 @@ export default function NextMatchBanner({ onNavigate }) {
               BUNDESLIGA &amp; EUROPEAN FIXTURES
             </span>
           </div>
-          <span className="px-2.5 py-1 rounded text-xs font-display font-bold uppercase tracking-wider bg-white/5 text-gray-400 border border-white/10">
+          <span className="text-xs font-display font-bold uppercase tracking-wider text-gray-400">
             ALLIANZ ARENA
           </span>
         </div>
 
-        <div className="py-8 my-4 border-y border-[#1c2535]/80 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="py-8 sm:py-10 border-b border-[#1c2535] flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-5">
             <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0">
               <BayernCrest className="w-full h-full drop-shadow-md" />
@@ -562,14 +562,14 @@ export default function NextMatchBanner({ onNavigate }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-5 sm:pt-6">
           <div className="flex items-center gap-2 text-xs font-display text-gray-400">
             <MapPin size={14} className="text-[#dc052d]" />
             <span>MÜNCHEN, BAVARIA</span>
           </div>
           <button
             onClick={handleMatchCentreClick}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/5 hover:bg-[#dc052d] border border-white/10 hover:border-[#dc052d] text-white font-display font-bold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-lg"
           >
             <span>MATCH CENTRE</span>
             <ArrowRight size={14} />
@@ -601,14 +601,14 @@ export default function NextMatchBanner({ onNavigate }) {
   const rightTeamFormList = isAwayBayern ? bayernFormList : opponentFormList;
 
   return (
-    <div className="w-full bg-[#121824]/95 backdrop-blur-sm border border-[#1c2535] hover:border-[#2a3548] rounded-xl p-6 sm:p-8 lg:p-10 transition-all duration-200 ease-out shadow-2xl text-left select-none relative">
+    <div className="w-full text-left select-none relative pt-1 pb-4 sm:pb-6">
       {/* =========================================================
           1. TOP KICKER & METADATA BAR
           ========================================================= */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1c2535] pb-4">
         {/* Left: Eyebrow Badge, Competition, Round */}
         <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#dc052d]/15 border border-[#dc052d]/35 text-xs font-display font-black uppercase tracking-widest text-[#dc052d]">
+          <span className="inline-flex items-center gap-1.5 text-xs font-display font-black uppercase tracking-widest text-[#dc052d]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
             NEXT MATCH
           </span>
@@ -630,22 +630,23 @@ export default function NextMatchBanner({ onNavigate }) {
         </div>
 
         {/* Right: Home/Away Tag & Venue */}
-        <div className="flex items-center gap-2.5 sm:gap-3 text-xs font-display">
+        <div className="flex items-center gap-2 text-xs font-display uppercase tracking-wider">
           <span
-            className={`px-2.5 py-1 rounded text-xs font-display font-bold uppercase tracking-wider border ${
-              isBayernHome
-                ? 'bg-[#dc052d]/20 text-[#dc052d] border-[#dc052d]/35'
-                : 'bg-white/5 text-gray-300 border-white/10'
+            className={`font-bold ${
+              isBayernHome ? 'text-[#dc052d]' : 'text-gray-300'
             }`}
           >
             {homeBadgeText}
           </span>
 
           {match.venue && (
-            <div className="hidden md:flex items-center gap-1.5 text-xs font-display uppercase tracking-wider text-gray-400">
-              <MapPin size={13} className="text-[#dc052d] shrink-0" />
-              <span className="truncate max-w-[220px] font-medium">{match.venue}</span>
-            </div>
+            <>
+              <span className="text-gray-600 select-none" aria-hidden="true">·</span>
+              <div className="flex items-center gap-1.5 text-gray-400 font-medium">
+                <MapPin size={13} className="text-[#dc052d] shrink-0" />
+                <span className="truncate max-w-[240px]">{match.venue}</span>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -654,7 +655,7 @@ export default function NextMatchBanner({ onNavigate }) {
           2. DOMINANT ELEMENT: HEAD-TO-HEAD MATCHUP CLASH
           ========================================================= */}
       {/* Desktop / Tablet Landscape View (>= md) */}
-      <div className="hidden md:grid md:grid-cols-12 md:items-center py-6 sm:py-8 my-4 border-y border-[#1c2535]/80 gap-6">
+      <div className="hidden md:grid md:grid-cols-12 md:items-center py-8 sm:py-10 border-b border-[#1c2535] gap-6">
         {/* Left Team: Home Team */}
         <div className="md:col-span-5 flex items-center justify-end gap-5 lg:gap-6 text-right">
           <div className="space-y-1">
@@ -687,9 +688,9 @@ export default function NextMatchBanner({ onNavigate }) {
 
         {/* Center Clash Column: VS Emblem + Kickoff Details */}
         <div className="md:col-span-2 flex flex-col items-center justify-center text-center px-1">
-          <div className="px-4.5 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-white/5 border border-white/10 text-xs sm:text-sm font-display font-black text-gray-300 tracking-[0.2em] uppercase shadow-inner">
+          <span className="text-xs sm:text-sm font-display font-black text-gray-400 tracking-[0.25em] uppercase select-none">
             VS
-          </div>
+          </span>
           <span className="font-display font-bold text-sm sm:text-base lg:text-[17px] text-gray-200 uppercase tracking-wider mt-3.5 sm:mt-4 block whitespace-nowrap">
             {formattedDate}
           </span>
@@ -758,7 +759,7 @@ export default function NextMatchBanner({ onNavigate }) {
       </div>
 
       {/* Mobile Head-to-Head View (< md) */}
-      <div className="md:hidden py-6 my-4 border-y border-[#1c2535]/80 space-y-5">
+      <div className="md:hidden py-6 sm:py-8 border-b border-[#1c2535] space-y-5">
         <div className="grid grid-cols-2 items-center gap-4 text-center">
           {/* Mobile Home Team */}
           <div className="flex flex-col items-center space-y-2">
@@ -855,7 +856,7 @@ export default function NextMatchBanner({ onNavigate }) {
           3. SECONDARY ELEMENT: COMPACT RECENT FORM AREA
           ========================================================= */}
       {(bayernFormList.length > 0 || opponentFormList.length > 0) && (
-        <div className="pt-2 pb-4">
+        <div className="py-5 sm:py-6 border-b border-[#1c2535]">
           {/* Eyebrow Label */}
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
@@ -864,7 +865,8 @@ export default function NextMatchBanner({ onNavigate }) {
               </span>
               <span className="text-gray-600">•</span>
               <span className="text-[10px] font-display uppercase tracking-wider text-gray-500">
-                LAST 4 FIXTURES
+                <span className="md:hidden">LAST 3 FIXTURES</span>
+                <span className="hidden md:inline">LAST 4 FIXTURES</span>
               </span>
             </div>
           </div>
@@ -882,36 +884,39 @@ export default function NextMatchBanner({ onNavigate }) {
                 </span>
               </div>
 
-              {/* Clean editorial-style row/list: fits on one row on desktop, natural wrap on mobile */}
+              {/* Clean editorial-style row/list: fits on one row on desktop, 3 compact fixtures on mobile */}
               <div className="flex flex-wrap md:flex-nowrap items-center gap-x-2 lg:gap-x-2.5 gap-y-1.5 text-xs font-display overflow-hidden">
-                {leftTeamFormList.map((item, idx) => (
-                  <React.Fragment key={idx}>
-                    <div className="inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
-                      <span 
-                        className={`w-4.5 h-4.5 rounded-[3px] flex items-center justify-center text-[10px] font-display font-black leading-none shrink-0 ${
-                          item.result === 'W'
-                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                            : item.result === 'D'
-                            ? 'bg-white/10 text-gray-300 border border-white/20'
-                            : 'bg-[#dc052d]/15 text-[#dc052d] border border-[#dc052d]/30'
-                        }`}
-                      >
-                        {item.result}
-                      </span>
-                      <span className="font-display font-bold text-gray-200 uppercase tracking-tight">
-                        {item.opponent}
-                      </span>
-                      <span className="font-display font-medium text-gray-400 tracking-tight">
-                        {item.score?.replace('-', '–')}
-                      </span>
-                    </div>
-                    {idx < leftTeamFormList.length - 1 && (
-                      <span className="text-gray-600 select-none text-xs shrink-0" aria-hidden="true">
-                        ·
-                      </span>
-                    )}
-                  </React.Fragment>
-                ))}
+                {leftTeamFormList.map((item, idx) => {
+                  const isHiddenOnMobile = leftTeamFormList.length > 3 && idx < leftTeamFormList.length - 3;
+                  return (
+                    <React.Fragment key={idx}>
+                      <div className={`${isHiddenOnMobile ? 'hidden md:inline-flex' : 'inline-flex'} items-center gap-1.5 whitespace-nowrap shrink-0`}>
+                        <span 
+                          className={`font-display font-black text-xs shrink-0 ${
+                            item.result === 'W'
+                              ? 'text-emerald-400'
+                              : item.result === 'D'
+                              ? 'text-gray-300'
+                              : 'text-[#dc052d]'
+                          }`}
+                        >
+                          {item.result}
+                        </span>
+                        <span className="font-display font-bold text-gray-200 uppercase tracking-tight">
+                          {item.opponent}
+                        </span>
+                        <span className="font-display font-medium text-gray-400 tracking-tight">
+                          {item.score?.replace('-', '–')}
+                        </span>
+                      </div>
+                      {idx < leftTeamFormList.length - 1 && (
+                        <span className={`text-gray-600 select-none text-xs shrink-0 ${isHiddenOnMobile ? 'hidden md:inline' : ''}`} aria-hidden="true">
+                          ·
+                        </span>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </div>
 
@@ -926,36 +931,39 @@ export default function NextMatchBanner({ onNavigate }) {
                 </span>
               </div>
 
-              {/* Clean editorial-style row/list: fits on one row on desktop, natural wrap on mobile */}
+              {/* Clean editorial-style row/list: fits on one row on desktop, 3 compact fixtures on mobile */}
               <div className="flex flex-wrap md:flex-nowrap items-center gap-x-2 lg:gap-x-2.5 gap-y-1.5 text-xs font-display overflow-hidden">
-                {rightTeamFormList.map((item, idx) => (
-                  <React.Fragment key={idx}>
-                    <div className="inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
-                      <span 
-                        className={`w-4.5 h-4.5 rounded-[3px] flex items-center justify-center text-[10px] font-display font-black leading-none shrink-0 ${
-                          item.result === 'W'
-                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                            : item.result === 'D'
-                            ? 'bg-white/10 text-gray-300 border border-white/20'
-                            : 'bg-[#dc052d]/15 text-[#dc052d] border border-[#dc052d]/30'
-                        }`}
-                      >
-                        {item.result}
-                      </span>
-                      <span className="font-display font-bold text-gray-200 uppercase tracking-tight">
-                        {item.opponent}
-                      </span>
-                      <span className="font-display font-medium text-gray-400 tracking-tight">
-                        {item.score?.replace('-', '–')}
-                      </span>
-                    </div>
-                    {idx < rightTeamFormList.length - 1 && (
-                      <span className="text-gray-600 select-none text-xs shrink-0" aria-hidden="true">
-                        ·
-                      </span>
-                    )}
-                  </React.Fragment>
-                ))}
+                {rightTeamFormList.map((item, idx) => {
+                  const isHiddenOnMobile = rightTeamFormList.length > 3 && idx < rightTeamFormList.length - 3;
+                  return (
+                    <React.Fragment key={idx}>
+                      <div className={`${isHiddenOnMobile ? 'hidden md:inline-flex' : 'inline-flex'} items-center gap-1.5 whitespace-nowrap shrink-0`}>
+                        <span 
+                          className={`font-display font-black text-xs shrink-0 ${
+                            item.result === 'W'
+                              ? 'text-emerald-400'
+                              : item.result === 'D'
+                              ? 'text-gray-300'
+                              : 'text-[#dc052d]'
+                          }`}
+                        >
+                          {item.result}
+                        </span>
+                        <span className="font-display font-bold text-gray-200 uppercase tracking-tight">
+                          {item.opponent}
+                        </span>
+                        <span className="font-display font-medium text-gray-400 tracking-tight">
+                          {item.score?.replace('-', '–')}
+                        </span>
+                      </div>
+                      {idx < rightTeamFormList.length - 1 && (
+                        <span className={`text-gray-600 select-none text-xs shrink-0 ${isHiddenOnMobile ? 'hidden md:inline' : ''}`} aria-hidden="true">
+                          ·
+                        </span>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -965,7 +973,7 @@ export default function NextMatchBanner({ onNavigate }) {
       {/* =========================================================
           4. FOOTER ROW: KICKOFF COUNTDOWN & EDITORIAL MATCH CENTRE ACTION
           ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-[#1c2535]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 sm:pt-6">
         {/* Left: Kickoff Countdown */}
         <div className="flex flex-col text-left">
           {/* Kickoff Countdown */}
@@ -973,7 +981,7 @@ export default function NextMatchBanner({ onNavigate }) {
             <div className="flex flex-col">
               {countdown.isMatchday ? (
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-xs sm:text-sm font-display font-black uppercase tracking-widest text-[#dc052d]">
+                  <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-display font-black uppercase tracking-widest text-[#dc052d]">
                     <span className="w-2 h-2 rounded-full bg-[#dc052d] animate-pulse" />
                     MATCHDAY
                   </span>

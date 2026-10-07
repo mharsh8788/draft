@@ -34,6 +34,7 @@ Thumbs.db
 
 # Raw Backup Reference Assets
 Bproject/
+draft/
 
 # Unused Download Artifacts in Client Public
 client/public/images/players/gomez.html
