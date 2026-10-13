@@ -687,7 +687,7 @@ export default async function handler(req, res) {
           ? 'public, s-maxage=25, max-age=15, stale-while-revalidate=30'
           : (matchKickoffMs > 0 && matchKickoffMs - now < 15 * 60 * 1000
               ? 'public, s-maxage=30, max-age=20, stale-while-revalidate=60'
-              : 'public, s-maxage=900, max-age=300, stale-while-revalidate=1800');
+              : 'public, s-maxage=120, max-age=60, stale-while-revalidate=180');
         res.setHeader('Cache-Control', cacheHeader);
         return res.status(200).json({ 
           success: true, 
@@ -745,7 +745,7 @@ export default async function handler(req, res) {
       ? 'public, s-maxage=25, max-age=15, stale-while-revalidate=30'
       : (matchKickoffMs > 0 && matchKickoffMs - now < 15 * 60 * 1000
           ? 'public, s-maxage=30, max-age=20, stale-while-revalidate=60'
-          : 'public, s-maxage=900, max-age=300, stale-while-revalidate=1800');
+          : 'public, s-maxage=120, max-age=60, stale-while-revalidate=180');
     res.setHeader('Cache-Control', cacheHeader);
     return res.status(200).json({ 
       success: true, 

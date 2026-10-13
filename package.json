@@ -4,10 +4,12 @@
   "description": "Full-stack FC Bayern Munich draft game",
   "type": "module",
   "scripts": {
-    "install:all": "cd server && npm install && cd ../client && npm install",
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "postinstall": "npm --prefix client install",
     "server": "node server/src/server.js",
     "client": "npm run dev --prefix client",
     "test:server": "node server/src/test-draft.js",
+    "build": "npm run build --prefix client",
     "build:client": "npm run build --prefix client"
   }
 }

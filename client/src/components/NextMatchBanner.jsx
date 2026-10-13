@@ -515,7 +515,7 @@ export default function NextMatchBanner({ onNavigate }) {
 
       try {
         // 1. Fetch from backend proxy/serverless function with visitor timezone
-        const res = await fetch(`/api/next-match?timezone=${encodeURIComponent(detectedTz)}`);
+        const res = await fetch(`/api/next-match?timezone=${encodeURIComponent(detectedTz)}&_t=${Math.floor(Date.now() / 60000)}`);
         if (res.ok) {
           const data = await res.json();
           if (isMounted && data && data.success && data.match) {

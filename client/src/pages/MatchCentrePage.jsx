@@ -212,7 +212,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
     try {
       // 1. Query Server API / Proxy (pass &live=true during live polling to save quota)
       const liveParam = isSilent ? '&live=true' : '';
-      const res = await fetch(`/api/match?id=${fixtureId || ''}&timezone=${encodeURIComponent(visitorTimezone)}${liveParam}`);
+      const res = await fetch(`/api/match?id=${fixtureId || ''}&timezone=${encodeURIComponent(visitorTimezone)}${liveParam}&_t=${Math.floor(Date.now() / 60000)}`);
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
