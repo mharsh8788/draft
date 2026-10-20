@@ -98,6 +98,17 @@ function normalizeCompetitionName(rawName) {
   return rawName.replace(/\s*20\d\d(\/20?\d\d)?/g, '').trim();
 }
 
+function resolveTeamLogo(teamName, rawLogoUrl) {
+  const name = String(teamName || '').toLowerCase().trim();
+  if (name.includes('bayern')) {
+    return 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg';
+  }
+  if (name.includes('arsenal')) {
+    return '/arsenal-logo.svg';
+  }
+  return rawLogoUrl || null;
+}
+
 const cachedPayloads = new Map();
 const formCache = new Map();
 const FORM_CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
@@ -178,18 +189,22 @@ function formatOpenLigaMatch(rawMatch, status = 'NS', liveScore = null) {
     opponent: {
       name: oppName,
       shortName: opponentTeam.shortName || oppName,
-      logo: opponentTeam.teamIconUrl || null
+      logo: resolveTeamLogo(oppName, opponentTeam.teamIconUrl)
     },
     homeTeam: {
       name: homeTeam.teamName || homeTeam.shortName,
       shortName: homeTeam.shortName || homeTeam.teamName,
-      logo: isHome ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' : homeTeam.teamIconUrl,
+      logo: isHome 
+        ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' 
+        : resolveTeamLogo(homeTeam.teamName || homeTeam.shortName, homeTeam.teamIconUrl),
       isBayern: isHome
     },
     awayTeam: {
       name: awayTeam.teamName || awayTeam.shortName,
       shortName: awayTeam.shortName || awayTeam.teamName,
-      logo: !isHome ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' : awayTeam.teamIconUrl,
+      logo: !isHome 
+        ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' 
+        : resolveTeamLogo(awayTeam.teamName || awayTeam.shortName, awayTeam.teamIconUrl),
       isBayern: !isHome
     },
     score: finalScore,

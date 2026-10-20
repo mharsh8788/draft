@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, MapPin, Clock } from 'lucide-react';
 import BayernCrest from './BayernCrest';
+import { resolveTeamLogo, ARSENAL_WIKIMEDIA_FALLBACK } from '../utils/teamLogos';
 
 const VENUE_MAP = {
   // Bundesliga
@@ -291,18 +292,22 @@ function formatOpenLigaMatchClient(rawMatch, status = 'NS', liveScore = null) {
     opponent: {
       name: oppName,
       shortName: opponentTeam.shortName || oppName,
-      logo: opponentTeam.teamIconUrl || null
+      logo: resolveTeamLogo(oppName, opponentTeam.teamIconUrl)
     },
     homeTeam: {
       name: homeTeam.teamName || homeTeam.shortName,
       shortName: homeTeam.shortName || homeTeam.teamName,
-      logo: isHome ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' : homeTeam.teamIconUrl,
+      logo: isHome 
+        ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' 
+        : resolveTeamLogo(homeTeam.teamName || homeTeam.shortName, homeTeam.teamIconUrl),
       isBayern: isHome
     },
     awayTeam: {
       name: awayTeam.teamName || awayTeam.shortName,
       shortName: awayTeam.shortName || awayTeam.teamName,
-      logo: !isHome ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' : awayTeam.teamIconUrl,
+      logo: !isHome 
+        ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg' 
+        : resolveTeamLogo(awayTeam.teamName || awayTeam.shortName, awayTeam.teamIconUrl),
       isBayern: !isHome
     },
     score: finalScore,
@@ -806,6 +811,8 @@ export default function NextMatchBanner({ onNavigate }) {
   const awayTeam = displayedMatch.awayTeam || (isBayernHome ? displayedMatch.opponent : displayedMatch.bayern);
   const isHomeBayern = isBayernHome || homeTeam?.name?.includes('Bayern');
   const isAwayBayern = !isBayernHome || awayTeam?.name?.includes('Bayern');
+  const resolvedHomeLogo = resolveTeamLogo(homeTeam) || resolveTeamLogo(homeTeam?.name) || homeTeam?.logo;
+  const resolvedAwayLogo = resolveTeamLogo(awayTeam) || resolveTeamLogo(awayTeam?.name) || awayTeam?.logo;
 
   const bayernFormList = displayedForm?.bayern || [];
   const opponentFormList = displayedForm?.opponent || [];
@@ -940,12 +947,18 @@ export default function NextMatchBanner({ onNavigate }) {
           <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 shrink-0 flex items-center justify-center">
             {isHomeBayern ? (
               <BayernCrest className="w-full h-full drop-shadow-md" />
-            ) : homeTeam?.logo && !oppImgError ? (
+            ) : (resolvedHomeLogo || homeTeam?.logo) && !oppImgError ? (
               <img
-                src={homeTeam.logo}
+                src={resolvedHomeLogo || homeTeam.logo}
                 alt={homeTeam.name}
-                onError={() => setOppImgError(true)}
-                className="w-full h-full object-contain filter contrast-105 drop-shadow-md"
+                onError={(e) => {
+                  if (/arsenal/i.test(homeTeam?.name || homeTeam?.shortName) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                    e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                  } else {
+                    setOppImgError(true);
+                  }
+                }}
+                className="w-full h-full object-contain drop-shadow-md"
                 loading="lazy"
               />
             ) : (
@@ -1026,12 +1039,18 @@ export default function NextMatchBanner({ onNavigate }) {
           <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 shrink-0 flex items-center justify-center">
             {isAwayBayern ? (
               <BayernCrest className="w-full h-full drop-shadow-md" />
-            ) : awayTeam?.logo && !oppImgError ? (
+            ) : (resolvedAwayLogo || awayTeam?.logo) && !oppImgError ? (
               <img
-                src={awayTeam.logo}
+                src={resolvedAwayLogo || awayTeam.logo}
                 alt={awayTeam.name}
-                onError={() => setOppImgError(true)}
-                className="w-full h-full object-contain filter contrast-105 drop-shadow-md"
+                onError={(e) => {
+                  if (/arsenal/i.test(awayTeam?.name || awayTeam?.shortName) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                    e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                  } else {
+                    setOppImgError(true);
+                  }
+                }}
+                className="w-full h-full object-contain drop-shadow-md"
                 loading="lazy"
               />
             ) : (
@@ -1064,12 +1083,18 @@ export default function NextMatchBanner({ onNavigate }) {
             <div className="w-16 h-16 shrink-0 flex items-center justify-center">
               {isHomeBayern ? (
                 <BayernCrest className="w-full h-full drop-shadow-md" />
-              ) : homeTeam?.logo && !oppImgError ? (
+              ) : (resolvedHomeLogo || homeTeam?.logo) && !oppImgError ? (
                 <img
-                  src={homeTeam.logo}
+                  src={resolvedHomeLogo || homeTeam.logo}
                   alt={homeTeam.name}
-                  onError={() => setOppImgError(true)}
-                  className="w-full h-full object-contain filter contrast-105 drop-shadow-md"
+                  onError={(e) => {
+                    if (/arsenal/i.test(homeTeam?.name || homeTeam?.shortName) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                      e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                    } else {
+                      setOppImgError(true);
+                    }
+                  }}
+                  className="w-full h-full object-contain drop-shadow-md"
                   loading="lazy"
                 />
               ) : (
@@ -1091,12 +1116,18 @@ export default function NextMatchBanner({ onNavigate }) {
             <div className="w-16 h-16 shrink-0 flex items-center justify-center">
               {isAwayBayern ? (
                 <BayernCrest className="w-full h-full drop-shadow-md" />
-              ) : awayTeam?.logo && !oppImgError ? (
+              ) : (resolvedAwayLogo || awayTeam?.logo) && !oppImgError ? (
                 <img
-                  src={awayTeam.logo}
+                  src={resolvedAwayLogo || awayTeam.logo}
                   alt={awayTeam.name}
-                  onError={() => setOppImgError(true)}
-                  className="w-full h-full object-contain filter contrast-105 drop-shadow-md"
+                  onError={(e) => {
+                    if (/arsenal/i.test(awayTeam?.name || awayTeam?.shortName) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                      e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                    } else {
+                      setOppImgError(true);
+                    }
+                  }}
+                  className="w-full h-full object-contain drop-shadow-md"
                   loading="lazy"
                 />
               ) : (

@@ -97,6 +97,17 @@ function normalizeCompetitionName(rawName) {
   return rawName.replace(/\s*20\d\d(\/20?\d\d)?/g, '').trim();
 }
 
+function resolveTeamLogo(teamName, rawLogoUrl) {
+  const name = String(teamName || '').toLowerCase().trim();
+  if (name.includes('bayern')) {
+    return 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg';
+  }
+  if (name.includes('arsenal')) {
+    return '/arsenal-logo.svg';
+  }
+  return rawLogoUrl || null;
+}
+
 const cachedDetails = new Map();
 const h2hCache = new Map();
 const formCache = new Map();
@@ -486,8 +497,8 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
             id: m.matchID,
             date: m.matchDateTimeUTC || m.matchDateTime,
             competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga'),
-            homeTeam: { name: m.team1.teamName, logo: m.team1.teamIconUrl, winner: p1 > p2 },
-            awayTeam: { name: m.team2.teamName, logo: m.team2.teamIconUrl, winner: p2 > p1 },
+            homeTeam: { name: m.team1.teamName, logo: resolveTeamLogo(m.team1.teamName, m.team1.teamIconUrl), winner: p1 > p2 },
+            awayTeam: { name: m.team2.teamName, logo: resolveTeamLogo(m.team2.teamName, m.team2.teamIconUrl), winner: p2 > p1 },
             score: `${p1}:${p2}`
           };
         });
@@ -516,7 +527,7 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
             id: m.matchID,
             date: m.matchDateTimeUTC || m.matchDateTime,
             opponent: cleanOppName,
-            opponentLogo: opp?.teamIconUrl,
+            opponentLogo: resolveTeamLogo(cleanOppName, opp?.teamIconUrl),
             score: `${gf}-${ga}`,
             result,
             isHome: isTeam1,
@@ -565,7 +576,7 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
         name: homeTeam.teamName,
         logo: isHomeBayern
           ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg'
-          : homeTeam.teamIconUrl,
+          : resolveTeamLogo(homeTeam.teamName, homeTeam.teamIconUrl),
         isBayern: isHomeBayern
       },
       away: {
@@ -573,7 +584,7 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
         name: awayTeam.teamName,
         logo: !isHomeBayern
           ? 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg'
-          : awayTeam.teamIconUrl,
+          : resolveTeamLogo(awayTeam.teamName, awayTeam.teamIconUrl),
         isBayern: !isHomeBayern
       }
     },
