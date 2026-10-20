@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import BayernCrest from '../components/BayernCrest';
+import { resolveTeamLogo, ARSENAL_WIKIMEDIA_FALLBACK } from '../utils/teamLogos';
 
 
 const VENUE_MAP = {
@@ -192,6 +193,15 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
       return '24H';
     }
   });
+
+  const [uclBgFailed, setUclBgFailed] = useState(false);
+
+  useEffect(() => {
+    setUclBgFailed(false);
+    const img = new Image();
+    img.src = '/images/ucl-bg.jpg';
+    img.onerror = () => setUclBgFailed(true);
+  }, [fixtureId]);
 
   const toggleTimeFormat = () => {
     setTimeFormat(prev => {
@@ -408,13 +418,13 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
           home: {
             id: homeTeam.teamId,
             name: homeTeam.teamName,
-            logo: isHomeBayern ? null : homeTeam.teamIconUrl,
+            logo: isHomeBayern ? null : resolveTeamLogo(homeTeam.teamName, homeTeam.teamIconUrl),
             isBayern: isHomeBayern
           },
           away: {
             id: awayTeam.teamId,
             name: awayTeam.teamName,
-            logo: !isHomeBayern ? null : awayTeam.teamIconUrl,
+            logo: !isHomeBayern ? null : resolveTeamLogo(awayTeam.teamName, awayTeam.teamIconUrl),
             isBayern: !isHomeBayern
           }
         },
@@ -488,11 +498,18 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#070b12] text-white font-display py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto space-y-6">
-          <div className="h-6 w-36 bg-white/10 rounded animate-pulse" />
-          <div className="h-64 w-full bg-[#121824] border border-[#1c2535] rounded-xl animate-pulse" />
-          <div className="h-10 w-full bg-white/5 rounded animate-pulse" />
-          <div className="h-80 w-full bg-[#121824] border border-[#1c2535] rounded-xl animate-pulse" />
+        <div className="max-w-5xl mx-auto space-y-8 animate-pulse">
+          <div className="h-6 w-36 bg-white/10 rounded" />
+          <div className="py-8 border-b border-[#1c2535] space-y-4">
+            <div className="h-4 w-48 bg-white/5 rounded" />
+            <div className="h-32 w-full bg-white/5 rounded" />
+            <div className="h-4 w-64 bg-white/5 rounded" />
+          </div>
+          <div className="h-8 w-80 bg-white/5 rounded" />
+          <div className="py-8 space-y-4">
+            <div className="h-6 w-52 bg-white/10 rounded" />
+            <div className="h-40 w-full bg-white/5 rounded" />
+          </div>
         </div>
       </div>
     );
@@ -538,6 +555,8 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
     teams?.away?.id === 157 || 
     teams?.away?.id === 40
   );
+  const homeLogo = resolveTeamLogo(teams?.home);
+  const awayLogo = resolveTeamLogo(teams?.away);
   const statusShort = fixture.status?.short?.toUpperCase() || 'NS';
   const isLive = ['1H', '2H', 'HT', 'ET', 'P', 'LIVE', 'BT'].includes(statusShort);
   const isFinished = ['FT', 'AET', 'PEN'].includes(statusShort);
@@ -546,6 +565,13 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
   const { date: formattedDate, primaryKickoff, secondaryKickoff } = formatMatchKickoff(fixture.date, visitorTimezone, timeFormat);
 
+  const isUclMatch = Boolean(
+    normalizeCompetitionName(competition?.name) === 'UEFA Champions League' ||
+    competition?.id === 2 ||
+    /champions\s*league/i.test(competition?.name || '') ||
+    /ucl/i.test(competition?.name || '')
+  );
+
   // Available tabs depending on match status
   const hasLineups = Array.isArray(lineups) && lineups.length > 0;
   const hasEvents = Array.isArray(events) && events.length > 0;
@@ -553,9 +579,22 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
   const hasH2H = Array.isArray(h2h) && h2h.length > 0;
 
   return (
-    <div className="min-h-screen bg-[#070b12] text-white font-display flex flex-col selection:bg-[#dc052d] selection:text-white">
+    <div 
+      className="min-h-screen bg-[#070b12] text-white font-display flex flex-col selection:bg-[#dc052d] selection:text-white relative"
+      style={
+        isUclMatch && !uclBgFailed
+          ? {
+              backgroundImage: `linear-gradient(to bottom, rgba(7, 11, 18, 0.88) 0%, rgba(7, 11, 18, 0.91) 25%, rgba(7, 11, 18, 0.94) 50%, rgba(7, 11, 18, 0.97) 80%, rgba(7, 11, 18, 0.98) 100%), url('/images/ucl-bg.jpg')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center 70%',
+              backgroundRepeat: 'no-repeat',
+            }
+          : undefined
+      }
+    >
+
       {/* Top Header Bar / Navigation */}
-      <div className="w-full bg-[#0a0f18] border-b border-[#1c2535]">
+      <div className="relative z-10 w-full border-b border-[#1c2535]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => onBack ? onBack() : onNavigate?.('/')}
@@ -572,7 +611,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
             <button
               onClick={() => fetchMatchDetails(true)}
               disabled={refreshing}
-              className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+              className="p-1.5 rounded text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
               title="Refresh match data"
               aria-label="Refresh match data"
             >
@@ -583,13 +622,13 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+      <div className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* =========================================================
             1. MATCH CLASH HERO BANNER
             ========================================================= */}
-        <div className="w-full bg-[#121824] border border-[#1c2535] rounded-xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+        <div className="w-full text-left select-none relative pb-4 sm:pb-6">
           {/* Top Metadata: Competition & Status Badge */}
-          <div className="flex items-center justify-between border-b border-[#1c2535]/80 pb-4 mb-6">
+          <div className="flex items-center justify-between border-b border-[#1c2535] pb-4 mb-6">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400">
               <span className="text-white">{competition.name || 'BUNDESLIGA'}</span>
               {competition.round && (
@@ -618,7 +657,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                 {statusShort === 'CANC' ? 'CANCELLED' : statusShort === 'SUSP' ? 'SUSPENDED' : 'POSTPONED'}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#dc052d]/15 border border-[#dc052d]/30 text-xs font-black uppercase tracking-widest text-[#dc052d]">
+              <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#dc052d]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
                 MATCH PREVIEW
               </span>
@@ -629,7 +668,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
               MATCHUP CLASH: RESPONSIVE DESKTOP & MOBILE VIEWS
               ========================================================= */}
           {/* Desktop & Tablet View (>= sm) */}
-          <div className="hidden sm:grid sm:grid-cols-12 sm:items-center sm:gap-4 py-2 text-center">
+          <div className="relative z-10 hidden sm:grid sm:grid-cols-12 sm:items-center sm:gap-4 py-2 text-center">
             {/* Home Team */}
             <div className="sm:col-span-4 flex flex-row items-center justify-end sm:gap-3 md:gap-4 text-right min-w-0">
               <div className="min-w-0">
@@ -641,12 +680,18 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
               <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 shrink-0 flex items-center justify-center">
                 {isHomeBayern ? (
                   <BayernCrest className="w-full h-full drop-shadow-md" />
-                ) : teams.home.logo ? (
+                ) : homeLogo ? (
                   <img 
-                    src={teams.home.logo} 
+                    src={homeLogo} 
                     alt={teams.home.name} 
                     className="w-full h-full object-contain drop-shadow-md" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    onError={(e) => {
+                      if (/arsenal/i.test(teams.home.name) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                        e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                      } else {
+                        e.currentTarget.style.display = 'none';
+                      }
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400">
@@ -718,12 +763,18 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
               <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 shrink-0 flex items-center justify-center">
                 {isAwayBayern ? (
                   <BayernCrest className="w-full h-full drop-shadow-md" />
-                ) : teams.away.logo ? (
+                ) : awayLogo ? (
                   <img 
-                    src={teams.away.logo} 
+                    src={awayLogo} 
                     alt={teams.away.name} 
                     className="w-full h-full object-contain drop-shadow-md" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    onError={(e) => {
+                      if (/arsenal/i.test(teams.away.name) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                        e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                      } else {
+                        e.currentTarget.style.display = 'none';
+                      }
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400">
@@ -748,12 +799,18 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                 <div className="w-16 h-16 shrink-0 flex items-center justify-center">
                   {isHomeBayern ? (
                     <BayernCrest className="w-full h-full drop-shadow-md" />
-                  ) : teams.home.logo ? (
+                  ) : homeLogo ? (
                     <img 
-                      src={teams.home.logo} 
+                      src={homeLogo} 
                       alt={teams.home.name} 
                       className="w-full h-full object-contain drop-shadow-md" 
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      onError={(e) => {
+                        if (/arsenal/i.test(teams.home.name) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                          e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                        } else {
+                          e.currentTarget.style.display = 'none';
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400">
@@ -772,12 +829,18 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                 <div className="w-16 h-16 shrink-0 flex items-center justify-center">
                   {isAwayBayern ? (
                     <BayernCrest className="w-full h-full drop-shadow-md" />
-                  ) : teams.away.logo ? (
+                  ) : awayLogo ? (
                     <img 
-                      src={teams.away.logo} 
+                      src={awayLogo} 
                       alt={teams.away.name} 
                       className="w-full h-full object-contain drop-shadow-md" 
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      onError={(e) => {
+                        if (/arsenal/i.test(teams.away.name) && e.currentTarget.src !== ARSENAL_WIKIMEDIA_FALLBACK) {
+                          e.currentTarget.src = ARSENAL_WIKIMEDIA_FALLBACK;
+                        } else {
+                          e.currentTarget.style.display = 'none';
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-bold text-xs text-gray-400">
@@ -851,7 +914,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
           </div>
 
           {/* Bottom Venue Strip */}
-          <div className="mt-6 pt-4 border-t border-[#1c2535]/80 flex flex-wrap items-center justify-between gap-3 text-xs text-gray-400">
+          <div className="mt-6 pt-4 border-t border-[#1c2535] flex flex-wrap items-center justify-between gap-3 text-xs text-gray-400">
             <div className="flex items-center gap-2">
               <MapPin size={14} className="text-[#dc052d] shrink-0" />
               <span className="uppercase tracking-wider font-semibold text-gray-300">{fixture.venue}</span>
@@ -868,13 +931,13 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
         {/* =========================================================
             2. EDITORIAL TAB NAVIGATION
             ========================================================= */}
-        <div className="flex items-center gap-2 border-b border-[#1c2535] overflow-x-auto pb-1 text-xs font-bold uppercase tracking-wider select-none">
+        <div className="flex items-center gap-6 sm:gap-8 border-b border-[#1c2535] overflow-x-auto text-xs font-bold uppercase tracking-wider select-none no-scrollbar">
           <button
             onClick={() => setActiveTab('preview')}
-            className={`px-4 py-2 rounded-t-lg transition-colors cursor-pointer ${
+            className={`pb-3 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'preview'
-                ? 'bg-[#121824] text-white border-t-2 border-[#dc052d]'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'border-[#dc052d] text-[#dc052d] font-black'
+                : 'border-transparent text-gray-400 hover:text-white'
             }`}
           >
             Match Preview
@@ -883,10 +946,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
           {hasH2H && (
             <button
               onClick={() => setActiveTab('h2h')}
-              className={`px-4 py-2 rounded-t-lg transition-colors cursor-pointer ${
+              className={`pb-3 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === 'h2h'
-                  ? 'bg-[#121824] text-white border-t-2 border-[#dc052d]'
-                  : 'text-gray-400 hover:text-gray-200'
+                  ? 'border-[#dc052d] text-[#dc052d] font-black'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
               Head-to-Head
@@ -895,10 +958,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('form')}
-            className={`px-4 py-2 rounded-t-lg transition-colors cursor-pointer ${
+            className={`pb-3 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'form'
-                ? 'bg-[#121824] text-white border-t-2 border-[#dc052d]'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'border-[#dc052d] text-[#dc052d] font-black'
+                : 'border-transparent text-gray-400 hover:text-white'
             }`}
           >
             Recent Form
@@ -906,10 +969,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('events')}
-            className={`px-4 py-2 rounded-t-lg transition-colors cursor-pointer ${
+            className={`pb-3 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'events'
-                ? 'bg-[#121824] text-white border-t-2 border-[#dc052d]'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'border-[#dc052d] text-[#dc052d] font-black'
+                : 'border-transparent text-gray-400 hover:text-white'
             }`}
           >
             Events {events?.length ? `(${events.length})` : ''}
@@ -917,10 +980,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('lineups')}
-            className={`px-4 py-2 rounded-t-lg transition-colors cursor-pointer ${
+            className={`pb-3 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'lineups'
-                ? 'bg-[#121824] text-white border-t-2 border-[#dc052d]'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'border-[#dc052d] text-[#dc052d] font-black'
+                : 'border-transparent text-gray-400 hover:text-white'
             }`}
           >
             Lineups
@@ -928,10 +991,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
           <button
             onClick={() => setActiveTab('stats')}
-            className={`px-4 py-2 rounded-t-lg transition-colors cursor-pointer ${
+            className={`pb-3 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'stats'
-                ? 'bg-[#121824] text-white border-t-2 border-[#dc052d]'
-                : 'text-gray-400 hover:text-gray-200'
+                ? 'border-[#dc052d] text-[#dc052d] font-black'
+                : 'border-transparent text-gray-400 hover:text-white'
             }`}
           >
             Statistics
@@ -945,19 +1008,17 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
         {activeTab === 'preview' && (
           <div className="space-y-6">
             {/* Match Preview Editorial Notes */}
-            <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 sm:p-8 space-y-4">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[#dc052d] block">
-                OFFICIAL MATCHDAY PREVIEW
-              </span>
-              <h4 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
-                {teams.home.name} vs {teams.away.name}
-              </h4>
-              <p className="text-sm text-gray-300 leading-relaxed font-sans">
-                FC Bayern prepares for an intense clash against {teams.home.isBayern ? teams.away.name : teams.home.name} in {competition.name} action at {fixture.venue}. 
-                Both squads look to secure vital points in their championship campaign.
-              </p>
+            <div className="py-5 sm:py-6 border-b border-[#1c2535] space-y-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#dc052d] block">
+                  OFFICIAL MATCHDAY PREVIEW
+                </span>
+                <h4 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight mt-1">
+                  {teams.home.name} vs {teams.away.name}
+                </h4>
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-[#1c2535]/80">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-[#1c2535]">
                 <div className="space-y-1">
                   <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">COMPETITION</span>
                   <span className="text-xs sm:text-sm text-white font-bold block">{competition.name}</span>
@@ -977,10 +1038,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
             </div>
 
             {/* Quick Form Preview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="py-2 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               {/* Home Team Form Snippet */}
-              <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between border-b border-[#1c2535] pb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-white">{teams.home.name}</span>
                   <span className="text-[10px] text-gray-400 uppercase tracking-wider">
                     {((isHomeBayern ? form?.bayern : form?.opponent) || []).length === 1
@@ -1010,8 +1071,8 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
               </div>
 
               {/* Away Team Form Snippet */}
-              <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between border-b border-[#1c2535] pb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-white">{teams.away.name}</span>
                   <span className="text-[10px] text-gray-400 uppercase tracking-wider">
                     {((isAwayBayern ? form?.bayern : form?.opponent) || []).length === 1
@@ -1045,8 +1106,8 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
         {/* TAB 2: HEAD-TO-HEAD */}
         {activeTab === 'h2h' && (
-          <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 sm:p-8 space-y-6">
-            <div>
+          <div className="py-5 sm:py-6 space-y-6">
+            <div className="border-b border-[#1c2535] pb-3">
               <span className="text-[11px] font-bold uppercase tracking-widest text-[#dc052d] block">HISTORICAL ENCOUNTERS</span>
               <h4 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">Previous Head-to-Head Meetings</h4>
             </div>
@@ -1065,7 +1126,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                     <span className={`text-right ${m.homeTeam.winner ? 'text-white font-black' : 'text-gray-300'}`}>
                       {m.homeTeam.name}
                     </span>
-                    <span className="px-2.5 py-0.5 rounded bg-white/5 border border-white/10 text-white font-black tabular-nums text-xs">
+                    <span className="px-2.5 py-0.5 rounded bg-white/10 text-white font-black tabular-nums text-xs">
                       {m.score}
                     </span>
                     <span className={`text-left ${m.awayTeam.winner ? 'text-white font-black' : 'text-gray-300'}`}>
@@ -1080,17 +1141,17 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
         {/* TAB 3: RECENT FORM */}
         {activeTab === 'form' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="py-5 sm:py-6 grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
             {/* Bayern Form */}
-            <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 space-y-4">
+            <div className="space-y-4">
               <div className="border-b border-[#1c2535] pb-3">
                 <span className="text-[10px] font-bold text-[#dc052d] uppercase tracking-widest block">FC BAYERN MÜNCHEN</span>
                 <h4 className="text-base font-black text-white uppercase tracking-tight">Recent Form Sequence</h4>
               </div>
               {form?.bayern && form.bayern.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-1">
                   {form.bayern.map((m, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-[#1c2535]/50">
+                    <div key={i} className="flex items-center justify-between text-xs py-2 border-b border-[#1c2535]">
                       <div className="flex items-center gap-2.5">
                         <span className={`w-5 h-5 rounded flex items-center justify-center font-black text-[11px] text-white ${
                           m.result === 'W' ? 'bg-[#15803d]' : m.result === 'L' ? 'bg-[#dc052d]' : 'bg-gray-600'
@@ -1109,7 +1170,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
             </div>
 
             {/* Opponent Form */}
-            <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 space-y-4">
+            <div className="space-y-4">
               <div className="border-b border-[#1c2535] pb-3">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
                   {teams.home.isBayern ? teams.away.name : teams.home.name}
@@ -1117,9 +1178,9 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                 <h4 className="text-base font-black text-white uppercase tracking-tight">Recent Form Sequence</h4>
               </div>
               {form?.opponent && form.opponent.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-1">
                   {form.opponent.map((m, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-[#1c2535]/50">
+                    <div key={i} className="flex items-center justify-between text-xs py-2 border-b border-[#1c2535]">
                       <div className="flex items-center gap-2.5">
                         <span className={`w-5 h-5 rounded flex items-center justify-center font-black text-[11px] text-white ${
                           m.result === 'W' ? 'bg-[#15803d]' : m.result === 'L' ? 'bg-[#dc052d]' : 'bg-gray-600'
@@ -1141,12 +1202,14 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
         {/* TAB 4: EVENTS */}
         {activeTab === 'events' && (
-          <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 sm:p-8 space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#dc052d] block">MATCH TIMELINE</span>
-            <h4 className="text-lg font-black text-white uppercase tracking-tight">Goals & Key Match Events</h4>
+          <div className="py-5 sm:py-6 space-y-4">
+            <div className="border-b border-[#1c2535] pb-3">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#dc052d] block">MATCH TIMELINE</span>
+              <h4 className="text-lg font-black text-white uppercase tracking-tight">Goals & Key Match Events</h4>
+            </div>
 
             {events && events.length > 0 ? (
-              <div className="space-y-3 pt-2">
+              <div className="divide-y divide-[#1c2535]">
                 {events.map((e, idx) => {
                   const isGoal = /goal/i.test(e.type || '');
                   const isCard = /card/i.test(e.type || '');
@@ -1156,7 +1219,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                   const isVar = /var/i.test(e.type || '');
 
                   return (
-                    <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 text-xs">
+                    <div key={idx} className="flex items-center gap-3 py-3 text-xs">
                       <span className="px-2 py-0.5 rounded bg-black/60 font-black text-[#dc052d] tabular-nums text-xs shrink-0">
                         {e.time}'{e.extraTime ? `+${e.extraTime}` : ''}
                       </span>
@@ -1194,7 +1257,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                 })}
               </div>
             ) : (
-              <div className="py-8 text-center text-sm text-gray-500">
+              <div className="py-12 text-center text-sm text-gray-500">
                 No match events recorded yet for this fixture.
               </div>
             )}
@@ -1204,9 +1267,9 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
         {/* TAB 5: LINEUPS */}
         {activeTab === 'lineups' && (
           hasLineups ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="py-5 sm:py-6 grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
               {lineups.map((l, idx) => (
-                <div key={idx} className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 space-y-4">
+                <div key={idx} className="space-y-4">
                   <div className="border-b border-[#1c2535] pb-3 flex items-center justify-between">
                     <div>
                       <h4 className="text-base font-black text-white uppercase tracking-tight">{l.teamName}</h4>
@@ -1217,9 +1280,9 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
                   <div>
                     <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">STARTING XI</span>
-                    <div className="space-y-1.5">
+                    <div className="divide-y divide-[#1c2535]">
                       {l.startXI?.map((p, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs py-1 px-2 rounded bg-white/5">
+                        <div key={i} className="flex items-center justify-between text-xs py-1.5">
                           <span className="text-gray-400 font-bold tabular-nums w-6">{p.number}</span>
                           <span className="flex-1 font-semibold text-white">{p.name}</span>
                           <span className="text-gray-500 font-bold uppercase">{p.pos}</span>
@@ -1231,9 +1294,9 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                   {l.substitutes && l.substitutes.length > 0 && (
                     <div className="pt-2">
                       <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">SUBSTITUTES</span>
-                      <div className="space-y-1">
+                      <div className="divide-y divide-[#1c2535]/50">
                         {l.substitutes.map((s, i) => (
-                          <div key={i} className="flex items-center justify-between text-xs py-0.5 px-2 text-gray-400">
+                          <div key={i} className="flex items-center justify-between text-xs py-1 text-gray-400">
                             <span className="tabular-nums w-6">{s.number}</span>
                             <span className="flex-1">{s.name}</span>
                             <span className="uppercase">{s.pos}</span>
@@ -1246,7 +1309,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
               ))}
             </div>
           ) : (
-            <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-8 sm:p-12 text-center space-y-3">
+            <div className="py-12 text-center space-y-3 border-y border-[#1c2535]">
               <Shield className="w-10 h-10 text-gray-500 mx-auto" />
               <h4 className="text-base font-black text-white uppercase tracking-tight">Official Lineups Pending</h4>
               <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
@@ -1259,23 +1322,23 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
         {/* TAB 6: STATISTICS */}
         {activeTab === 'stats' && (
           hasStats ? (
-            <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-6 sm:p-8 space-y-6">
-              <div>
+            <div className="py-5 sm:py-6 space-y-6">
+              <div className="border-b border-[#1c2535] pb-3">
                 <span className="text-[11px] font-bold uppercase tracking-widest text-[#dc052d] block">MATCH NUMBERS</span>
                 <h4 className="text-lg font-black text-white uppercase tracking-tight">Match Statistics</h4>
               </div>
 
-              <div className="space-y-4">
+              <div className="divide-y divide-[#1c2535]">
                 {statistics[0]?.stats?.map((stat, i) => {
                   const stat2 = statistics[1]?.stats?.[i];
                   const val1 = stat.value ?? 0;
                   const val2 = stat2?.value ?? 0;
                   return (
-                    <div key={i} className="space-y-1 text-xs">
+                    <div key={i} className="py-3 text-xs">
                       <div className="flex justify-between font-bold text-gray-300">
-                        <span className="text-white font-black">{val1}</span>
-                        <span className="uppercase tracking-wider text-gray-400">{stat.type}</span>
-                        <span className="text-white font-black">{val2}</span>
+                        <span className="text-white font-black text-sm">{val1}</span>
+                        <span className="uppercase tracking-wider text-gray-400 font-semibold">{stat.type}</span>
+                        <span className="text-white font-black text-sm">{val2}</span>
                       </div>
                     </div>
                   );
@@ -1283,7 +1346,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
               </div>
             </div>
           ) : (
-            <div className="bg-[#121824] border border-[#1c2535] rounded-xl p-8 sm:p-12 text-center space-y-3">
+            <div className="py-12 text-center space-y-3 border-y border-[#1c2535]">
               <Activity className="w-10 h-10 text-gray-500 mx-auto" />
               <h4 className="text-base font-black text-white uppercase tracking-tight">Match Statistics Available Live</h4>
               <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
