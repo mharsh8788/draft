@@ -19,6 +19,7 @@ import {
   Shield,
   Maximize2
 } from 'lucide-react';
+import ImageSkeleton from '../components/ImageSkeleton';
 
 /**
  * TimelineCardImage:
@@ -30,19 +31,45 @@ import {
  * - Never displays broken image icons.
  */
 function TimelineCardImage({ event, eventNumber, onClick }) {
-  const [images, setImages] = useState(() => (event.image ? [event.image] : []));
+  const eventNum = eventNumber || getTimelineEventNumber(event);
+  const primaryUrl = getTimelinePrimaryImageUrl(eventNum);
+
+  const [images, setImages] = useState(() => (primaryUrl ? [primaryUrl] : []));
+  const [isPrimaryLoaded, setIsPrimaryLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hasResolved, setHasResolved] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const containerRef = useRef(null);
+  const primaryImgRef = useRef(null);
 
-  // 1. Asynchronously resolve all available images for this event
+  // 1. Asynchronously resolve all available numbered images for this event in the background
   useEffect(() => {
     let isCurrent = true;
+    setIsPrimaryLoaded(false);
+    setHasError(false);
+
+    if (primaryUrl) {
+      setImages([primaryUrl]);
+      const img = new Image();
+      img.onload = () => {
+        if (isCurrent) setIsPrimaryLoaded(true);
+      };
+      img.onerror = () => {
+        if (isCurrent) setHasError(true);
+      };
+      img.src = primaryUrl;
+      if (img.complete && img.naturalWidth > 0) {
+        setIsPrimaryLoaded(true);
+      }
+    }
+
     resolveTimelineEventImages(event).then((resolved) => {
       if (isCurrent) {
         if (resolved.length > 0) {
           setImages(resolved);
+        } else {
+          setHasError(true);
         }
         setHasResolved(true);
       }
@@ -51,7 +78,14 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
     return () => {
       isCurrent = false;
     };
-  }, [event.id, eventNumber]);
+  }, [event.id, eventNumber, primaryUrl]);
+
+  // Check if primary image is already cached/complete
+  useEffect(() => {
+    if (primaryImgRef.current && primaryImgRef.current.complete && primaryImgRef.current.naturalWidth > 0) {
+      setIsPrimaryLoaded(true);
+    }
+  }, [images]);
 
   // 2. Viewport detection: pause timer when card is outside viewport
   useEffect(() => {
@@ -77,7 +111,7 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
 
   // 4. Round-robin rotation every 4 seconds when multiple images exist and card is visible
   useEffect(() => {
-    if (images.length <= 1 || !isVisible || prefersReducedMotion) {
+    if (images.length <= 1 || !isVisible || prefersReducedMotion || !isPrimaryLoaded) {
       return;
     }
 
@@ -86,21 +120,21 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
     }, 4000);
 
     return () => clearInterval(timer);
-  }, [images.length, isVisible, prefersReducedMotion]);
+  }, [images.length, isVisible, prefersReducedMotion, isPrimaryLoaded]);
 
   // Handle runtime image loading error by filtering out missing asset
   const handleImageError = (failedSrc) => {
     setImages((prev) => {
       const filtered = prev.filter((s) => s !== failedSrc);
-      if (filtered.length === 0 && event.image && failedSrc !== event.image) {
-        return [event.image];
+      if (filtered.length === 0) {
+        setHasError(true);
       }
       return filtered;
     });
   };
 
-  // If resolved and no images available at all, render clean fallback card
-  if (hasResolved && images.length === 0) {
+  // If resolved and no images available at all or error, render clean fallback card
+  if ((hasResolved && images.length === 0) || hasError) {
     return (
       <div 
         onClick={onClick}
@@ -134,21 +168,42 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
       className="relative w-full h-36 sm:h-44 bg-[#080d15] overflow-hidden border-b border-[#1c2535] cursor-pointer group select-none"
       title="Click image to open historical viewer"
     >
-      {/* Historical Images with subtle 500ms Crossfade Transition */}
-      {images.map((src, idx) => (
-        <img 
-          key={src}
-          src={src} 
-          alt={event.title}
-          onError={() => handleImageError(src)}
-          className={`absolute inset-0 w-full h-full object-cover ${event.imagePosition || 'object-[center_top]'} group-hover:scale-[1.025] transition-all duration-200 ease-out ${
-            idx === currentIndex 
-              ? 'opacity-90 group-hover:opacity-100 z-[5]' 
-              : 'opacity-0 pointer-events-none z-0'
-          }`}
-          loading="lazy"
+      {/* Subtle, restrained dark skeleton placeholder displayed until correct image has loaded */}
+      {!isPrimaryLoaded && (
+        <ImageSkeleton 
+          className="absolute inset-0 w-full h-full z-10" 
+          rounded="rounded-none" 
         />
-      ))}
+      )}
+
+      {/* Historical Images with subtle 500ms Crossfade Transition */}
+      {images.map((src, idx) => {
+        const objectPositionStyle = event.imagePosition
+          ? (event.imagePosition.startsWith('object-[')
+              ? event.imagePosition.slice(8, -1).replace(/_/g, ' ')
+              : event.imagePosition)
+          : 'center 35%';
+
+        return (
+          <img 
+            key={src}
+            ref={idx === 0 ? primaryImgRef : null}
+            src={src} 
+            alt={event.title}
+            onLoad={() => {
+              if (idx === 0) setIsPrimaryLoaded(true);
+            }}
+            onError={() => handleImageError(src)}
+            className={`absolute inset-0 w-full h-full object-cover ${event.imagePosition || 'object-[center_35%]'} group-hover:scale-[1.025] transition-all duration-200 ease-out ${
+              isPrimaryLoaded && idx === currentIndex 
+                ? 'opacity-90 group-hover:opacity-100 z-[5]' 
+                : 'opacity-0 pointer-events-none z-0'
+            }`}
+            style={{ objectPosition: objectPositionStyle }}
+            loading={idx === 0 ? "eager" : "lazy"}
+          />
+        );
+      })}
 
       {/* Dark gradient overlay for consistent text and badge contrast */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#0d131f] via-[#0d131f]/20 to-transparent pointer-events-none z-10" />
@@ -180,6 +235,7 @@ export default function TimelinePage({ onNavigate }) {
   const [activeEvent, setActiveEvent] = useState(null);
   const [eventImages, setEventImages] = useState([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [modalImageLoaded, setModalImageLoaded] = useState(false);
   
   const timelineTopRef = useRef(null);
   const timelineContainerRef = useRef(null);
@@ -287,13 +343,14 @@ export default function TimelinePage({ onNavigate }) {
 
   // 3. ARCHIVAL VIEWER: Resolve all available images when activeEvent changes
   useEffect(() => {
+    setEventImages([]);
+    setModalImageLoaded(false);
+    setActiveImageIndex(0);
+
     if (!activeEvent) {
-      setEventImages([]);
-      setActiveImageIndex(0);
       return;
     }
 
-    setActiveImageIndex(0);
     let isCurrent = true;
 
     resolveTimelineEventImages(activeEvent).then((imgs) => {
@@ -306,6 +363,10 @@ export default function TimelinePage({ onNavigate }) {
       isCurrent = false;
     };
   }, [activeEvent?.id]);
+
+  useEffect(() => {
+    setModalImageLoaded(false);
+  }, [activeImageIndex]);
 
   // Navigate through complete historical event sequence in viewer
   const navigateEvent = (direction) => {
@@ -664,17 +725,30 @@ export default function TimelinePage({ onNavigate }) {
             onClick={(e) => e.stopPropagation()}
             className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default modal-content-animate"
           >
-            {eventImages.length > 0 ? (
+            {eventImages.length > 0 || !activeEvent ? (
               <div className="relative flex flex-col items-center justify-center min-h-[220px] sm:min-h-[320px] md:min-h-[400px]">
-                {/* Historical Photograph: Original aspect ratio, max-w-[90vw], max-h-[75vh], subtle shadow, no card box */}
-                <img
-                  src={eventImages[activeImageIndex]}
-                  alt={`${activeEvent.title}${eventImages.length > 1 ? ` - Photo ${activeImageIndex + 1}` : ''}`}
-                  className="max-w-[90vw] max-h-[75vh] w-auto h-auto object-contain mx-auto shadow-2xl rounded-sm select-none"
-                />
+                {/* Skeleton placeholder while modal image is loading */}
+                {(!modalImageLoaded || eventImages.length === 0) && (
+                  <ImageSkeleton 
+                    className="w-[85vw] max-w-2xl h-[240px] sm:h-[340px] md:h-[420px] shadow-2xl" 
+                    rounded="rounded-sm" 
+                  />
+                )}
+
+                {eventImages.length > 0 && (
+                  <img
+                    key={eventImages[activeImageIndex]}
+                    src={eventImages[activeImageIndex]}
+                    alt={`${activeEvent.title}${eventImages.length > 1 ? ` - Photo ${activeImageIndex + 1}` : ''}`}
+                    onLoad={() => setModalImageLoaded(true)}
+                    className={`max-w-[90vw] max-h-[75vh] w-auto h-auto object-contain mx-auto shadow-2xl rounded-sm select-none transition-opacity duration-150 ${
+                      modalImageLoaded ? 'opacity-100' : 'opacity-0 absolute'
+                    }`}
+                  />
+                )}
 
                 {/* 1 / 2 Image Counter Badge (when multiple images exist for the event) */}
-                {eventImages.length > 1 && (
+                {eventImages.length > 1 && modalImageLoaded && (
                   <div className="absolute top-3 right-3 px-2.5 py-1 rounded bg-black/75 border border-white/10 text-[11px] font-display font-bold text-gray-200 shadow-md">
                     {activeImageIndex + 1} / {eventImages.length}
                   </div>

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import TrophyIllustration from './TrophyIllustration';
+import React, { useState, useEffect, useRef } from 'react';
+import { Shield } from 'lucide-react';
+import ImageSkeleton from './ImageSkeleton';
 import OdometerNumber from './OdometerNumber';
 
 // Memory cache for processed transparent trophy images
@@ -74,12 +75,15 @@ export default function TrophyCard({
   isInView,
 }) {
   const [processedSrc, setProcessedSrc] = useState(null);
+  const [isImageReady, setIsImageReady] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const imgRef = useRef(null);
 
   const rawImageSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
 
   useEffect(() => {
     let isMounted = true;
+    setIsImageReady(false);
     setHasError(false);
 
     if (rawImageSrc) {
@@ -87,6 +91,7 @@ export default function TrophyCard({
         if (!isMounted) return;
         if (result) {
           setProcessedSrc(result);
+          setIsImageReady(true);
           setHasError(false);
         } else {
           setHasError(true);
@@ -113,16 +118,33 @@ export default function TrophyCard({
 
         {/* Hero Trophy Asset */}
         <div className="relative z-10 transition-transform duration-200 ease-out group-hover:scale-[1.025] flex items-center justify-center w-full h-full">
-          {processedSrc && !hasError ? (
+          {!isImageReady && !hasError && (
+            <ImageSkeleton 
+              className="w-28 sm:w-32 h-36 sm:h-40 rounded-lg" 
+              aria-label={`Loading ${trophy.name}`}
+            />
+          )}
+
+          {processedSrc && !hasError && (
             <img
+              ref={imgRef}
               src={processedSrc}
               alt={trophy.name}
+              onLoad={() => setIsImageReady(true)}
               onError={() => setHasError(true)}
-              className="max-h-36 sm:max-h-40 max-w-[88%] object-contain drop-shadow-md pointer-events-none"
-              loading="lazy"
+              className={`max-h-36 sm:max-h-40 max-w-[88%] object-contain drop-shadow-md pointer-events-none transition-opacity duration-150 ${
+                isImageReady ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
             />
-          ) : (
-            <TrophyIllustration type={trophy.type} className="w-28 h-28 sm:w-32 sm:h-32 drop-shadow-md" />
+          )}
+
+          {hasError && (
+            <div className="flex flex-col items-center justify-center text-center p-2 text-white/20 select-none">
+              <Shield size={32} className="stroke-[1.5]" />
+              <span className="text-[10px] font-display uppercase tracking-wider text-gray-500 mt-1">
+                {trophy.shortName || 'Trophy'}
+              </span>
+            </div>
           )}
         </div>
       </div>
