@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { GAMES } from '../data/games';
 import { HOMEPAGE_FEATURED_FACT } from '../data/facts';
 import FunFactCard from '../components/FunFactCard';
@@ -30,17 +30,34 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
     sounds.playWhistle();
     if (onSelectGame && featuredGame.route) {
       onSelectGame(featuredGame.route);
+    } else if (onNavigate) {
+      onNavigate(featuredGame.route || '/mystery-player');
     }
   };
 
-  const handleScrollToGames = () => {
-    const el = document.getElementById('games-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      handlePlayFeatured();
+  const mysteryPlayerRef = useRef(null);
+
+  const handleScrollToMysteryPlayer = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const target = mysteryPlayerRef.current || document.getElementById('mystery-player-section');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash;
+      if (hash === '#mystery-player-section' || hash === '#mystery-player') {
+        const target = mysteryPlayerRef.current || document.getElementById('mystery-player-section');
+        if (target) {
+          setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
+    }
+  }, []);
 
   return (
     <div className="flex-1 flex flex-col text-left">
@@ -96,7 +113,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
             >
               {/* BUTTON 1: EXPLORE GAMES */}
               <button
-                onClick={handleScrollToGames}
+                onClick={handleScrollToMysteryPlayer}
                 onPointerEnter={() => handleCtaHover('games')}
                 onFocus={() => handleCtaHover('games')}
                 className={`inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none ${
@@ -205,7 +222,11 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
           {/* =========================================================
               FEATURED GAME: MYSTERY PLAYER
               ========================================================= */}
-          <div className="space-y-4 pt-4 sm:pt-6">
+          <div 
+            id="mystery-player-section"
+            ref={mysteryPlayerRef}
+            className="space-y-4 pt-4 sm:pt-6 scroll-mt-20 sm:scroll-mt-24"
+          >
             {/* Section Eyebrow Header */}
             <div className="flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-[#dc052d]">
               <span className="w-2 h-2 rounded-full bg-[#dc052d]" />

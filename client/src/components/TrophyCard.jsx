@@ -2,109 +2,56 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Shield } from 'lucide-react';
 import ImageSkeleton from './ImageSkeleton';
 import OdometerNumber from './OdometerNumber';
-
-// Memory cache for processed transparent trophy images
-const processedTrophyCache = new Map();
-
-function processTrophyTransparency(src) {
-  if (!src) return Promise.resolve(null);
-  if (processedTrophyCache.has(src)) {
-    return Promise.resolve(processedTrophyCache.get(src));
-  }
-
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        
-        ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-
-        // Threshold for neutralizing white / near-white background
-        const threshold = 238;
-        const feather = 18;
-
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          const a = data[i + 3];
-
-          if (a === 0) continue;
-
-          const minChannel = Math.min(r, g, b);
-
-          if (minChannel >= threshold) {
-            // White / near-white background pixel -> set fully transparent
-            data[i + 3] = 0;
-          } else if (minChannel > threshold - feather) {
-            // Smooth anti-aliasing edge blend
-            const factor = (threshold - minChannel) / feather;
-            data[i + 3] = Math.round(a * Math.min(1, Math.max(0, factor)));
-          }
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-        const transparentUrl = canvas.toDataURL('image/png');
-        processedTrophyCache.set(src, transparentUrl);
-        resolve(transparentUrl);
-      } catch {
-        // Fallback to raw source if canvas processing fails
-        processedTrophyCache.set(src, src);
-        resolve(src);
-      }
-    };
-    img.onerror = () => {
-      resolve(null);
-    };
-    img.src = src;
-  });
-}
+import { processTrophyTransparency, loadAndDecodeTrophy } from '../utils/trophyImageService';
 
 export default function TrophyCard({
   trophy,
   index = 0,
   isTriggered = false,
-  staggerDelay = 0,
   cardRef,
-  isInView,
+  allImagesReady = null, // Boolean when coordinated by HonoursSection, or null when standalone
+  processedSrc: externalProcessedSrc = undefined,
+  hasError: externalHasError = undefined,
 }) {
-  const [processedSrc, setProcessedSrc] = useState(null);
-  const [isImageReady, setIsImageReady] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const imgRef = useRef(null);
+  const [internalSrc, setInternalSrc] = useState(null);
+  const [internalReady, setInternalReady] = useState(false);
+  const [internalError, setInternalError] = useState(false);
 
   const rawImageSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
 
+  // Fallback standalone loading if not coordinated by HonoursSection
   useEffect(() => {
+    if (allImagesReady !== null) return;
+
     let isMounted = true;
-    setIsImageReady(false);
-    setHasError(false);
+    setInternalReady(false);
+    setInternalError(false);
 
     if (rawImageSrc) {
-      processTrophyTransparency(rawImageSrc).then((result) => {
+      loadAndDecodeTrophy(rawImageSrc).then((result) => {
         if (!isMounted) return;
         if (result) {
-          setProcessedSrc(result);
-          setIsImageReady(true);
-          setHasError(false);
+          setInternalSrc(result);
+          setInternalReady(true);
+          setInternalError(false);
         } else {
-          setHasError(true);
+          setInternalError(true);
         }
       });
     } else {
-      setHasError(true);
+      setInternalError(true);
     }
 
     return () => {
       isMounted = false;
     };
-  }, [rawImageSrc, trophy.id]);
+  }, [rawImageSrc, allImagesReady]);
+
+  // Determine whether we are using coordinated or standalone state
+  const isCoordinated = allImagesReady !== null;
+  const isImageReady = isCoordinated ? allImagesReady : internalReady;
+  const processedSrc = isCoordinated ? externalProcessedSrc : internalSrc;
+  const hasError = isCoordinated ? externalHasError : internalError;
 
   return (
     <div ref={cardRef} className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md">
@@ -118,23 +65,18 @@ export default function TrophyCard({
 
         {/* Hero Trophy Asset */}
         <div className="relative z-10 transition-transform duration-200 ease-out group-hover:scale-[1.025] flex items-center justify-center w-full h-full">
-          {!isImageReady && !hasError && (
+          {(!isImageReady || !processedSrc) && !hasError && (
             <ImageSkeleton 
               className="w-28 sm:w-32 h-36 sm:h-40 rounded-lg" 
               aria-label={`Loading ${trophy.name}`}
             />
           )}
 
-          {processedSrc && !hasError && (
+          {isImageReady && processedSrc && !hasError && (
             <img
-              ref={imgRef}
               src={processedSrc}
               alt={trophy.name}
-              onLoad={() => setIsImageReady(true)}
-              onError={() => setHasError(true)}
-              className={`max-h-36 sm:max-h-40 max-w-[88%] object-contain drop-shadow-md pointer-events-none transition-opacity duration-150 ${
-                isImageReady ? 'opacity-100' : 'opacity-0 absolute'
-              }`}
+              className="max-h-36 sm:max-h-40 max-w-[88%] object-contain drop-shadow-md pointer-events-none transition-opacity duration-300 opacity-100"
             />
           )}
 
@@ -162,9 +104,8 @@ export default function TrophyCard({
             <OdometerNumber
               value={trophy.count}
               isTriggered={isTriggered}
-              isInView={isInView}
-              delay={staggerDelay}
-              index={index}
+              delay={0}
+              index={0}
             />
           </span>
           <span className="text-[10px] font-display font-bold tracking-widest text-[#dc052d] uppercase mt-1">

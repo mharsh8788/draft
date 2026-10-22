@@ -83,6 +83,7 @@ export const TIMELINE_EVENTS = [
     keyFact: '11 founding members signed the charter led by Franz John.',
     image: '/images/archive/original-colours.jpg',
     imageCaption: 'Founding Document & Historic Crest',
+    imagePosition: 'object-[center_58%]',
     trophyBadge: null
   },
   {
@@ -97,6 +98,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Thousands of fans greeted the team in Munich on bicycles and decorated carriages.',
     image: '/images/bayern-vintage-squad.jpg',
     imageCaption: '1932 German Championship Winners',
+    imagePosition: 'object-[center_35%]',
     trophyBadge: '1st National Title'
   },
   {
@@ -111,6 +113,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Rudi Jobst scored the decisive 78th-minute winner.',
     image: '/images/trophies/pokal.jpg',
     imageCaption: 'The Historic DFB-Pokal Trophy',
+    imagePosition: 'object-[center_42%]',
     trophyBadge: 'DFB-Pokal'
   },
   {
@@ -125,6 +128,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'The legendary Beckenbauer–Maier–Müller axis made its Bundesliga debut.',
     image: '/images/archive/beckenbauer.jpg',
     imageCaption: 'A Young Franz Beckenbauer & Squad',
+    imagePosition: 'object-[center_35%]',
     trophyBadge: 'Promotion'
   },
   {
@@ -139,6 +143,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Franz Roth began his reputation as "Mr. European Final" with the extra-time winner.',
     image: '/images/trophies/winners.jpg',
     imageCaption: 'European Cup Winners\' Cup 1967',
+    imagePosition: 'object-[center_48%]',
     trophyBadge: 'European Cup Winners\' Cup'
   },
   {
@@ -153,6 +158,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'The first domestic double in modern German Bundesliga history.',
     image: '/images/trophies/bundesliga.jpg',
     imageCaption: 'The Bundesliga Meisterschale',
+    imagePosition: 'object-[center_42%]',
     trophyBadge: 'League & Cup Double'
   },
   {
@@ -167,6 +173,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'The world-famous sweeping tent-roof stadium became Bayern\'s fortress for 33 years.',
     image: '/images/olympiastadion-archive.jpg',
     imageCaption: 'The Munich Olympiastadion',
+    imagePosition: 'object-[center_46%]',
     trophyBadge: 'New Era'
   },
   {
@@ -181,6 +188,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Schwarzenbeck\'s 120th-minute equaliser forced the only replay in European Cup final history.',
     image: '/images/trophies/champions.jpg',
     imageCaption: 'European Champion Clubs\' Cup',
+    imagePosition: 'object-[center_28%]',
     trophyBadge: 'European Champions'
   },
   {
@@ -195,6 +203,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Second consecutive European Cup under coach Dettmar Cramer.',
     image: '/images/trophies/champions.jpg',
     imageCaption: 'European Cup 1975 Victory',
+    imagePosition: 'object-[center_48%]',
     trophyBadge: 'Back-to-Back Champions'
   },
   {
@@ -209,6 +218,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Earned the permanent right to keep the original European Cup trophy.',
     image: '/images/bayern-trophy-museum.jpg',
     imageCaption: 'FC Bayern Museum Silverware Showcase',
+    imagePosition: 'object-[center_36%]',
     trophyBadge: 'Three-Peat Royalty'
   },
   {
@@ -223,6 +233,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Surpassed 1. FC Nürnberg\'s longstanding record to become outright Rekordmeister.',
     image: '/images/trophies/bundesliga.jpg',
     imageCaption: 'Record Championship Meisterschale',
+    imagePosition: 'object-[center_40%]',
     trophyBadge: '10th Championship Title'
   },
   {
@@ -237,6 +248,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Jürgen Klinsmann set the single-tournament European scoring record with 15 goals.',
     image: '/images/trophies/uefa.jpg',
     imageCaption: 'The UEFA Cup 1996 Trophy',
+    imagePosition: 'object-[center_54%]',
     trophyBadge: 'UEFA Cup Champions'
   },
   {
@@ -251,6 +263,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Oliver Kahn saved 3 penalties in the shootout, winning Man of the Match and Fair Play honours.',
     image: '/images/trophies/champions.jpg',
     imageCaption: 'Champions League 2001 at San Siro',
+    imagePosition: 'object-[center_48%]',
     trophyBadge: 'Champions League'
   },
   {
@@ -265,6 +278,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'The world\'s first stadium with a full colour-changing illuminated exterior.',
     image: '/images/allianz-arena-home.jpg',
     imageCaption: 'The Illuminated Allianz Arena',
+    imagePosition: 'object-[center_48%]',
     trophyBadge: 'New Arena'
   },
   {
@@ -279,6 +293,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Arjen Robben\'s 89th-minute Wembley winner delivered Bayern\'s 5th European Cup.',
     image: '/images/trophies/champions.jpg',
     imageCaption: 'The Wembley Treble 2013',
+    imagePosition: 'object-[center_32%]',
     trophyBadge: 'Continental Treble'
   },
   {
@@ -293,6 +308,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Only the second club in football history (after Barcelona 2009) to claim all 6 trophies in a cycle.',
     image: '/images/trophies/clubworld.jpg',
     imageCaption: 'The Historic Sextuple Silverware',
+    imagePosition: 'object-[center_36%]',
     trophyBadge: 'The Sextuple'
   },
   {
@@ -307,6 +323,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Celebrated on 27 February 2025: 125 years of Mia San Mia.',
     image: '/images/bayern-historical-collage.jpg',
     imageCaption: '125 Years of FC Bayern Champions',
+    imagePosition: 'object-[center_48%]',
     trophyBadge: '125th Anniversary'
   },
   {
@@ -321,6 +338,7 @@ export const TIMELINE_EVENTS = [
     keyFact: 'Bayern claimed their 34th national championship in club history.',
     image: '/images/trophies/bundesliga.jpg',
     imageCaption: '34th Bundesliga Championship',
+    imagePosition: 'object-[center_35%]',
     trophyBadge: '34th Title'
   },
   {
@@ -335,6 +353,7 @@ export const TIMELINE_EVENTS = [
     keyFact: '35 German championship titles, extending Bayern\'s Rekordmeister status.',
     image: '/images/trophies/bundesliga.jpg',
     imageCaption: '35th German Championship',
+    imagePosition: 'object-[center_68%]',
     trophyBadge: '35th Title'
   }
 ];
