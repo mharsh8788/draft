@@ -41,7 +41,7 @@ export default function HonoursSection() {
             }
             return { id: trophy.id, src: url, error: false };
           } catch {
-            return { id: trophy.id, src: null, error: true };
+            return { id: trophy.id, src: rawSrc, error: false };
           }
         })
       );

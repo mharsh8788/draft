@@ -105,8 +105,41 @@ function normalizeCompetitionName(rawName) {
   if (/europa\s*league/i.test(rawName) || /uel/i.test(rawName)) return 'UEFA Europa League';
   if (/conference\s*league/i.test(rawName) || /uecl/i.test(rawName)) return 'UEFA Conference League';
   if (/club\s*world\s*cup/i.test(rawName) || /klubwelt/i.test(rawName)) return 'FIFA Club World Cup';
+  if (/2\.\s*(?:fu[ßs]+ball-?)?\s*bundesliga|bl2/i.test(rawName)) return '2. Bundesliga';
   if (/bundesliga/i.test(rawName) || /bl1/i.test(rawName)) return 'Bundesliga';
   return rawName.replace(/\s*20\d\d(\/20?\d\d)?/g, '').trim();
+}
+
+function parseOpenLigaResult(matchResults, isTeam1) {
+  if (!matchResults || matchResults.length === 0) {
+    return { gf: 0, ga: 0, result: 'D', score: '0-0' };
+  }
+
+  const penRes = matchResults.find(r => /elfmeter|penalty/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+  const aetRes = matchResults.find(r => /verlängerung|extratime/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+  const endRes = matchResults.find(r => r.resultName === 'Endergebnis') || matchResults[0];
+
+  if (penRes) {
+    const pFor = isTeam1 ? (penRes.pointsTeam1 ?? 0) : (penRes.pointsTeam2 ?? 0);
+    const pAgainst = isTeam1 ? (penRes.pointsTeam2 ?? 0) : (penRes.pointsTeam1 ?? 0);
+    const baseRes = aetRes || endRes;
+    const gf = isTeam1 ? (baseRes?.pointsTeam1 ?? 0) : (baseRes?.pointsTeam2 ?? 0);
+    const ga = isTeam1 ? (baseRes?.pointsTeam2 ?? 0) : (baseRes?.pointsTeam1 ?? 0);
+    const result = pFor > pAgainst ? 'W' : (pFor < pAgainst ? 'L' : 'D');
+    return { gf, ga, result, score: `${gf}-${ga} (${pFor}-${pAgainst} p)` };
+  }
+
+  if (aetRes) {
+    const gf = isTeam1 ? (aetRes.pointsTeam1 ?? 0) : (aetRes.pointsTeam2 ?? 0);
+    const ga = isTeam1 ? (aetRes.pointsTeam2 ?? 0) : (aetRes.pointsTeam1 ?? 0);
+    const result = gf > ga ? 'W' : (gf < ga ? 'L' : 'D');
+    return { gf, ga, result, score: `${gf}-${ga} (AET)` };
+  }
+
+  const gf = isTeam1 ? (endRes?.pointsTeam1 ?? 0) : (endRes?.pointsTeam2 ?? 0);
+  const ga = isTeam1 ? (endRes?.pointsTeam2 ?? 0) : (endRes?.pointsTeam1 ?? 0);
+  const result = gf > ga ? 'W' : (gf < ga ? 'L' : 'D');
+  return { gf, ga, result, score: `${gf}-${ga}` };
 }
 
 function formatFormOpponent(opponentName) {
@@ -195,12 +228,19 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
   });
 
   const [uclBgFailed, setUclBgFailed] = useState(false);
+  const [pokalBgFailed, setPokalBgFailed] = useState(false);
 
   useEffect(() => {
     setUclBgFailed(false);
-    const img = new Image();
-    img.src = '/images/ucl-bg.jpg';
-    img.onerror = () => setUclBgFailed(true);
+    setPokalBgFailed(false);
+
+    const uclImg = new Image();
+    uclImg.src = '/images/ucl-bg.jpg';
+    uclImg.onerror = () => setUclBgFailed(true);
+
+    const pokalImg = new Image();
+    pokalImg.src = '/images/dfb-pokal-bg.jpg';
+    pokalImg.onerror = () => setPokalBgFailed(true);
   }, [fixtureId]);
 
   const toggleTimeFormat = () => {
@@ -251,18 +291,21 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
       if (!rawMatch || !rawMatch.team1) {
         try {
-          const [resBl1, resUcl, resDfb] = await Promise.all([
+          const [resBl1, resUcl, resDfb, resBl2] = await Promise.all([
             fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
             fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
-            fetch('https://api.openligadb.de/getmatchdata/dfb/2026')
+            fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
+            fetch('https://api.openligadb.de/getmatchdata/bl2/2026')
           ]);
           const bl1Matches = resBl1.ok ? await resBl1.json() : [];
           const uclMatches = resUcl.ok ? await resUcl.json() : [];
           const dfbMatches = resDfb.ok ? await resDfb.json() : [];
+          const bl2Matches = resBl2.ok ? await resBl2.json() : [];
           const allMatches = [
             ...(Array.isArray(bl1Matches) ? bl1Matches : []),
             ...(Array.isArray(uclMatches) ? uclMatches : []),
-            ...(Array.isArray(dfbMatches) ? dfbMatches : [])
+            ...(Array.isArray(dfbMatches) ? dfbMatches : []),
+            ...(Array.isArray(bl2Matches) ? bl2Matches : [])
           ];
           rawMatch = allMatches.find(m =>
             String(m.matchID) === String(matchLookupId) ||
@@ -308,22 +351,36 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
         if (!isSilent) {
           try {
-            const [resBl1, resUcl, resDfb, res2025] = await Promise.all([
+            const [resBl1, resUcl, resDfb, resBl2, res2025, resBl2_2025] = await Promise.all([
               fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
               fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
               fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
-              fetch('https://api.openligadb.de/getmatchdata/bl1/2025')
+              fetch('https://api.openligadb.de/getmatchdata/bl2/2026'),
+              fetch('https://api.openligadb.de/getmatchdata/bl1/2025'),
+              fetch('https://api.openligadb.de/getmatchdata/bl2/2025')
             ]);
             const allBl1 = resBl1.ok ? await resBl1.json() : [];
             const allUcl = resUcl.ok ? await resUcl.json() : [];
             const allDfb = resDfb.ok ? await resDfb.json() : [];
+            const allBl2 = resBl2.ok ? await resBl2.json() : [];
             const all2025 = res2025.ok ? await res2025.json() : [];
-            const combined = [
+            const allBl2_2025 = resBl2_2025.ok ? await resBl2_2025.json() : [];
+            const rawCombined = [
               ...(Array.isArray(all2025) ? all2025 : []),
+              ...(Array.isArray(allBl2_2025) ? allBl2_2025 : []),
               ...(Array.isArray(allBl1) ? allBl1 : []),
+              ...(Array.isArray(allBl2) ? allBl2 : []),
               ...(Array.isArray(allUcl) ? allUcl : []),
               ...(Array.isArray(allDfb) ? allDfb : [])
             ];
+
+            const matchMap = new Map();
+            for (const m of rawCombined) {
+              if (m && m.matchID && !matchMap.has(m.matchID)) {
+                matchMap.set(m.matchID, m);
+              }
+            }
+            const combined = Array.from(matchMap.values());
 
             const directClashes = combined.filter(m =>
               m.matchIsFinished && (
@@ -333,16 +390,28 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
             );
 
             h2hList = directClashes.slice(-6).map(m => {
-              const r = m.matchResults?.find(x => x.resultName === 'Endergebnis') || m.matchResults?.[0];
-              const p1 = r?.pointsTeam1 ?? 0;
-              const p2 = r?.pointsTeam2 ?? 0;
+              const isT1Home = m.team1?.teamId === homeTeam.teamId;
+              const endRes = m.matchResults?.find(r => /verlängerung|extratime/i.test(r.resultName || r.resultDescription || r.resultTypeKind || '')) || m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[0];
+              const penRes = m.matchResults?.find(r => /elfmeter|penalty/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+              let p1 = endRes?.pointsTeam1 ?? 0;
+              let p2 = endRes?.pointsTeam2 ?? 0;
+              let win1 = p1 > p2;
+              let win2 = p2 > p1;
+              if (penRes) {
+                const pen1 = penRes.pointsTeam1 ?? 0;
+                const pen2 = penRes.pointsTeam2 ?? 0;
+                win1 = pen1 > pen2;
+                win2 = pen2 > pen1;
+              }
+              const homeWinner = isT1Home ? win1 : win2;
+              const awayWinner = isT1Home ? win2 : win1;
               return {
                 id: m.matchID,
                 date: m.matchDateTimeUTC || m.matchDateTime,
                 competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga'),
-                homeTeam: { name: m.team1.teamName, logo: m.team1.teamIconUrl, winner: p1 > p2 },
-                awayTeam: { name: m.team2.teamName, logo: m.team2.teamIconUrl, winner: p2 > p1 },
-                score: `${p1}:${p2}`
+                homeTeam: { name: homeTeam.teamName, logo: homeTeam.teamIconUrl, winner: homeWinner },
+                awayTeam: { name: awayTeam.teamName, logo: awayTeam.teamIconUrl, winner: awayWinner },
+                score: isT1Home ? `${p1}:${p2}` : `${p2}:${p1}`
               };
             });
 
@@ -370,10 +439,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                   (sName && (m.team1.teamName?.toLowerCase().includes(sName) || m.team1.shortName?.toLowerCase() === sName))
                 );
                 const opp = isT1 ? m.team2 : m.team1;
-                const r = m.matchResults?.find(x => x.resultName === 'Endergebnis') || m.matchResults?.[0];
-                const gf = isT1 ? (r?.pointsTeam1 ?? 0) : (r?.pointsTeam2 ?? 0);
-                const ga = isT1 ? (r?.pointsTeam2 ?? 0) : (r?.pointsTeam1 ?? 0);
-                const result = gf > ga ? 'W' : (gf === ga ? 'D' : 'L');
+                const { score, result } = parseOpenLigaResult(m.matchResults, isT1);
                 const rawOpp = opp?.shortName || opp?.teamName || 'Opponent';
                 const cleanOpp = rawOpp.replace(/^(@|vs\.?)\s+/i, '').trim();
                 return {
@@ -381,8 +447,8 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                   date: m.matchDateTimeUTC || m.matchDateTime,
                   opponent: cleanOpp,
                   opponentLogo: opp?.teamIconUrl,
-                  score: `${gf}-${ga}`,
-                  result: gf > ga ? 'W' : (gf === ga ? 'D' : 'L'),
+                  score,
+                  result,
                   isHome: isT1,
                   competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga')
                 };
@@ -572,6 +638,14 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
     /ucl/i.test(competition?.name || '')
   );
 
+  const isPokalMatch = Boolean(
+    normalizeCompetitionName(competition?.name) === 'DFB-Pokal' ||
+    competition?.id === 529 ||
+    competition?.id === 4945 ||
+    /pokal/i.test(competition?.name || '') ||
+    /dfb/i.test(competition?.name || '')
+  );
+
   // Available tabs depending on match status
   const hasLineups = Array.isArray(lineups) && lineups.length > 0;
   const hasEvents = Array.isArray(events) && events.length > 0;
@@ -580,13 +654,21 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
   return (
     <div 
-      className="min-h-screen bg-[#070b12] text-white font-display flex flex-col selection:bg-[#dc052d] selection:text-white relative"
+      className={`min-h-screen bg-[#070b12] text-white font-display flex flex-col selection:bg-[#dc052d] selection:text-white relative ${
+        isPokalMatch && !pokalBgFailed ? 'match-centre-pokal-bg' : ''
+      }`}
       style={
         isUclMatch && !uclBgFailed
           ? {
               backgroundImage: `linear-gradient(to bottom, rgba(7, 11, 18, 0.88) 0%, rgba(7, 11, 18, 0.91) 25%, rgba(7, 11, 18, 0.94) 50%, rgba(7, 11, 18, 0.97) 80%, rgba(7, 11, 18, 0.98) 100%), url('/images/ucl-bg.jpg')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center 70%',
+              backgroundRepeat: 'no-repeat',
+            }
+          : isPokalMatch && !pokalBgFailed
+          ? {
+              backgroundImage: `linear-gradient(to bottom, rgba(7, 11, 18, 0.87) 0%, rgba(7, 11, 18, 0.90) 25%, rgba(7, 11, 18, 0.94) 50%, rgba(7, 11, 18, 0.97) 80%, rgba(7, 11, 18, 0.98) 100%), url('/images/dfb-pokal-bg.jpg')`,
+              backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
             }
           : undefined
@@ -1267,54 +1349,100 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
         {/* TAB 5: LINEUPS */}
         {activeTab === 'lineups' && (
           hasLineups ? (
-            <div className="py-5 sm:py-6 grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
-              {lineups.map((l, idx) => (
-                <div key={idx} className="space-y-4">
-                  <div className="border-b border-[#1c2535] pb-3 flex items-center justify-between">
-                    <div>
-                      <h4 className="text-base font-black text-white uppercase tracking-tight">{l.teamName}</h4>
-                      {l.formation && <span className="text-xs text-[#dc052d] font-bold tracking-wider">FORMATION: {l.formation}</span>}
-                    </div>
-                    {l.coach && <span className="text-xs text-gray-400">COACH: {l.coach}</span>}
-                  </div>
-
-                  <div>
-                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">STARTING XI</span>
-                    <div className="divide-y divide-[#1c2535]">
-                      {l.startXI?.map((p, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs py-1.5">
-                          <span className="text-gray-400 font-bold tabular-nums w-6">{p.number}</span>
-                          <span className="flex-1 font-semibold text-white">{p.name}</span>
-                          <span className="text-gray-500 font-bold uppercase">{p.pos}</span>
+            <div className="py-5 sm:py-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+                {lineups.map((l, idx) => (
+                  <div key={idx} className="space-y-4">
+                    <div className="border-b border-[#1c2535] pb-3 flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-base font-black text-white uppercase tracking-tight">{l.teamName}</h4>
+                          {l.status === 'predicted' ? (
+                            <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                              Predicted
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              Confirmed
+                            </span>
+                          )}
                         </div>
-                      ))}
+                        {l.formation && (
+                          <span className="text-xs text-[#dc052d] font-bold tracking-wider block">
+                            FORMATION: {l.formation}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        {l.coach && <span className="text-xs text-gray-400 block">COACH: {l.coach}</span>}
+                      </div>
                     </div>
-                  </div>
 
-                  {l.substitutes && l.substitutes.length > 0 && (
-                    <div className="pt-2">
-                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">SUBSTITUTES</span>
-                      <div className="divide-y divide-[#1c2535]/50">
-                        {l.substitutes.map((s, i) => (
-                          <div key={i} className="flex items-center justify-between text-xs py-1 text-gray-400">
-                            <span className="tabular-nums w-6">{s.number}</span>
-                            <span className="flex-1">{s.name}</span>
-                            <span className="uppercase">{s.pos}</span>
+                    <div>
+                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">STARTING XI</span>
+                      <div className="divide-y divide-[#1c2535]">
+                        {l.startXI?.map((p, i) => (
+                          <div key={i} className="flex items-center justify-between text-xs py-1.5">
+                            <span className="text-gray-400 font-bold tabular-nums w-6">{p.number}</span>
+                            <span className="flex-1 font-semibold text-white">{p.name}</span>
+                            <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                              p.pos === 'G' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                              p.pos === 'D' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+                              p.pos === 'M' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                              p.pos === 'F' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+                              'text-gray-500'
+                            }`}>
+                              {p.pos || '—'}
+                            </span>
                           </div>
                         ))}
                       </div>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {l.substitutes && l.substitutes.length > 0 && (
+                      <div className="pt-2">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">SUBSTITUTES</span>
+                        <div className="divide-y divide-[#1c2535]/50">
+                          {l.substitutes.map((s, i) => (
+                            <div key={i} className="flex items-center justify-between text-xs py-1 text-gray-400">
+                              <span className="tabular-nums w-6">{s.number}</span>
+                              <span className="flex-1">{s.name}</span>
+                              <span className="uppercase text-[10px] text-gray-500 font-bold">{s.pos || 'SUB'}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
-            <div className="py-12 text-center space-y-3 border-y border-[#1c2535]">
-              <Shield className="w-10 h-10 text-gray-500 mx-auto" />
-              <h4 className="text-base font-black text-white uppercase tracking-tight">Official Lineups Pending</h4>
-              <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
-                Confirmed starting lineups and tactical formations are published approximately 60 minutes prior to kickoff once officially submitted by both clubs.
-              </p>
+            <div className="py-12 border-y border-[#1c2535] bg-white/[0.01] rounded-lg">
+              <div className="max-w-md mx-auto text-center space-y-4 px-4">
+                <div className="w-12 h-12 rounded-full bg-[#1c2535]/80 border border-white/10 flex items-center justify-center mx-auto text-gray-400">
+                  <Shield className="w-6 h-6 text-gray-400" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">
+                    TEAM SHEETS
+                  </span>
+                  <h4 className="text-lg font-black text-white uppercase tracking-tight">
+                    Lineups Not Available Yet
+                  </h4>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Confirmed starting lineups and tactical formations are published approximately 60 minutes prior to kickoff once team sheets are officially submitted by both clubs.
+                </p>
+                <div className="pt-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-white/5 border border-white/10 text-[11px] text-gray-400">
+                    <Clock size={13} className="text-gray-400 shrink-0" />
+                    <span>Official lineups activate ~60 min before match</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )
         )}

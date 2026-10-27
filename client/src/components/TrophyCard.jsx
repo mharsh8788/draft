@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield } from 'lucide-react';
 import ImageSkeleton from './ImageSkeleton';
 import OdometerNumber from './OdometerNumber';
-import { processTrophyTransparency, loadAndDecodeTrophy } from '../utils/trophyImageService';
+import { loadAndDecodeTrophy } from '../utils/trophyImageService';
 
 export default function TrophyCard({
   trophy,
@@ -51,7 +51,25 @@ export default function TrophyCard({
   const isCoordinated = allImagesReady !== null;
   const isImageReady = isCoordinated ? allImagesReady : internalReady;
   const processedSrc = isCoordinated ? externalProcessedSrc : internalSrc;
-  const hasError = isCoordinated ? externalHasError : internalError;
+  const resolvedSrc = processedSrc || rawImageSrc;
+
+  const [activeSrc, setActiveSrc] = useState(resolvedSrc);
+  const [imgFailed, setImgFailed] = useState(false);
+
+  useEffect(() => {
+    setActiveSrc(resolvedSrc);
+    setImgFailed(false);
+  }, [resolvedSrc]);
+
+  const hasError = (isCoordinated ? externalHasError : internalError) || imgFailed;
+
+  const handleImageError = () => {
+    if (activeSrc !== rawImageSrc && rawImageSrc) {
+      setActiveSrc(rawImageSrc);
+    } else {
+      setImgFailed(true);
+    }
+  };
 
   return (
     <div ref={cardRef} className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md">
@@ -65,17 +83,18 @@ export default function TrophyCard({
 
         {/* Hero Trophy Asset */}
         <div className="relative z-10 transition-transform duration-200 ease-out group-hover:scale-[1.025] flex items-center justify-center w-full h-full">
-          {(!isImageReady || !processedSrc) && !hasError && (
+          {!isImageReady && !hasError && (
             <ImageSkeleton 
               className="w-28 sm:w-32 h-36 sm:h-40 rounded-lg" 
               aria-label={`Loading ${trophy.name}`}
             />
           )}
 
-          {isImageReady && processedSrc && !hasError && (
+          {isImageReady && !hasError && activeSrc && (
             <img
-              src={processedSrc}
+              src={activeSrc}
               alt={trophy.name}
+              onError={handleImageError}
               className="max-h-36 sm:max-h-40 max-w-[88%] object-contain drop-shadow-md pointer-events-none transition-opacity duration-300 opacity-100"
             />
           )}

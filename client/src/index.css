@@ -163,3 +163,14 @@ a[role="button"]:active,
     transform: none !important;
   }
 }
+
+/* DFB-Pokal match centre background positioning */
+.match-centre-pokal-bg {
+  background-position: center 25%;
+}
+
+@media (max-width: 640px) {
+  .match-centre-pokal-bg {
+    background-position: center 18%;
+  }
+}

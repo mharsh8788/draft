@@ -39,3 +39,6 @@ draft/
 # Unused Download Artifacts in Client Public
 client/public/images/players/gomez.html
 client/public/images/players/gomez_files/
+
+# Temporary scratch scripts
+scratch/

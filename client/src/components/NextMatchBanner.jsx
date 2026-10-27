@@ -90,8 +90,41 @@ function normalizeCompetitionName(rawName) {
   if (/europa\s*league/i.test(rawName) || /uel/i.test(rawName)) return 'UEFA Europa League';
   if (/conference\s*league/i.test(rawName) || /uecl/i.test(rawName)) return 'UEFA Conference League';
   if (/club\s*world\s*cup/i.test(rawName) || /klubwelt/i.test(rawName)) return 'FIFA Club World Cup';
+  if (/2\.\s*(?:fu[ßs]+ball-?)?\s*bundesliga|bl2/i.test(rawName)) return '2. Bundesliga';
   if (/bundesliga/i.test(rawName) || /bl1/i.test(rawName)) return 'Bundesliga';
   return rawName.replace(/\s*20\d\d(\/20?\d\d)?/g, '').trim();
+}
+
+function parseOpenLigaResult(matchResults, isTeam1) {
+  if (!matchResults || matchResults.length === 0) {
+    return { gf: 0, ga: 0, result: 'D', score: '0-0' };
+  }
+
+  const penRes = matchResults.find(r => /elfmeter|penalty/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+  const aetRes = matchResults.find(r => /verlängerung|extratime/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+  const endRes = matchResults.find(r => r.resultName === 'Endergebnis') || matchResults[0];
+
+  if (penRes) {
+    const pFor = isTeam1 ? (penRes.pointsTeam1 ?? 0) : (penRes.pointsTeam2 ?? 0);
+    const pAgainst = isTeam1 ? (penRes.pointsTeam2 ?? 0) : (penRes.pointsTeam1 ?? 0);
+    const baseRes = aetRes || endRes;
+    const gf = isTeam1 ? (baseRes?.pointsTeam1 ?? 0) : (baseRes?.pointsTeam2 ?? 0);
+    const ga = isTeam1 ? (baseRes?.pointsTeam2 ?? 0) : (baseRes?.pointsTeam1 ?? 0);
+    const result = pFor > pAgainst ? 'W' : (pFor < pAgainst ? 'L' : 'D');
+    return { gf, ga, result, score: `${gf}-${ga} (${pFor}-${pAgainst} p)` };
+  }
+
+  if (aetRes) {
+    const gf = isTeam1 ? (aetRes.pointsTeam1 ?? 0) : (aetRes.pointsTeam2 ?? 0);
+    const ga = isTeam1 ? (aetRes.pointsTeam2 ?? 0) : (aetRes.pointsTeam1 ?? 0);
+    const result = gf > ga ? 'W' : (gf < ga ? 'L' : 'D');
+    return { gf, ga, result, score: `${gf}-${ga} (AET)` };
+  }
+
+  const gf = isTeam1 ? (endRes?.pointsTeam1 ?? 0) : (endRes?.pointsTeam2 ?? 0);
+  const ga = isTeam1 ? (endRes?.pointsTeam2 ?? 0) : (endRes?.pointsTeam1 ?? 0);
+  const result = gf > ga ? 'W' : (gf < ga ? 'L' : 'D');
+  return { gf, ga, result, score: `${gf}-${ga}` };
 }
 
 function getTimezoneAbbr(date, timeZone) {
@@ -533,19 +566,22 @@ export default function NextMatchBanner({ onNavigate }) {
           }
         }
 
-        const [resBl1, resUcl, resDfb, resCurBl1, resCurUcl, resCurDfb, res2025] = await Promise.all([
+        const [resBl1, resUcl, resDfb, resBl2, resCurBl1, resCurUcl, resCurDfb, res2025, resBl2_2025] = await Promise.all([
           fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
           fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
           fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
+          fetch('https://api.openligadb.de/getmatchdata/bl2/2026'),
           fetch('https://api.openligadb.de/getmatchdata/bl1'),
           fetch('https://api.openligadb.de/getmatchdata/ucl'),
           fetch('https://api.openligadb.de/getmatchdata/dfb'),
-          fetch('https://api.openligadb.de/getmatchdata/bl1/2025/34')
+          fetch('https://api.openligadb.de/getmatchdata/bl1/2025'),
+          fetch('https://api.openligadb.de/getmatchdata/bl2/2025')
         ]);
 
         const bl1Matches = resBl1.ok ? await resBl1.json() : [];
         const uclMatches = resUcl.ok ? await resUcl.json() : [];
         const dfbMatches = resDfb.ok ? await resDfb.json() : [];
+        const bl2Matches = resBl2.ok ? await resBl2.json() : [];
 
         const curBl1 = resCurBl1.ok ? await resCurBl1.json() : [];
         const curUcl = resCurUcl.ok ? await resCurUcl.json() : [];
@@ -554,7 +590,8 @@ export default function NextMatchBanner({ onNavigate }) {
         const allSeasonMatches = [
           ...(Array.isArray(bl1Matches) ? bl1Matches.map(m => ({ ...m, rawComp: m.leagueName || 'Bundesliga' })) : []),
           ...(Array.isArray(uclMatches) ? uclMatches.map(m => ({ ...m, rawComp: m.leagueName || 'UEFA Champions League' })) : []),
-          ...(Array.isArray(dfbMatches) ? dfbMatches.map(m => ({ ...m, rawComp: m.leagueName || 'DFB-Pokal' })) : [])
+          ...(Array.isArray(dfbMatches) ? dfbMatches.map(m => ({ ...m, rawComp: m.leagueName || 'DFB-Pokal' })) : []),
+          ...(Array.isArray(bl2Matches) ? bl2Matches.map(m => ({ ...m, rawComp: m.leagueName || '2. Bundesliga' })) : [])
         ];
 
         const currentMatches = [
@@ -568,55 +605,74 @@ export default function NextMatchBanner({ onNavigate }) {
           setMatch(parsed.match);
           if (parsed.followingMatch) setFollowingMatch(parsed.followingMatch);
 
-          // Extract form (last 4 matches)
-          let allFinished = [];
+          // Extract form (latest 5 completed matches, newest first, deduplicated)
+          let finishedMatches = [];
           try {
-            const finished2026 = allSeasonMatches.filter(m => m.matchIsFinished);
             const prev2025 = res2025.ok ? await res2025.json() : [];
-            const finished2025 = Array.isArray(prev2025) ? prev2025.filter(m => m.matchIsFinished) : [];
-            allFinished = [...finished2025, ...finished2026];
-            allFinished.sort((a, b) => new Date(a.matchDateTimeUTC || a.matchDateTime).getTime() - new Date(b.matchDateTimeUTC || b.matchDateTime).getTime());
+            const prevBl2_2025 = resBl2_2025.ok ? await resBl2_2025.json() : [];
+            const rawCombined = [
+              ...(Array.isArray(prev2025) ? prev2025 : []),
+              ...(Array.isArray(prevBl2_2025) ? prevBl2_2025 : []),
+              ...(Array.isArray(bl1Matches) ? bl1Matches : []),
+              ...(Array.isArray(bl2Matches) ? bl2Matches : []),
+              ...(Array.isArray(uclMatches) ? uclMatches : []),
+              ...(Array.isArray(dfbMatches) ? dfbMatches : [])
+            ];
+
+            const matchMap = new Map();
+            for (const m of rawCombined) {
+              if (m && m.matchID && !matchMap.has(m.matchID)) {
+                matchMap.set(m.matchID, m);
+              }
+            }
+            finishedMatches = Array.from(matchMap.values()).filter(m => m.matchIsFinished);
+            // Sort newest first
+            finishedMatches.sort((a, b) => new Date(b.matchDateTimeUTC || b.matchDateTime).getTime() - new Date(a.matchDateTimeUTC || a.matchDateTime).getTime());
           } catch {}
 
-          const extractLast4 = (teamCheck) => {
-            const teamMatches = allFinished.filter(m => teamCheck(m));
-            const last4 = teamMatches.slice(-4);
-            return last4.map(m => {
-              const isTeam1 = teamCheck({ team1: m.team1, team2: { shortName: '', teamName: '' } });
-              const endResult = m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[m.matchResults.length - 1];
-              const goalsFor = isTeam1 ? (endResult?.pointsTeam1 ?? 0) : (endResult?.pointsTeam2 ?? 0);
-              const goalsAgainst = isTeam1 ? (endResult?.pointsTeam2 ?? 0) : (endResult?.pointsTeam1 ?? 0);
-              const result = goalsFor > goalsAgainst ? 'W' : (goalsFor === goalsAgainst ? 'D' : 'L');
-              const opp = isTeam1 ? m.team2 : m.team1;
+          const extractRecentForm = (teamId, teamName) => {
+            const sName = teamName ? String(teamName).toLowerCase().trim() : '';
+            const teamMatches = finishedMatches.filter(m => {
+              const isT1 = m.team1 && (
+                (teamId && m.team1.teamId === teamId) ||
+                (sName && (m.team1.teamName?.toLowerCase().includes(sName) || m.team1.shortName?.toLowerCase() === sName))
+              );
+              const isT2 = m.team2 && (
+                (teamId && m.team2.teamId === teamId) ||
+                (sName && (m.team2.teamName?.toLowerCase().includes(sName) || m.team2.shortName?.toLowerCase() === sName))
+              );
+              return isT1 || isT2;
+            });
+
+            return teamMatches.slice(0, 5).map(m => {
+              const isT1 = m.team1 && (
+                (teamId && m.team1.teamId === teamId) ||
+                (sName && (m.team1.teamName?.toLowerCase().includes(sName) || m.team1.shortName?.toLowerCase() === sName))
+              );
+              const opp = isT1 ? m.team2 : m.team1;
+              const { score, result } = parseOpenLigaResult(m.matchResults, isT1);
+              const rawOpp = opp?.shortName || opp?.teamName || 'Opponent';
+              const cleanOpp = rawOpp.replace(/^(@|vs\.?)\s+/i, '').trim();
               return {
-                opponent: opp?.shortName || opp?.teamName || 'Opponent',
-                score: `${goalsFor}-${goalsAgainst}`,
+                id: m.matchID,
+                opponent: cleanOpp,
+                score,
                 result,
-                isHome: isTeam1,
-                date: m.matchDateTimeUTC || m.matchDateTime
+                isHome: isT1,
+                date: m.matchDateTimeUTC || m.matchDateTime,
+                competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga')
               };
             });
           };
 
-          const isBayern = m =>
-            (m.team1 && (m.team1.teamId === 40 || /bayern/i.test(m.team1.shortName || '') || /bayern/i.test(m.team1.teamName || ''))) ||
-            (m.team2 && (m.team2.teamId === 40 || /bayern/i.test(m.team2.shortName || '') || /bayern/i.test(m.team2.teamName || '')));
-
-          const bayernForm = extractLast4(isBayern);
-
-          const getOppFilter = (team) => {
-            const sName = (team?.shortName || team?.name || '').trim().toLowerCase();
-            return m => (
-              (m.team1 && (m.team1.shortName?.toLowerCase().includes(sName) || m.team1.teamName?.toLowerCase().includes(sName))) ||
-              (m.team2 && (m.team2.shortName?.toLowerCase().includes(sName) || m.team2.teamName?.toLowerCase().includes(sName)))
-            );
-          };
-
-          const opponentForm = extractLast4(getOppFilter(parsed.match.opponent));
+          const bayernForm = extractRecentForm(40, 'Bayern');
+          const oppTeam = parsed.match.opponent;
+          const opponentForm = extractRecentForm(oppTeam?.teamId, oppTeam?.shortName || oppTeam?.name);
           setForm({ bayern: bayernForm, opponent: opponentForm });
 
           if (parsed.followingMatch) {
-            const follOppForm = extractLast4(getOppFilter(parsed.followingMatch.opponent));
+            const follOppTeam = parsed.followingMatch.opponent;
+            const follOppForm = extractRecentForm(follOppTeam?.teamId, follOppTeam?.shortName || follOppTeam?.name);
             setFollowingForm({ bayern: bayernForm, opponent: follOppForm });
           }
 
@@ -1255,7 +1311,7 @@ export default function NextMatchBanner({ onNavigate }) {
                 /* Clean editorial-style row/list: fits on one row on desktop, 3 compact fixtures on mobile */
                 <div className="flex flex-wrap md:flex-nowrap items-center gap-x-2 lg:gap-x-2.5 gap-y-1.5 text-xs font-display overflow-hidden">
                   {leftTeamFormList.map((item, idx) => {
-                    const isHiddenOnMobile = leftTeamFormList.length > 3 && idx < leftTeamFormList.length - 3;
+                    const isHiddenOnMobile = leftTeamFormList.length > 3 && idx >= 3;
                     return (
                       <React.Fragment key={idx}>
                         <div className={`${isHiddenOnMobile ? 'hidden md:inline-flex' : 'inline-flex'} items-center gap-1.5 whitespace-nowrap shrink-0`}>
@@ -1278,7 +1334,7 @@ export default function NextMatchBanner({ onNavigate }) {
                           </span>
                         </div>
                         {idx < leftTeamFormList.length - 1 && (
-                          <span className={`text-gray-600 select-none text-xs shrink-0 ${isHiddenOnMobile ? 'hidden md:inline' : ''}`} aria-hidden="true">
+                          <span className={`text-gray-600 select-none text-xs shrink-0 ${idx >= 2 ? 'hidden md:inline' : ''}`} aria-hidden="true">
                             ·
                           </span>
                         )}
@@ -1308,7 +1364,7 @@ export default function NextMatchBanner({ onNavigate }) {
                 /* Clean editorial-style row/list: fits on one row on desktop, 3 compact fixtures on mobile */
                 <div className="flex flex-wrap md:flex-nowrap items-center gap-x-2 lg:gap-x-2.5 gap-y-1.5 text-xs font-display overflow-hidden">
                   {rightTeamFormList.map((item, idx) => {
-                    const isHiddenOnMobile = rightTeamFormList.length > 3 && idx < rightTeamFormList.length - 3;
+                    const isHiddenOnMobile = rightTeamFormList.length > 3 && idx >= 3;
                     return (
                       <React.Fragment key={idx}>
                         <div className={`${isHiddenOnMobile ? 'hidden md:inline-flex' : 'inline-flex'} items-center gap-1.5 whitespace-nowrap shrink-0`}>
@@ -1331,7 +1387,7 @@ export default function NextMatchBanner({ onNavigate }) {
                           </span>
                         </div>
                         {idx < rightTeamFormList.length - 1 && (
-                          <span className={`text-gray-600 select-none text-xs shrink-0 ${isHiddenOnMobile ? 'hidden md:inline' : ''}`} aria-hidden="true">
+                          <span className={`text-gray-600 select-none text-xs shrink-0 ${idx >= 2 ? 'hidden md:inline' : ''}`} aria-hidden="true">
                             ·
                           </span>
                         )}

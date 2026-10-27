@@ -93,8 +93,41 @@ function normalizeCompetitionName(rawName) {
   if (/europa\s*league/i.test(rawName) || /uel/i.test(rawName)) return 'UEFA Europa League';
   if (/conference\s*league/i.test(rawName) || /uecl/i.test(rawName)) return 'UEFA Conference League';
   if (/club\s*world\s*cup/i.test(rawName) || /klubwelt/i.test(rawName)) return 'FIFA Club World Cup';
+  if (/2\.\s*(?:fu[ßs]+ball-?)?\s*bundesliga|bl2/i.test(rawName)) return '2. Bundesliga';
   if (/bundesliga/i.test(rawName) || /bl1/i.test(rawName)) return 'Bundesliga';
   return rawName.replace(/\s*20\d\d(\/20?\d\d)?/g, '').trim();
+}
+
+function parseOpenLigaResult(matchResults, isTeam1) {
+  if (!matchResults || matchResults.length === 0) {
+    return { gf: 0, ga: 0, result: 'D', score: '0-0' };
+  }
+
+  const penRes = matchResults.find(r => /elfmeter|penalty/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+  const aetRes = matchResults.find(r => /verlängerung|extratime/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+  const endRes = matchResults.find(r => r.resultName === 'Endergebnis') || matchResults[0];
+
+  if (penRes) {
+    const pFor = isTeam1 ? (penRes.pointsTeam1 ?? 0) : (penRes.pointsTeam2 ?? 0);
+    const pAgainst = isTeam1 ? (penRes.pointsTeam2 ?? 0) : (penRes.pointsTeam1 ?? 0);
+    const baseRes = aetRes || endRes;
+    const gf = isTeam1 ? (baseRes?.pointsTeam1 ?? 0) : (baseRes?.pointsTeam2 ?? 0);
+    const ga = isTeam1 ? (baseRes?.pointsTeam2 ?? 0) : (baseRes?.pointsTeam1 ?? 0);
+    const result = pFor > pAgainst ? 'W' : (pFor < pAgainst ? 'L' : 'D');
+    return { gf, ga, result, score: `${gf}-${ga} (${pFor}-${pAgainst} p)` };
+  }
+
+  if (aetRes) {
+    const gf = isTeam1 ? (aetRes.pointsTeam1 ?? 0) : (aetRes.pointsTeam2 ?? 0);
+    const ga = isTeam1 ? (aetRes.pointsTeam2 ?? 0) : (aetRes.pointsTeam1 ?? 0);
+    const result = gf > ga ? 'W' : (gf < ga ? 'L' : 'D');
+    return { gf, ga, result, score: `${gf}-${ga} (AET)` };
+  }
+
+  const gf = isTeam1 ? (endRes?.pointsTeam1 ?? 0) : (endRes?.pointsTeam2 ?? 0);
+  const ga = isTeam1 ? (endRes?.pointsTeam2 ?? 0) : (endRes?.pointsTeam1 ?? 0);
+  const result = gf > ga ? 'W' : (gf < ga ? 'L' : 'D');
+  return { gf, ga, result, score: `${gf}-${ga}` };
 }
 
 function resolveTeamLogo(teamName, rawLogoUrl) {
@@ -116,6 +149,103 @@ const H2H_CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 const FORM_CACHE_TTL_MS = 6 * 60 * 60 * 1000;  // 6 hours
 
 let apiFootballQuotaExhaustedUntil = 0;
+
+async function fetchOpenLigaRecentForm(bayernId, oppTarget) {
+  const bayernFormKey = 'openliga-detail-form-40';
+  const oppTargetKey = oppTarget ? `openliga-detail-form-${String(oppTarget).toLowerCase().replace(/\s+/g, '-')}` : null;
+  const now = Date.now();
+
+  let bayernForm = bayernId ? (formCache.get(bayernFormKey)?.data || []) : [];
+  let oppForm = oppTargetKey ? (formCache.get(oppTargetKey)?.data || []) : [];
+
+  if ((bayernId && bayernForm.length === 0) || (oppTarget && oppForm.length === 0)) {
+    try {
+      const [resBl1, resUcl, resDfb, resBl2, res2025, resBl2_2025] = await Promise.all([
+        fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
+        fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
+        fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
+        fetch('https://api.openligadb.de/getmatchdata/bl2/2026'),
+        fetch('https://api.openligadb.de/getmatchdata/bl1/2025'),
+        fetch('https://api.openligadb.de/getmatchdata/bl2/2025')
+      ]);
+
+      const allBl1 = resBl1.ok ? await resBl1.json() : [];
+      const allUcl = resUcl.ok ? await resUcl.json() : [];
+      const allDfb = resDfb.ok ? await resDfb.json() : [];
+      const allBl2 = resBl2.ok ? await resBl2.json() : [];
+      const all2025 = res2025.ok ? await res2025.json() : [];
+      const allBl2_2025 = resBl2_2025.ok ? await resBl2_2025.json() : [];
+
+      const rawMatches = [
+        ...(Array.isArray(all2025) ? all2025 : []),
+        ...(Array.isArray(allBl2_2025) ? allBl2_2025 : []),
+        ...(Array.isArray(allBl1) ? allBl1 : []),
+        ...(Array.isArray(allBl2) ? allBl2 : []),
+        ...(Array.isArray(allUcl) ? allUcl : []),
+        ...(Array.isArray(allDfb) ? allDfb : [])
+      ];
+
+      const matchMap = new Map();
+      for (const m of rawMatches) {
+        if (m && m.matchID && !matchMap.has(m.matchID)) {
+          matchMap.set(m.matchID, m);
+        }
+      }
+      const allMatches = Array.from(matchMap.values());
+      const finishedMatches = allMatches.filter(m => m.matchIsFinished);
+      finishedMatches.sort((a, b) => new Date(b.matchDateTimeUTC || b.matchDateTime).getTime() - new Date(a.matchDateTimeUTC || a.matchDateTime).getTime());
+
+      function extractForm(teamId, teamName) {
+        const sName = teamName ? String(teamName).toLowerCase() : '';
+        const teamMatches = finishedMatches.filter(m => {
+          const isT1 = m.team1 && (
+            (teamId && m.team1.teamId === teamId) ||
+            (sName && (m.team1.teamName?.toLowerCase().includes(sName) || m.team1.shortName?.toLowerCase() === sName))
+          );
+          const isT2 = m.team2 && (
+            (teamId && m.team2.teamId === teamId) ||
+            (sName && (m.team2.teamName?.toLowerCase().includes(sName) || m.team2.shortName?.toLowerCase() === sName))
+          );
+          return isT1 || isT2;
+        });
+
+        return teamMatches.slice(0, 5).map(m => {
+          const isT1 = m.team1 && (
+            (teamId && m.team1.teamId === teamId) ||
+            (sName && (m.team1.teamName?.toLowerCase().includes(sName) || m.team1.shortName?.toLowerCase() === sName))
+          );
+          const opp = isT1 ? m.team2 : m.team1;
+          const { score, result } = parseOpenLigaResult(m.matchResults, isT1);
+          const rawOppName = opp?.shortName || opp?.teamName || 'Opponent';
+          const cleanOppName = rawOppName.replace(/^(@|vs\.?)\s+/i, '').trim();
+          return {
+            id: m.matchID,
+            date: m.matchDateTimeUTC || m.matchDateTime,
+            opponent: cleanOppName,
+            opponentLogo: resolveTeamLogo(cleanOppName, opp?.teamIconUrl),
+            score,
+            result,
+            isHome: isT1,
+            competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga')
+          };
+        });
+      }
+
+      if (bayernId && bayernForm.length === 0) {
+        bayernForm = extractForm(40, 'Bayern');
+        formCache.set(bayernFormKey, { data: bayernForm, time: now });
+      }
+      if (oppTarget && oppForm.length === 0) {
+        const targetId = typeof oppTarget === 'number' ? oppTarget : null;
+        const targetName = typeof oppTarget === 'string' ? oppTarget : null;
+        oppForm = extractForm(targetId, targetName);
+        if (oppTargetKey) formCache.set(oppTargetKey, { data: oppForm, time: now });
+      }
+    } catch {}
+  }
+
+  return { bayern: bayernForm, opponent: oppForm };
+}
 
 async function fetchFromApiFootball(fixtureId, apiKey, timezone = 'Europe/Berlin', isLiveOnly = false) {
   const now = Date.now();
@@ -185,12 +315,14 @@ async function fetchFromApiFootball(fixtureId, apiKey, timezone = 'Europe/Berlin
   }));
 
   const formattedLineups = (lineups || []).map(l => ({
+    status: l.status || 'confirmed',
     teamId: l.team?.id,
     teamName: l.team?.name,
     teamLogo: l.team?.logo,
     formation: l.formation || null,
     coach: l.coach?.name || null,
     coachPhoto: l.coach?.photo || null,
+    updatedAt: fixture.date || null,
     startXI: (l.startXI || []).map(p => ({
       id: p.player?.id,
       name: p.player?.name,
@@ -262,10 +394,10 @@ async function fetchFromApiFootball(fixtureId, apiKey, timezone = 'Europe/Berlin
     }
 
     try {
-      let formEndpoint = `https://v3.football.api-sports.io/fixtures?team=${teamId}&last=5${tzParam}`;
+      let formEndpoint = `https://v3.football.api-sports.io/fixtures?team=${teamId}&last=10${tzParam}`;
       let formHeaders = { 'x-apisports-key': apiKey };
       if (process.env.RAPIDAPI_KEY || apiKey.length > 35) {
-        formEndpoint = `https://api-football-v1.p.rapidapi.com/v3/fixtures?team=${teamId}&last=5${tzParam}`;
+        formEndpoint = `https://api-football-v1.p.rapidapi.com/v3/fixtures?team=${teamId}&last=10${tzParam}`;
         formHeaders = {
           'x-rapidapi-key': apiKey,
           'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
@@ -275,27 +407,59 @@ async function fetchFromApiFootball(fixtureId, apiKey, timezone = 'Europe/Berlin
       if (!fRes.ok) return [];
       const fJson = await fRes.json();
       if (!fJson.response || !Array.isArray(fJson.response)) return [];
+
+      // Exclude upcoming (NS, TBD), live (1H, 2H, HT, ET, P), postponed (PST), cancelled (CANC), abandoned (ABD)
       const completedFixtures = fJson.response.filter(f =>
         ['FT', 'AET', 'PEN'].includes(f.fixture?.status?.short)
       );
+
+      // Deduplicate fixtures by fixture.id
+      const seenIds = new Set();
+      const uniqueFixtures = [];
+      for (const f of completedFixtures) {
+        if (f.fixture?.id && !seenIds.has(f.fixture.id)) {
+          seenIds.add(f.fixture.id);
+          uniqueFixtures.push(f);
+        }
+      }
+
       // Sort by actual kickoff timestamp descending (most recent completed match first, oldest last)
-      completedFixtures.sort((a, b) => new Date(b.fixture?.date).getTime() - new Date(a.fixture?.date).getTime());
-      const formatted = completedFixtures.slice(0, 5).map(f => {
+      uniqueFixtures.sort((a, b) => new Date(b.fixture?.date).getTime() - new Date(a.fixture?.date).getTime());
+
+      const formatted = uniqueFixtures.slice(0, 5).map(f => {
         const isTeamHome = f.teams.home.id === teamId;
+        const teamObj = isTeamHome ? f.teams.home : f.teams.away;
         const opp = isTeamHome ? f.teams.away : f.teams.home;
         const goalsFor = isTeamHome ? f.goals.home : f.goals.away;
         const goalsAgainst = isTeamHome ? f.goals.away : f.goals.home;
-        const result = goalsFor > goalsAgainst ? 'W' : (goalsFor === goalsAgainst ? 'D' : 'L');
+
+        // Calculate W/D/L from this team's perspective, correctly handling extra-time and penalty shootouts
+        let result = 'D';
+        if (teamObj.winner === true) {
+          result = 'W';
+        } else if (opp.winner === true) {
+          result = 'L';
+        } else if (goalsFor != null && goalsAgainst != null) {
+          result = goalsFor > goalsAgainst ? 'W' : (goalsFor < goalsAgainst ? 'L' : 'D');
+        }
+
+        let scoreStr = `${goalsFor ?? 0}-${goalsAgainst ?? 0}`;
+        if (f.fixture?.status?.short === 'PEN' && f.score?.penalty?.home != null && f.score?.penalty?.away != null) {
+          const penFor = isTeamHome ? f.score.penalty.home : f.score.penalty.away;
+          const penAgainst = isTeamHome ? f.score.penalty.away : f.score.penalty.home;
+          scoreStr += ` (${penFor}-${penAgainst} p)`;
+        }
+
         const oppName = opp.name ? opp.name.replace(/^(@|vs\.?)\s+/i, '').trim() : 'Opponent';
         return {
           id: f.fixture.id,
           date: f.fixture.date,
           opponent: oppName,
           opponentLogo: opp.logo,
-          score: `${goalsFor}-${goalsAgainst}`,
+          score: scoreStr,
           result,
           isHome: isTeamHome,
-          competition: f.league.name
+          competition: normalizeCompetitionName(f.league?.name)
         };
       });
       formCache.set(formKey, { data: formatted, time: now });
@@ -305,10 +469,25 @@ async function fetchFromApiFootball(fixtureId, apiKey, timezone = 'Europe/Berlin
     }
   }
 
-  const [bayernRecentForm, oppRecentForm] = await Promise.all([
+  let [bayernRecentForm, oppRecentForm] = await Promise.all([
     fetchRecentForm(157),
     fetchRecentForm(opponentTeam.id)
   ]);
+
+  if (!isLiveOnly && (bayernRecentForm.length === 0 || oppRecentForm.length === 0)) {
+    try {
+      const openLigaData = await fetchOpenLigaRecentForm(
+        bayernRecentForm.length === 0 ? 40 : null,
+        oppRecentForm.length === 0 ? (opponentTeam.name || opponentTeam.id) : null
+      );
+      if (bayernRecentForm.length === 0 && openLigaData.bayern?.length > 0) {
+        bayernRecentForm = openLigaData.bayern;
+      }
+      if (oppRecentForm.length === 0 && openLigaData.opponent?.length > 0) {
+        oppRecentForm = openLigaData.opponent;
+      }
+    } catch {}
+  }
 
   return {
     fixture: {
@@ -384,19 +563,22 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
 
   if (!matchData || !matchData.team1) {
     try {
-      const [resBl1, resUcl, resDfb] = await Promise.all([
+      const [resBl1, resUcl, resDfb, resBl2] = await Promise.all([
         fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
         fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
-        fetch('https://api.openligadb.de/getmatchdata/dfb/2026')
+        fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
+        fetch('https://api.openligadb.de/getmatchdata/bl2/2026')
       ]);
 
       const listBl1 = resBl1.ok ? await resBl1.json() : [];
       const listUcl = resUcl.ok ? await resUcl.json() : [];
       const listDfb = resDfb.ok ? await resDfb.json() : [];
+      const listBl2 = resBl2.ok ? await resBl2.json() : [];
       const combined = [
         ...(Array.isArray(listBl1) ? listBl1 : []),
         ...(Array.isArray(listUcl) ? listUcl : []),
-        ...(Array.isArray(listDfb) ? listDfb : [])
+        ...(Array.isArray(listDfb) ? listDfb : []),
+        ...(Array.isArray(listBl2) ? listBl2 : [])
       ];
 
       matchData = combined.find(m =>
@@ -454,34 +636,53 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
 
   const now = Date.now();
   const h2hKey = `openliga-h2h-${homeTeam.teamId}-${awayTeam.teamId}`;
-  const bayernFormKey = 'openliga-detail-form-40';
-  const oppFormKey = `openliga-detail-form-${oppTeam.teamId}`;
-
   let h2hMatches = h2hCache.get(h2hKey)?.data || [];
-  let bayernRecent = formCache.get(bayernFormKey)?.data || [];
-  let oppRecent = formCache.get(oppFormKey)?.data || [];
 
-  if (!isLiveOnly && (h2hMatches.length === 0 || bayernRecent.length === 0 || oppRecent.length === 0)) {
+  let bayernRecent = [];
+  let oppRecent = [];
+
+  if (!isLiveOnly) {
     try {
-      const [resBl1, resUcl, resDfb, res2025] = await Promise.all([
-        fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
-        fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
-        fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
-        fetch('https://api.openligadb.de/getmatchdata/bl1/2025')
-      ]);
+      const formResults = await fetchOpenLigaRecentForm(40, oppTeam.teamId || oppTeam.shortName || oppTeam.teamName);
+      bayernRecent = formResults.bayern || [];
+      oppRecent = formResults.opponent || [];
+    } catch {}
 
-      const allBl1 = resBl1.ok ? await resBl1.json() : [];
-      const allUcl = resUcl.ok ? await resUcl.json() : [];
-      const allDfb = resDfb.ok ? await resDfb.json() : [];
-      const all2025 = res2025.ok ? await res2025.json() : [];
-      const allMatches = [
-        ...(Array.isArray(all2025) ? all2025 : []),
-        ...(Array.isArray(allBl1) ? allBl1 : []),
-        ...(Array.isArray(allUcl) ? allUcl : []),
-        ...(Array.isArray(allDfb) ? allDfb : [])
-      ];
+    if (h2hMatches.length === 0) {
+      try {
+        const [resBl1, resUcl, resDfb, resBl2, res2025, resBl2_2025] = await Promise.all([
+          fetch('https://api.openligadb.de/getmatchdata/bl1/2026'),
+          fetch('https://api.openligadb.de/getmatchdata/ucl/2026'),
+          fetch('https://api.openligadb.de/getmatchdata/dfb/2026'),
+          fetch('https://api.openligadb.de/getmatchdata/bl2/2026'),
+          fetch('https://api.openligadb.de/getmatchdata/bl1/2025'),
+          fetch('https://api.openligadb.de/getmatchdata/bl2/2025')
+        ]);
 
-      if (h2hMatches.length === 0) {
+        const allBl1 = resBl1.ok ? await resBl1.json() : [];
+        const allUcl = resUcl.ok ? await resUcl.json() : [];
+        const allDfb = resDfb.ok ? await resDfb.json() : [];
+        const allBl2 = resBl2.ok ? await resBl2.json() : [];
+        const all2025 = res2025.ok ? await res2025.json() : [];
+        const allBl2_2025 = resBl2_2025.ok ? await resBl2_2025.json() : [];
+
+        const rawMatches = [
+          ...(Array.isArray(all2025) ? all2025 : []),
+          ...(Array.isArray(allBl2_2025) ? allBl2_2025 : []),
+          ...(Array.isArray(allBl1) ? allBl1 : []),
+          ...(Array.isArray(allBl2) ? allBl2 : []),
+          ...(Array.isArray(allUcl) ? allUcl : []),
+          ...(Array.isArray(allDfb) ? allDfb : [])
+        ];
+
+        const matchMap = new Map();
+        for (const m of rawMatches) {
+          if (m && m.matchID && !matchMap.has(m.matchID)) {
+            matchMap.set(m.matchID, m);
+          }
+        }
+        const allMatches = Array.from(matchMap.values());
+
         const directClashes = allMatches.filter(m =>
           m.matchIsFinished && (
             (m.team1?.teamId === homeTeam.teamId && m.team2?.teamId === awayTeam.teamId) ||
@@ -490,61 +691,33 @@ async function fetchFromOpenLigaDB(matchId, isLiveOnly = false) {
         );
 
         h2hMatches = directClashes.slice(-6).map(m => {
-          const resObj = m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[0];
-          const p1 = resObj?.pointsTeam1 ?? 0;
-          const p2 = resObj?.pointsTeam2 ?? 0;
+          const isT1Home = m.team1?.teamId === homeTeam.teamId;
+          const endRes = m.matchResults?.find(r => /verlängerung|extratime/i.test(r.resultName || r.resultDescription || r.resultTypeKind || '')) || m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[0];
+          const penRes = m.matchResults?.find(r => /elfmeter|penalty/i.test(r.resultName || r.resultDescription || r.resultTypeKind || ''));
+          let p1 = endRes?.pointsTeam1 ?? 0;
+          let p2 = endRes?.pointsTeam2 ?? 0;
+          let win1 = p1 > p2;
+          let win2 = p2 > p1;
+          if (penRes) {
+            const pen1 = penRes.pointsTeam1 ?? 0;
+            const pen2 = penRes.pointsTeam2 ?? 0;
+            win1 = pen1 > pen2;
+            win2 = pen2 > pen1;
+          }
+          const homeWinner = isT1Home ? win1 : win2;
+          const awayWinner = isT1Home ? win2 : win1;
           return {
             id: m.matchID,
             date: m.matchDateTimeUTC || m.matchDateTime,
             competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga'),
-            homeTeam: { name: m.team1.teamName, logo: resolveTeamLogo(m.team1.teamName, m.team1.teamIconUrl), winner: p1 > p2 },
-            awayTeam: { name: m.team2.teamName, logo: resolveTeamLogo(m.team2.teamName, m.team2.teamIconUrl), winner: p2 > p1 },
-            score: `${p1}:${p2}`
+            homeTeam: { name: homeTeam.teamName, logo: resolveTeamLogo(homeTeam.teamName, homeTeam.teamIconUrl), winner: homeWinner },
+            awayTeam: { name: awayTeam.teamName, logo: resolveTeamLogo(awayTeam.teamName, awayTeam.teamIconUrl), winner: awayWinner },
+            score: isT1Home ? `${p1}:${p2}` : `${p2}:${p1}`
           };
         });
         h2hCache.set(h2hKey, { data: h2hMatches, time: now });
-      }
-
-      const finishedMatches = allMatches.filter(m => m.matchIsFinished);
-      // Sort by actual kickoff timestamp descending (most recent completed match first, oldest last)
-      finishedMatches.sort((a, b) => new Date(b.matchDateTimeUTC || b.matchDateTime).getTime() - new Date(a.matchDateTimeUTC || a.matchDateTime).getTime());
-
-      function getRecentForm(teamId, teamName) {
-        const teamMatches = finishedMatches.filter(m =>
-          (m.team1 && (m.team1.teamId === teamId || (teamName && m.team1.teamName?.includes(teamName)) || (teamName && m.team1.shortName?.toLowerCase() === String(teamName).toLowerCase()))) ||
-          (m.team2 && (m.team2.teamId === teamId || (teamName && m.team2.teamName?.includes(teamName)) || (teamName && m.team2.shortName?.toLowerCase() === String(teamName).toLowerCase())))
-        );
-        return teamMatches.slice(0, 5).map(m => {
-          const isTeam1 = m.team1 && (m.team1.teamId === teamId || (teamName && m.team1.teamName?.includes(teamName)) || (teamName && m.team1.shortName?.toLowerCase() === String(teamName).toLowerCase()));
-          const opp = isTeam1 ? m.team2 : m.team1;
-          const resObj = m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[0];
-          const gf = isTeam1 ? (resObj?.pointsTeam1 ?? 0) : (resObj?.pointsTeam2 ?? 0);
-          const ga = isTeam1 ? (resObj?.pointsTeam2 ?? 0) : (resObj?.pointsTeam1 ?? 0);
-          const result = gf > ga ? 'W' : (gf === ga ? 'D' : 'L');
-          const rawOppName = opp?.shortName || opp?.teamName || 'Opponent';
-          const cleanOppName = rawOppName.replace(/^(@|vs\.?)\s+/i, '').trim();
-          return {
-            id: m.matchID,
-            date: m.matchDateTimeUTC || m.matchDateTime,
-            opponent: cleanOppName,
-            opponentLogo: resolveTeamLogo(cleanOppName, opp?.teamIconUrl),
-            score: `${gf}-${ga}`,
-            result,
-            isHome: isTeam1,
-            competition: normalizeCompetitionName(m.leagueName || m.group?.groupName || 'Bundesliga')
-          };
-        });
-      }
-
-      if (bayernRecent.length === 0) {
-        bayernRecent = getRecentForm(40, 'Bayern');
-        formCache.set(bayernFormKey, { data: bayernRecent, time: now });
-      }
-      if (oppRecent.length === 0) {
-        oppRecent = getRecentForm(oppTeam.teamId, oppTeam.shortName || oppTeam.teamName);
-        formCache.set(oppFormKey, { data: oppRecent, time: now });
-      }
-    } catch {}
+      } catch {}
+    }
   }
 
   return {
