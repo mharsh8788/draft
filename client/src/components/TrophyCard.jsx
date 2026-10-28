@@ -72,7 +72,11 @@ export default function TrophyCard({
   };
 
   return (
-    <div ref={cardRef} className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md">
+    <div
+      ref={cardRef}
+      data-trophy-id={trophy.id}
+      className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md"
+    >
       {/* 1. Trophy Visual Area: 58% of height with subtle museum backlight */}
       <div className="relative h-48 sm:h-52 bg-[#0a0f18] border-b border-[#1c2535] flex items-center justify-center overflow-hidden p-4">
         {/* Very subtle dark radial spotlight */}

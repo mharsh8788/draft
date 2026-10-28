@@ -5,6 +5,18 @@ import TrophyCard from './TrophyCard';
 import { loadAndDecodeTrophy } from '../utils/trophyImageService';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+const SLIDE_TROPHY_IDS = {
+  0: ['bundesliga', 'dfb-pokal', 'ucl', 'german-super-cup'],
+  1: ['league-cup', 'uefa-cup', 'cup-winners-cup', 'intercontinental-cup'],
+  2: ['fifa-club-world-cup', 'uefa-super-cup'],
+};
+
+function getSlideIndexForCard(cardIndex) {
+  if (cardIndex < 4) return 0;
+  if (cardIndex < 8) return 1;
+  return 2;
+}
+
 export default function HonoursSection() {
   const pageTransition = useContext(PageTransitionContext);
   const transitionState = pageTransition?.transitionState || 'idle';
@@ -14,77 +26,177 @@ export default function HonoursSection() {
   const scrollRef = useRef(null);
   const cardRefs = useRef({});
 
-  // Synchronized trophy loading and counter coordination states
-  const [allImagesReady, setAllImagesReady] = useState(false);
+  // Slide-by-slide image readiness & count animation states
+  const [slideImagesReady, setSlideImagesReady] = useState({
+    0: false,
+    1: false,
+    2: false,
+  });
+  const [slideAnimated, setSlideAnimated] = useState({
+    0: false,
+    1: false,
+    2: false,
+  });
+  const slideAnimatedRef = useRef({
+    0: false,
+    1: false,
+    2: false,
+  });
+
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isSectionInView, setIsSectionInView] = useState(false);
+  const isMountedRef = useRef(true);
+
   const [processedImages, setProcessedImages] = useState({});
   const [failedImages, setFailedImages] = useState({});
-  const [countersStarted, setCountersStarted] = useState(false);
-  const countersStartedRef = useRef(false);
-  const isMountedRef = useRef(true);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // 1. Preload and decode ALL trophy images before revealing any of them
+  // 1. Preload and decode trophy images; track image readiness separately per slide
   useEffect(() => {
     isMountedRef.current = true;
 
-    async function preloadAllTrophies() {
-      const results = await Promise.allSettled(
-        HONOURS.map(async (trophy) => {
-          const rawSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
-          try {
-            const url = await loadAndDecodeTrophy(rawSrc);
-            if (!url) {
-              return { id: trophy.id, src: null, error: true };
-            }
-            return { id: trophy.id, src: url, error: false };
-          } catch {
-            return { id: trophy.id, src: rawSrc, error: false };
-          }
-        })
-      );
-
+    // Safety fallback timeout: ensure all slide images resolve even if an image stalls
+    const safetyTimer = setTimeout(() => {
       if (!isMountedRef.current) return;
+      setSlideImagesReady({ 0: true, 1: true, 2: true });
+    }, 4000);
 
-      const imgs = {};
-      const errs = {};
-      results.forEach((res, idx) => {
-        const trophy = HONOURS[idx];
-        if (res.status === 'fulfilled' && !res.value.error && res.value.src) {
-          imgs[trophy.id] = res.value.src;
-        } else {
-          errs[trophy.id] = true;
+    const resolved = {};
+
+    function checkSlideReady(sIdx) {
+      const ids = SLIDE_TROPHY_IDS[sIdx];
+      const isReady = ids.every((id) => resolved[id]);
+      if (isReady) {
+        setSlideImagesReady((prev) => (prev[sIdx] ? prev : { ...prev, [sIdx]: true }));
+      }
+    }
+
+    async function preloadAllTrophies() {
+      try {
+        await Promise.allSettled(
+          HONOURS.map(async (trophy, idx) => {
+            const rawSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
+            const sIdx = getSlideIndexForCard(idx);
+            try {
+              const url = await loadAndDecodeTrophy(rawSrc);
+              resolved[trophy.id] = true;
+              if (url) {
+                setProcessedImages((prev) => ({ ...prev, [trophy.id]: url }));
+              } else {
+                setFailedImages((prev) => ({ ...prev, [trophy.id]: true }));
+              }
+            } catch {
+              resolved[trophy.id] = true;
+              setProcessedImages((prev) => ({ ...prev, [trophy.id]: rawSrc }));
+            }
+
+            if (isMountedRef.current) {
+              checkSlideReady(sIdx);
+            }
+          })
+        );
+      } finally {
+        clearTimeout(safetyTimer);
+        if (isMountedRef.current) {
+          setSlideImagesReady({ 0: true, 1: true, 2: true });
         }
-      });
-
-      setProcessedImages(imgs);
-      setFailedImages(errs);
-      // Reveal all trophy images together simultaneously
-      setAllImagesReady(true);
+      }
     }
 
     preloadAllTrophies();
 
     return () => {
       isMountedRef.current = false;
+      clearTimeout(safetyTimer);
     };
   }, []);
 
-  // 2. Start all title-count animations simultaneously, only after images are revealed
+  // 2. Viewport visibility observation: detect when section enters the viewport
   useEffect(() => {
-    if (!allImagesReady || !isTransitionIdle) return;
-    if (countersStartedRef.current) return;
+    if (slideAnimatedRef.current[0] && slideAnimatedRef.current[1] && slideAnimatedRef.current[2]) return;
 
-    const timer = setTimeout(() => {
-      if (!isMountedRef.current) return;
-      countersStartedRef.current = true;
-      setCountersStarted(true);
-    }, 120);
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsSectionInView(true);
+      return;
+    }
 
-    return () => clearTimeout(timer);
-  }, [allImagesReady, isTransitionIdle]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsSectionInView(true);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px',
+      }
+    );
+
+    observer.observe(el);
+
+    // Initial check in case section is already in viewport on mount
+    const rect = el.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    if (rect.top < windowHeight - 60 && rect.bottom > 60) {
+      setIsSectionInView(true);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // 3. Trigger count-up animation per slide when it is active, its images are ready, and section is in view
+  useEffect(() => {
+    if (!isSectionInView || !isTransitionIdle) return;
+
+    if (!slideAnimatedRef.current[activeSlide] && slideImagesReady[activeSlide]) {
+      slideAnimatedRef.current[activeSlide] = true;
+      setSlideAnimated((prev) => ({ ...prev, [activeSlide]: true }));
+    }
+  }, [activeSlide, isSectionInView, isTransitionIdle, slideImagesReady]);
+
+  // 4. Observe horizontal intersection of slide key cards within carousel
+  useEffect(() => {
+    if (!scrollRef.current || typeof IntersectionObserver === 'undefined') return;
+
+    const firstCardOfSlide = {
+      0: 'bundesliga',
+      1: 'league-cup',
+      2: 'fifa-club-world-cup',
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            const cardId = entry.target.dataset.trophyId;
+            const sIdx = Object.keys(firstCardOfSlide).find(
+              (k) => firstCardOfSlide[k] === cardId
+            );
+            if (sIdx !== undefined) {
+              setActiveSlide(Number(sIdx));
+            }
+          }
+        });
+      },
+      {
+        root: scrollRef.current,
+        threshold: [0.5],
+      }
+    );
+
+    Object.values(firstCardOfSlide).forEach((cardId) => {
+      const el = cardRefs.current[cardId];
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [slideImagesReady]);
 
   const checkScroll = useCallback(() => {
     if (!scrollRef.current) return;
@@ -93,10 +205,30 @@ export default function HonoursSection() {
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
 
     const maxScroll = scrollWidth - clientWidth;
-    if (maxScroll > 0) {
+    if (maxScroll > 10) {
       setScrollProgress(scrollLeft / maxScroll);
+
+      const card1El = cardRefs.current['league-cup'];
+      const card2El = cardRefs.current['fifa-club-world-cup'];
+
+      if (card1El && card2El) {
+        const midPoint01 = card1El.offsetLeft - clientWidth * 0.45;
+        const midPoint12 = card2El.offsetLeft - clientWidth * 0.55;
+
+        if (scrollLeft < midPoint01) {
+          setActiveSlide(0);
+        } else if (scrollLeft < midPoint12) {
+          setActiveSlide(1);
+        } else {
+          setActiveSlide(2);
+        }
+      } else {
+        const progress = scrollLeft / maxScroll;
+        setActiveSlide(progress < 0.33 ? 0 : progress < 0.67 ? 1 : 2);
+      }
     } else {
       setScrollProgress(0);
+      setActiveSlide(0);
     }
   }, []);
 
@@ -106,12 +238,40 @@ export default function HonoursSection() {
     return () => window.removeEventListener('resize', checkScroll);
   }, [checkScroll]);
 
-  const handleScroll = (direction) => {
+  const scrollToSlide = (slideIdx) => {
     if (!scrollRef.current) return;
-    const containerWidth = scrollRef.current.clientWidth;
-    // Scroll by 1 page (4 cards at desktop)
-    const scrollOffset = direction === 'left' ? -containerWidth : containerWidth;
-    scrollRef.current.scrollBy({ left: scrollOffset, behavior: 'smooth' });
+    const targetTrophyId = slideIdx === 0 
+      ? 'bundesliga' 
+      : slideIdx === 1 
+        ? 'league-cup' 
+        : 'fifa-club-world-cup';
+
+    const targetEl = cardRefs.current[targetTrophyId];
+    const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+
+    let targetLeft = 0;
+    if (slideIdx === 0) {
+      targetLeft = 0;
+    } else if (slideIdx === 2) {
+      targetLeft = maxScroll;
+    } else if (targetEl) {
+      targetLeft = Math.min(targetEl.offsetLeft, maxScroll);
+    } else {
+      targetLeft = maxScroll / 2;
+    }
+
+    setActiveSlide(slideIdx);
+    scrollRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
+  };
+
+  const handleScroll = (direction) => {
+    if (direction === 'left') {
+      const prev = Math.max(0, activeSlide - 1);
+      scrollToSlide(prev);
+    } else {
+      const next = Math.min(2, activeSlide + 1);
+      scrollToSlide(next);
+    }
   };
 
   // 3-segment indicator to represent the 3 pages of cards on desktop (● ━ ━)
@@ -161,6 +321,7 @@ export default function HonoursSection() {
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {HONOURS.map((trophy, index) => {
+              const slideIdx = getSlideIndexForCard(index);
               return (
                 <TrophyCard
                   key={trophy.id}
@@ -169,10 +330,10 @@ export default function HonoursSection() {
                   }}
                   trophy={trophy}
                   index={index}
-                  allImagesReady={allImagesReady}
+                  allImagesReady={slideImagesReady[slideIdx]}
                   processedSrc={processedImages[trophy.id]}
                   hasError={!!failedImages[trophy.id]}
-                  isTriggered={countersStarted}
+                  isTriggered={slideAnimated[slideIdx]}
                 />
               );
             })}
@@ -186,14 +347,10 @@ export default function HonoursSection() {
             {[0, 1, 2].map((idx) => (
               <button
                 key={idx}
-                onClick={() => {
-                  if (!scrollRef.current) return;
-                  const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
-                  scrollRef.current.scrollTo({ left: (maxScroll * idx) / 2, behavior: 'smooth' });
-                }}
+                onClick={() => scrollToSlide(idx)}
                 aria-label={`Go to slide group ${idx + 1}`}
                 className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  activeSegment === idx 
+                  activeSlide === idx 
                     ? 'w-6 bg-[#dc052d]' 
                     : 'w-2 bg-white/20 hover:bg-white/40'
                 }`}

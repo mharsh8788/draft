@@ -79,7 +79,7 @@ export default function OdometerNumber({
             key={dIdx}
             targetDigit={digit}
             isTriggered={activeTrigger}
-            delay={baseDelay + dIdx * 0.025}
+            delay={delay !== undefined ? delay : baseDelay + dIdx * 0.025}
             duration={1.1}
             ease={[0.76, 0, 0.24, 1]}
           />
