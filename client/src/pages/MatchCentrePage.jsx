@@ -229,10 +229,12 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
 
   const [uclBgFailed, setUclBgFailed] = useState(false);
   const [pokalBgFailed, setPokalBgFailed] = useState(false);
+  const [bundesligaBgFailed, setBundesligaBgFailed] = useState(false);
 
   useEffect(() => {
     setUclBgFailed(false);
     setPokalBgFailed(false);
+    setBundesligaBgFailed(false);
 
     const uclImg = new Image();
     uclImg.src = '/images/ucl-bg.jpg';
@@ -241,6 +243,10 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
     const pokalImg = new Image();
     pokalImg.src = '/images/dfb-pokal-bg.jpg';
     pokalImg.onerror = () => setPokalBgFailed(true);
+
+    const bldImg = new Image();
+    bldImg.src = '/images/bundesliga-bg.jpg';
+    bldImg.onerror = () => setBundesligaBgFailed(true);
   }, [fixtureId]);
 
   const toggleTimeFormat = () => {
@@ -646,6 +652,15 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
     /dfb/i.test(competition?.name || '')
   );
 
+  const isBundesligaMatch = Boolean(
+    !isUclMatch && !isPokalMatch && (
+      normalizeCompetitionName(competition?.name) === 'Bundesliga' ||
+      competition?.id === 78 ||
+      (/bundesliga/i.test(competition?.name || '') && !/2\.\s*bundesliga/i.test(competition?.name || '')) ||
+      /bl1/i.test(competition?.name || '')
+    )
+  );
+
   // Available tabs depending on match status
   const hasLineups = Array.isArray(lineups) && lineups.length > 0;
   const hasEvents = Array.isArray(events) && events.length > 0;
@@ -655,7 +670,11 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
   return (
     <div 
       className={`min-h-screen bg-[#070b12] text-white font-display flex flex-col selection:bg-[#dc052d] selection:text-white relative ${
-        isPokalMatch && !pokalBgFailed ? 'match-centre-pokal-bg' : ''
+        isPokalMatch && !pokalBgFailed 
+          ? 'match-centre-pokal-bg' 
+          : isBundesligaMatch && !bundesligaBgFailed
+          ? 'match-centre-bundesliga-bg'
+          : ''
       }`}
       style={
         isUclMatch && !uclBgFailed
@@ -668,6 +687,12 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
           : isPokalMatch && !pokalBgFailed
           ? {
               backgroundImage: `linear-gradient(to bottom, rgba(7, 11, 18, 0.87) 0%, rgba(7, 11, 18, 0.90) 25%, rgba(7, 11, 18, 0.94) 50%, rgba(7, 11, 18, 0.97) 80%, rgba(7, 11, 18, 0.98) 100%), url('/images/dfb-pokal-bg.jpg')`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+            }
+          : isBundesligaMatch && !bundesligaBgFailed
+          ? {
+              backgroundImage: `linear-gradient(to bottom, rgba(7, 11, 18, 0.82) 0%, rgba(7, 11, 18, 0.85) 20%, rgba(7, 11, 18, 0.91) 55%, rgba(7, 11, 18, 0.97) 80%, rgba(7, 11, 18, 0.98) 100%), url('/images/bundesliga-bg.jpg')`,
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
             }

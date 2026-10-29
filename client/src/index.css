@@ -174,3 +174,14 @@ a[role="button"]:active,
     background-position: center 18%;
   }
 }
+
+/* Bundesliga match centre Südkurve red flares background positioning */
+.match-centre-bundesliga-bg {
+  background-position: center 42%;
+}
+
+@media (max-width: 640px) {
+  .match-centre-bundesliga-bg {
+    background-position: center 36%;
+  }
+}

@@ -380,9 +380,9 @@ export const TIMELINE_EVENTS = [
       '/images/timeline/kane-ballon-dor-6.jpg',
       '/images/timeline/kane-ballon-dor-7.jpg',
     ],
-    imageCaption: 'Harry Kane crowned 2026 Men’s Ballon d’Or Winner at the Théâtre du Châtelet in Paris',
+    imageCaption: 'Harry Kane receives the 2026 Men\'s Ballon d\'Or trophy at the gala in London',
     imageCaptions: [
-      'Harry Kane receives the 2026 Men’s Ballon d’Or trophy at the gala in Paris',
+      'Harry Kane receives the 2026 Men\'s Ballon d\'Or trophy at the gala in London',
       'Harry Kane addressing the audience at the lectern with the Ballon d’Or',
       'An emotional moment in the auditorium as Harry Kane is announced as the winner',
       'Harry Kane hoists the Ballon d’Or trophy high at the 70th Ballon d’Or ceremony',

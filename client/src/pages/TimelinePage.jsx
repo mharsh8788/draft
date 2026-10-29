@@ -985,7 +985,7 @@ export default function TimelinePage({ onNavigate }) {
                   </div>
                   <div className="space-y-1">
                     <span className="text-[11px] font-display font-bold uppercase tracking-widest text-[#fdb913] block">
-                      2026 BALLON D'OR GALA • PARIS
+                      2026 BALLON D'OR GALA • LONDON
                     </span>
                     <h4 className="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-tight">
                       HARRY KANE — BALLON D'OR WINNER
