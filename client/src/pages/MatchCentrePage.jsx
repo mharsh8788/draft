@@ -154,7 +154,7 @@ function sortFormByDateDesc(list) {
     const timeA = a.date ? new Date(a.date).getTime() : 0;
     const timeB = b.date ? new Date(b.date).getTime() : 0;
     return timeB - timeA;
-  });
+  }).slice(0, 4);
 }
 
 function formatMatchKickoff(dateStr, timeZone, timeFormat = '24H') {
@@ -262,7 +262,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
     try {
       // 1. Query Server API / Proxy (pass &live=true during live polling to save quota)
       const liveParam = isSilent ? '&live=true' : '';
-      const res = await fetch(`/api/match?id=${fixtureId || ''}&timezone=${encodeURIComponent(visitorTimezone)}${liveParam}&_t=${Math.floor(Date.now() / 60000)}`);
+      const res = await fetch(`/api/match?id=${fixtureId || '83196'}&timezone=${encodeURIComponent(visitorTimezone)}${liveParam}&_t=${Math.floor(Date.now() / 60000)}`);
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
@@ -432,7 +432,7 @@ export default function MatchCentrePage({ fixtureId, onBack, onNavigate }) {
                 return isT1 || isT2;
               });
 
-              return teamMatches.slice(0, 5).map(m => {
+              return teamMatches.slice(0, 4).map(m => {
                 const sName = tName ? String(tName).toLowerCase() : '';
                 const isT1 = m.team1 && (
                   (teamId && m.team1.teamId === teamId) ||

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import BayernCrest from './BayernCrest';
+import HeaderLogoDoodle from './HeaderLogoDoodle';
 
 export default function Header({ 
   currentPath, 
@@ -61,7 +61,7 @@ export default function Header({
         >
           {/* Crest: 44-52px on desktop (w-12 h-12 = 48px), ~40px on mobile */}
           <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 flex items-center justify-center transition-opacity duration-200 group-hover:opacity-95">
-            <BayernCrest className="w-full h-full" />
+            <HeaderLogoDoodle className="w-full h-full" />
           </div>
 
           {/* Wordmark: 30-36px desktop (text-[32px] sm:text-[34px]), bold, clean, leading-none */}

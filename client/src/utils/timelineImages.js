@@ -99,6 +99,9 @@ const eventImagesCache = new Map();
  */
 export async function resolveTimelineEventImages(event) {
   if (!event) return [];
+  if (Array.isArray(event.images) && event.images.length > 0) {
+    return event.images;
+  }
   const eventNum = getTimelineEventNumber(event);
   if (!eventNum) {
     return event.image ? [event.image] : [];
@@ -109,27 +112,49 @@ export async function resolveTimelineEventImages(event) {
     return eventImagesCache.get(cacheKey);
   }
 
+  let activeEventNumber = eventNum;
   const primaryUrl = getTimelinePrimaryImageUrl(eventNum);
   const images = [];
 
   // 1. Verify Primary Image
-  const primaryExists = await checkImageExists(primaryUrl);
+  let primaryExists = await checkImageExists(primaryUrl);
   if (primaryExists) {
     images.push(primaryUrl);
-  } else if (event.image) {
+  } else {
+    // If event has a named eventNumber (like 'kane-ballon-dor'), also check its numeric index (e.g. 20)
+    const index = typeof event === 'object' && event.id 
+      ? TIMELINE_EVENTS.findIndex((e) => e.id === event.id) 
+      : -1;
+    if (index !== -1) {
+      const numericNum = index + 1;
+      if (numericNum !== eventNum) {
+        const numericCandidateUrl = getTimelinePrimaryImageUrl(numericNum);
+        const numericExists = await checkImageExists(numericCandidateUrl);
+        if (numericExists) {
+          images.push(numericCandidateUrl);
+          primaryExists = true;
+          activeEventNumber = numericNum;
+        }
+      }
+    }
+  }
+
+  if (!primaryExists && event.image) {
     // Graceful fallback to verified existing asset if numbered image not yet uploaded
     images.push(event.image);
   }
 
-  // 2. Discover additional images: ${eventNum}-2.jpg, ${eventNum}-3.jpg, ...
-  for (let sub = 2; sub <= 10; sub++) {
-    const candidateUrl = getTimelineAdditionalImageUrl(eventNum, sub);
-    const exists = await checkImageExists(candidateUrl);
-    if (exists) {
-      images.push(candidateUrl);
-    } else {
-      // Sequential break when next numbered image does not exist
-      break;
+  // 2. Discover additional images: ${activeEventNumber}-2.jpg, ${activeEventNumber}-3.jpg, ...
+  if (primaryExists) {
+    for (let sub = 2; sub <= 10; sub++) {
+      const candidateUrl = getTimelineAdditionalImageUrl(activeEventNumber, sub);
+      const exists = await checkImageExists(candidateUrl);
+      if (exists) {
+        images.push(candidateUrl);
+      } else {
+        // Sequential break when next numbered image does not exist
+        break;
+      }
     }
   }
 

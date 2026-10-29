@@ -510,7 +510,7 @@ async function fetchMatchDetailsFromOpenLigaDB(matchId, isLiveOnly = false) {
           (m.team1 && (m.team1.teamId === teamId || (teamName && m.team1.teamName?.includes(teamName)) || (teamName && m.team1.shortName?.toLowerCase() === String(teamName).toLowerCase()))) ||
           (m.team2 && (m.team2.teamId === teamId || (teamName && m.team2.teamName?.includes(teamName)) || (teamName && m.team2.shortName?.toLowerCase() === String(teamName).toLowerCase())))
         );
-        return teamMatches.slice(0, 5).map(m => {
+        return teamMatches.slice(0, 4).map(m => {
           const isTeam1 = m.team1 && (m.team1.teamId === teamId || (teamName && m.team1.teamName?.includes(teamName)) || (teamName && m.team1.shortName?.toLowerCase() === String(teamName).toLowerCase()));
           const opp = isTeam1 ? m.team2 : m.team1;
           const resObj = m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[0];

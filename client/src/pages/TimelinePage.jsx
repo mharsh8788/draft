@@ -32,13 +32,21 @@ import ImageSkeleton from '../components/ImageSkeleton';
  */
 function TimelineCardImage({ event, eventNumber, onClick }) {
   const eventNum = eventNumber || getTimelineEventNumber(event);
-  const primaryUrl = getTimelinePrimaryImageUrl(eventNum);
+  const primaryUrl = Array.isArray(event.images) && event.images.length > 0 
+    ? event.images[0] 
+    : getTimelinePrimaryImageUrl(eventNum);
 
-  const [images, setImages] = useState(() => (primaryUrl ? [primaryUrl] : []));
+  const [images, setImages] = useState(() => (
+    Array.isArray(event.images) && event.images.length > 0 
+      ? event.images 
+      : primaryUrl 
+        ? [primaryUrl] 
+        : []
+  ));
   const [isPrimaryLoaded, setIsPrimaryLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [hasResolved, setHasResolved] = useState(false);
+  const [hasResolved, setHasResolved] = useState(() => Array.isArray(event.images) && event.images.length > 0);
   const [isVisible, setIsVisible] = useState(true);
   const containerRef = useRef(null);
   const primaryImgRef = useRef(null);
@@ -48,6 +56,25 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
     let isCurrent = true;
     setIsPrimaryLoaded(false);
     setHasError(false);
+
+    if (Array.isArray(event.images) && event.images.length > 0) {
+      setImages(event.images);
+      const img = new Image();
+      img.onload = () => {
+        if (isCurrent) setIsPrimaryLoaded(true);
+      };
+      img.onerror = () => {
+        if (isCurrent) setHasError(true);
+      };
+      img.src = event.images[0];
+      if (img.complete && img.naturalWidth > 0) {
+        setIsPrimaryLoaded(true);
+      }
+      setHasResolved(true);
+      return () => {
+        isCurrent = false;
+      };
+    }
 
     if (primaryUrl) {
       setImages([primaryUrl]);
@@ -133,6 +160,59 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
     });
   };
 
+  // If this event is waiting for photographs, render a dedicated editorial image skeleton placeholder
+  if (event.isPendingImage && ((hasResolved && images.length === 0) || hasError)) {
+    return (
+      <div 
+        ref={containerRef}
+        onClick={onClick}
+        className="relative w-full h-36 sm:h-44 bg-[#080d15] overflow-hidden border-b border-[#fdb913]/30 cursor-pointer group select-none"
+        title="Click to view Ballon d'Or ceremony moment"
+      >
+        {/* Site's existing skeleton shimmer background with exact dimensions */}
+        <ImageSkeleton 
+          className="absolute inset-0 w-full h-full z-0 opacity-70" 
+          rounded="rounded-none" 
+        />
+
+        {/* Dark radial glow & vignette overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#090d16] via-[#090d16]/30 to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(253,185,19,0.06)_0%,transparent_70%)] pointer-events-none z-10" />
+
+        {/* Centered Editorial Placeholder Badge */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center pointer-events-none z-20 space-y-1">
+          <div className="w-9 h-9 rounded-full bg-black/70 border border-[#fdb913]/40 flex items-center justify-center text-[#fdb913] shadow-md group-hover:scale-105 group-hover:border-[#fdb913] transition-all duration-200">
+            <Trophy size={16} />
+          </div>
+          <span className="text-[11px] font-display font-bold uppercase tracking-wider text-gray-200 group-hover:text-[#fdb913] transition-colors">
+            OFFICIAL CEREMONY PHOTOGRAPHY
+          </span>
+          <span className="text-[10px] font-display uppercase tracking-widest text-[#fdb913] bg-[#fdb913]/10 px-2 py-0.5 rounded border border-[#fdb913]/30">
+            PHOTOGRAPHS PENDING
+          </span>
+        </div>
+
+        {/* Trophy / Event Badge Overlay */}
+        {event.trophyBadge && (
+          <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/85 border border-[#fdb913]/35 text-[10px] font-display font-bold text-[#fdb913] flex items-center gap-1 shadow-sm pointer-events-none z-20">
+            <Trophy size={11} />
+            <span>{event.trophyBadge}</span>
+          </div>
+        )}
+
+        {/* Hover Enlarge Indicator */}
+        <div className="absolute bottom-2 right-2.5 px-2 py-0.5 rounded bg-black/70 border border-white/10 text-[10px] font-display text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 pointer-events-none z-20">
+          <Maximize2 size={10} />
+          <span>VIEW</span>
+        </div>
+
+        <span className="absolute bottom-2 left-3 text-[10px] font-display uppercase text-gray-300 tracking-wider pointer-events-none z-20">
+          {event.exactDate}
+        </span>
+      </div>
+    );
+  }
+
   // If resolved and no images available at all or error, render clean fallback card
   if ((hasResolved && images.length === 0) || hasError) {
     return (
@@ -164,8 +244,8 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
   return (
     <div 
       ref={containerRef}
-      onClick={onClick}
-      className="relative w-full h-36 sm:h-44 bg-[#080d15] overflow-hidden border-b border-[#1c2535] cursor-pointer group select-none"
+      onClick={() => onClick && onClick(currentIndex)}
+      className={`relative w-full ${event.isSpecial ? 'h-52 sm:h-64 md:h-72' : 'h-36 sm:h-44'} bg-[#080d15] overflow-hidden border-b border-[#1c2535] cursor-pointer group select-none`}
       title="Click image to open historical viewer"
     >
       {/* Subtle, restrained dark skeleton placeholder displayed until correct image has loaded */}
@@ -178,23 +258,25 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
 
       {/* Historical Images with subtle 500ms Crossfade Transition */}
       {images.map((src, idx) => {
-        const objectPositionStyle = event.imagePosition
-          ? (event.imagePosition.startsWith('object-[')
-              ? event.imagePosition.slice(8, -1).replace(/_/g, ' ')
-              : event.imagePosition)
-          : 'center 35%';
+        const objectPositionStyle = event.imagePositions && event.imagePositions[idx]
+          ? event.imagePositions[idx]
+          : event.imagePosition
+            ? (event.imagePosition.startsWith('object-[')
+                ? event.imagePosition.slice(8, -1).replace(/_/g, ' ')
+                : event.imagePosition)
+            : 'center 35%';
 
         return (
           <img 
             key={src}
             ref={idx === 0 ? primaryImgRef : null}
             src={src} 
-            alt={event.title}
+            alt={`${event.title}${images.length > 1 ? ` - Image ${idx + 1}` : ''}`}
             onLoad={() => {
               if (idx === 0) setIsPrimaryLoaded(true);
             }}
             onError={() => handleImageError(src)}
-            className={`absolute inset-0 w-full h-full object-cover ${event.imagePosition || 'object-[center_35%]'} group-hover:scale-[1.025] transition-all duration-200 ease-out ${
+            className={`absolute inset-0 w-full h-full object-cover group-hover:scale-[1.025] transition-all duration-200 ease-out ${
               isPrimaryLoaded && idx === currentIndex 
                 ? 'opacity-90 group-hover:opacity-100 z-[5]' 
                 : 'opacity-0 pointer-events-none z-0'
@@ -208,11 +290,74 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
       {/* Dark gradient overlay for consistent text and badge contrast */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#0d131f] via-[#0d131f]/20 to-transparent pointer-events-none z-10" />
       
+      {/* Image Counter Badge (when multiple images exist for this card) */}
+      {images.length > 1 && (
+        <div className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-black/80 border text-[10px] font-display font-bold z-20 flex items-center gap-1 shadow-sm ${
+          event.isSpecial ? 'border-[#fdb913]/40 text-[#fdb913]' : 'border-white/10 text-gray-200'
+        }`}>
+          <span>{currentIndex + 1} / {images.length}</span>
+        </div>
+      )}
+
       {/* Trophy / Event Badge Overlay */}
       {event.trophyBadge && (
-        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 border border-white/10 text-[10px] font-display font-bold text-[#fdb913] flex items-center gap-1 shadow-sm pointer-events-none z-20">
+        <div className={`absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 border text-[10px] font-display font-bold flex items-center gap-1 shadow-sm pointer-events-none z-20 ${
+          event.isSpecial ? 'border-[#fdb913]/40 text-[#fdb913]' : 'border-white/10 text-[#fdb913]'
+        }`}>
           <Trophy size={11} />
           <span>{event.trophyBadge}</span>
+        </div>
+      )}
+
+      {/* Navigation Arrows on Card Image */}
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+            }}
+            aria-label="Previous image"
+            className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/70 hover:bg-[#dc052d] border border-white/20 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md cursor-pointer hover:scale-110 active:scale-95"
+            title="Previous image"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex((prev) => (prev + 1) % images.length);
+            }}
+            aria-label="Next image"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/70 hover:bg-[#dc052d] border border-white/20 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md cursor-pointer hover:scale-110 active:scale-95"
+            title="Next image"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </>
+      )}
+
+      {/* Pagination dots on bottom center of card image */}
+      {images.length > 1 && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-xs border border-white/10">
+          {images.map((_, dotIdx) => (
+            <button
+              key={dotIdx}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentIndex(dotIdx);
+              }}
+              aria-label={`Photo ${dotIdx + 1} of ${images.length}`}
+              className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                dotIdx === currentIndex
+                  ? event.isSpecial ? 'w-4 bg-[#fdb913]' : 'w-4 bg-[#dc052d]'
+                  : 'w-1.5 bg-white/40 hover:bg-white/80'
+              }`}
+            />
+          ))}
         </div>
       )}
 
@@ -306,6 +451,11 @@ export default function TimelinePage({ onNavigate }) {
   }, []);
 
   // 2. ERA NAVIGATION: Smooth scroll jump to relevant era
+  const handleOpenModal = (event, initialImageIndex = 0) => {
+    setActiveImageIndex(typeof initialImageIndex === 'number' ? initialImageIndex : 0);
+    setActiveEvent(event);
+  };
+
   const handleEraClick = (eraId) => {
     setSelectedEra(eraId);
     isNavigatingRef.current = true;
@@ -345,9 +495,9 @@ export default function TimelinePage({ onNavigate }) {
   useEffect(() => {
     setEventImages([]);
     setModalImageLoaded(false);
-    setActiveImageIndex(0);
 
     if (!activeEvent) {
+      setActiveImageIndex(0);
       return;
     }
 
@@ -375,6 +525,7 @@ export default function TimelinePage({ onNavigate }) {
     if (currentIndex === -1) return;
     const newIndex = currentIndex + direction;
     if (newIndex >= 0 && newIndex < TIMELINE_EVENTS.length) {
+      setActiveImageIndex(0);
       setActiveEvent(TIMELINE_EVENTS[newIndex]);
     }
   };
@@ -596,21 +747,33 @@ export default function TimelinePage({ onNavigate }) {
                   {/* Timeline Milestone Marker Dot */}
                   {isCurrentActive ? (
                     <div 
-                      className="absolute left-8 sm:left-1/2 top-5 -translate-x-1/2 w-7 h-7 rounded-full bg-[#dc052d] border-2 border-white flex items-center justify-center z-20 shadow-md scale-110 transition-all duration-200"
+                      className={`absolute left-8 sm:left-1/2 top-5 -translate-x-1/2 w-7 h-7 rounded-full flex items-center justify-center z-20 shadow-md scale-110 transition-all duration-200 ${
+                        event.isSpecial
+                          ? 'bg-[#fdb913] border-2 border-white text-black shadow-[0_0_14px_rgba(253,185,19,0.5)]'
+                          : 'bg-[#dc052d] border-2 border-white text-white'
+                      }`}
                       title={`${event.year} - Active Moment`}
                     >
-                      <span className="w-2.5 h-2.5 rounded-full bg-white" />
+                      <span className={`w-2.5 h-2.5 rounded-full ${event.isSpecial ? 'bg-black' : 'bg-white'}`} />
                     </div>
                   ) : (
                     <div 
                       className={`absolute left-8 sm:left-1/2 top-5 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center z-20 transition-all duration-200 ${
-                        isPast 
-                          ? 'bg-[#0b1019] border-2 border-[#dc052d]/80 text-[#dc052d]' 
-                          : 'bg-[#070b12] border-2 border-[#1c2535] text-gray-500'
+                        event.isSpecial
+                          ? 'bg-[#0d1422] border-2 border-[#fdb913]/80 text-[#fdb913]'
+                          : isPast 
+                            ? 'bg-[#0b1019] border-2 border-[#dc052d]/80 text-[#dc052d]' 
+                            : 'bg-[#070b12] border-2 border-[#1c2535] text-gray-500'
                       }`}
                       title={event.year}
                     >
-                      <span className={`w-1.5 h-1.5 rounded-full ${isPast ? 'bg-[#dc052d]' : 'bg-[#1c2535]'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        event.isSpecial 
+                          ? 'bg-[#fdb913]' 
+                          : isPast 
+                            ? 'bg-[#dc052d]' 
+                            : 'bg-[#1c2535]'
+                      }`} />
                     </div>
                   )}
 
@@ -619,41 +782,98 @@ export default function TimelinePage({ onNavigate }) {
                     isEven ? 'sm:mr-auto sm:pr-4' : 'sm:ml-auto sm:pl-4'
                   }`}>
                     <article
-                      onClick={() => setActiveEvent(event)}
+                      onClick={() => handleOpenModal(event, 0)}
                       className={`group rounded-xl overflow-hidden transition-all duration-200 ease-out cursor-pointer shadow-lg hover:shadow-xl border hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 ${
-                        isCurrentActive
-                          ? 'border-[#dc052d] bg-[#121927] shadow-[0_4px_24px_rgba(220,5,45,0.18)] ring-1 ring-[#dc052d]/40 opacity-100'
-                          : 'border-[#1c2535] bg-[#0d131f] opacity-80 hover:opacity-100 hover:border-[#dc052d]/50'
+                        event.isSpecial
+                          ? isCurrentActive
+                            ? 'border-[#fdb913] bg-gradient-to-b from-[#141d2e] via-[#0f1624] to-[#0a0f19] shadow-[0_4px_30px_rgba(253,185,19,0.22)] ring-1 ring-[#fdb913]/50 opacity-100'
+                            : 'border-[#d4af37]/45 bg-gradient-to-b from-[#111827] to-[#0a0f18] opacity-90 hover:opacity-100 hover:border-[#fdb913] shadow-[0_4px_20px_rgba(253,185,19,0.10)]'
+                          : isCurrentActive
+                            ? 'border-[#dc052d] bg-[#121927] shadow-[0_4px_24px_rgba(220,5,45,0.18)] ring-1 ring-[#dc052d]/40 opacity-100'
+                            : 'border-[#1c2535] bg-[#0d131f] opacity-80 hover:opacity-100 hover:border-[#dc052d]/50'
                       }`}
                     >
                       {/* Image Area with Automatic Numbered Loading & Clean Fallback */}
                       <TimelineCardImage 
                         event={event} 
                         eventNumber={eventNumber} 
-                        onClick={() => setActiveEvent(event)} 
+                        onClick={(startingIndex) => handleOpenModal(event, startingIndex)} 
                       />
 
                       {/* Card Content Body */}
-                      <div className="p-4 sm:p-5 space-y-2">
+                      <div className={event.isSpecial ? "p-3.5 sm:p-4 space-y-2" : "p-4 sm:p-5 space-y-2"}>
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-display font-black text-2xl sm:text-3xl text-[#dc052d] tracking-tight">
+                          <span className={`font-display font-black text-2xl sm:text-3xl tracking-tight ${
+                            event.isSpecial ? 'text-[#fdb913]' : 'text-[#dc052d]'
+                          }`}>
                             {event.year}
                           </span>
-                          <span className="text-[10px] font-display font-semibold uppercase tracking-wider text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                          <span className={`text-[10px] font-display font-semibold uppercase tracking-wider px-2 py-0.5 rounded border ${
+                            event.isSpecial
+                              ? 'text-[#fdb913] bg-[#fdb913]/10 border-[#fdb913]/30'
+                              : 'text-gray-400 bg-white/5 border-white/10'
+                          }`}>
                             {event.eraLabel}
                           </span>
                         </div>
 
-                        <h3 className="font-display font-bold text-lg sm:text-xl text-white uppercase tracking-tight group-hover:text-white transition-colors">
+                        {event.specialKicker && (
+                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#fdb913]/10 border border-[#fdb913]/25 text-[10px] font-display font-bold uppercase tracking-wider text-[#fdb913]">
+                            <Trophy size={11} className="text-[#fdb913]" />
+                            <span>{event.specialKicker}</span>
+                          </div>
+                        )}
+
+                        <h3 className={`font-display font-bold text-lg sm:text-xl uppercase tracking-tight transition-colors ${
+                          event.isSpecial ? 'text-white group-hover:text-[#fdb913]' : 'text-white group-hover:text-white'
+                        }`}>
                           {event.title}
                         </h3>
 
-                        <p className="text-xs sm:text-sm text-gray-300 font-display leading-relaxed line-clamp-3">
+                        {event.subtitle && (
+                          <p className="text-xs font-display font-bold uppercase tracking-wider text-[#fdb913]">
+                            {event.subtitle}
+                          </p>
+                        )}
+
+                        <p className={`text-xs text-gray-300 font-display leading-relaxed ${
+                          event.isSpecial ? 'line-clamp-none' : 'line-clamp-3 sm:text-sm'
+                        }`}>
                           {event.summary}
                         </p>
 
-                        {/* Event CTA: "VIEW MOMENT →" */}
-                        <div className="pt-2 flex items-center justify-between text-xs font-display font-bold text-[#dc052d] group-hover:text-[#ff385c] transition-colors duration-200">
+                        {event.highlightStats && (
+                          <div className="grid grid-cols-2 gap-2 pt-1 pb-0.5">
+                            {event.highlightStats.map((stat, sIdx) => (
+                              <div 
+                                key={sIdx} 
+                                className={`px-2.5 py-1.5 rounded-lg bg-black/40 border border-[#fdb913]/20 text-left ${
+                                  stat.fullWidth 
+                                    ? 'col-span-2 bg-gradient-to-r from-black/60 via-[#fdb913]/5 to-black/60 border-[#fdb913]/30' 
+                                    : ''
+                                }`}
+                              >
+                                <span className="text-[10px] font-display text-gray-400 uppercase tracking-wider block">
+                                  {stat.label}
+                                </span>
+                                <span className={`${
+                                  stat.fullWidth 
+                                    ? 'text-xs sm:text-[13px] leading-snug font-bold text-[#fdb913]' 
+                                    : 'text-xs sm:text-sm font-black text-[#fdb913]'
+                                } font-display tracking-tight block`}>
+                                  {stat.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Event CTA */}
+                        <div className={`pt-2 flex items-center justify-between text-xs font-display font-bold transition-colors duration-200 ${
+                          event.isSpecial 
+                            ? 'text-[#fdb913] group-hover:text-[#ffe066]' 
+                            : 'text-[#dc052d] group-hover:text-[#ff385c]'
+                        }`}>
                           <span>VIEW MOMENT</span>
                           <ArrowRight size={14} className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
                         </div>
@@ -725,7 +945,7 @@ export default function TimelinePage({ onNavigate }) {
             onClick={(e) => e.stopPropagation()}
             className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default modal-content-animate"
           >
-            {eventImages.length > 0 || !activeEvent ? (
+            {eventImages.length > 0 ? (
               <div className="relative flex flex-col items-center justify-center min-h-[220px] sm:min-h-[320px] md:min-h-[400px]">
                 {/* Skeleton placeholder while modal image is loading */}
                 {(!modalImageLoaded || eventImages.length === 0) && (
@@ -747,12 +967,42 @@ export default function TimelinePage({ onNavigate }) {
                   />
                 )}
 
-                {/* 1 / 2 Image Counter Badge (when multiple images exist for the event) */}
+                {/* Image Counter Badge (when multiple images exist for the event) */}
                 {eventImages.length > 1 && modalImageLoaded && (
-                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded bg-black/75 border border-white/10 text-[11px] font-display font-bold text-gray-200 shadow-md">
+                  <div className={`absolute top-3 right-3 px-2.5 py-1 rounded bg-black/75 border text-[11px] font-display font-bold shadow-md ${
+                    activeEvent.isSpecial ? 'border-[#fdb913]/40 text-[#fdb913]' : 'border-white/10 text-gray-200'
+                  }`}>
                     {activeImageIndex + 1} / {eventImages.length}
                   </div>
                 )}
+              </div>
+            ) : activeEvent?.isPendingImage ? (
+              <div className="relative flex flex-col items-center justify-center w-[85vw] max-w-2xl h-[240px] sm:h-[340px] md:h-[420px] bg-[#090d16] border border-[#fdb913]/30 rounded-lg overflow-hidden shadow-2xl p-6 text-center select-none">
+                <ImageSkeleton className="absolute inset-0 w-full h-full z-0 opacity-60" rounded="rounded-lg" />
+                <div className="relative z-10 flex flex-col items-center justify-center space-y-3">
+                  <div className="w-14 h-14 rounded-full bg-black/70 border border-[#fdb913]/40 flex items-center justify-center text-[#fdb913] shadow-lg">
+                    <Trophy size={26} />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-display font-bold uppercase tracking-widest text-[#fdb913] block">
+                      2026 BALLON D'OR GALA • PARIS
+                    </span>
+                    <h4 className="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-tight">
+                      HARRY KANE — BALLON D'OR WINNER
+                    </h4>
+                    {activeEvent.subtitle && (
+                      <p className="text-xs font-display font-bold text-[#fdb913] uppercase tracking-wider">
+                        {activeEvent.subtitle}
+                      </p>
+                    )}
+                    <p className="text-xs sm:text-sm text-gray-300 font-display max-w-md mx-auto">
+                      Editorial container prepared for ceremony photographs. Full 16:9 aspect ratio and high-resolution layout locked without shift.
+                    </p>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-black/60 border border-[#fdb913]/30 text-[10px] font-display font-semibold text-[#fdb913] uppercase tracking-wider">
+                    <span>Awaiting photograph assets (/images/timeline/kane-ballon-dor.jpg)</span>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="p-8 text-center text-gray-400 font-display text-xs flex flex-col items-center justify-center gap-2">
@@ -765,15 +1015,17 @@ export default function TimelinePage({ onNavigate }) {
             <div className="mt-3 sm:mt-4 text-center max-w-2xl px-4 space-y-1.5 select-none">
               {/* Year & Event Title */}
               <div className="flex items-center justify-center gap-2 text-xs font-display uppercase tracking-wider text-gray-400">
-                <span className="text-[#dc052d] font-bold">{activeEvent.year}</span>
+                <span className={activeEvent.isSpecial ? "text-[#fdb913] font-bold" : "text-[#dc052d] font-bold"}>{activeEvent.year}</span>
                 <span>•</span>
                 <span className="text-gray-200 font-display font-semibold tracking-normal">{activeEvent.title}</span>
               </div>
 
               {/* Archival Photo Caption */}
-              {activeEvent.imageCaption && (
+              {(activeEvent.imageCaption || activeEvent.imageCaptions) && (
                 <p className="text-xs sm:text-[13px] font-display text-gray-300 italic tracking-wide">
-                  {activeEvent.imageCaption}
+                  {Array.isArray(activeEvent.imageCaptions) && activeEvent.imageCaptions[activeImageIndex]
+                    ? activeEvent.imageCaptions[activeImageIndex]
+                    : activeEvent.imageCaption}
                 </p>
               )}
 
@@ -789,7 +1041,7 @@ export default function TimelinePage({ onNavigate }) {
                       }}
                       className={`h-1.5 rounded-full transition-all cursor-pointer ${
                         dotIdx === activeImageIndex 
-                          ? 'w-6 bg-[#dc052d]' 
+                          ? activeEvent.isSpecial ? 'w-6 bg-[#fdb913]' : 'w-6 bg-[#dc052d]' 
                           : 'w-1.5 bg-white/30 hover:bg-white/60'
                       }`}
                       title={`View photo ${dotIdx + 1}`}

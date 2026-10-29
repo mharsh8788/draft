@@ -334,7 +334,7 @@ async function fetchFromOpenLigaDB() {
 
   function extractLast4(teamCheck) {
     const teamMatches = allFinished.filter(m => teamCheck(m));
-    const last4 = teamMatches.slice(-4);
+    const last4 = teamMatches.slice(-4).reverse();
     return last4.map(m => {
       const isTeam1 = teamCheck({ team1: m.team1, team2: { shortName: '', teamName: '' } });
       const endResult = m.matchResults?.find(r => r.resultName === 'Endergebnis') || m.matchResults?.[m.matchResults.length - 1];

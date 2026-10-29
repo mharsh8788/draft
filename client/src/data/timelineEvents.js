@@ -313,6 +313,7 @@ export const TIMELINE_EVENTS = [
   },
   {
     id: '2025-125-years',
+    eventNumber: 17,
     year: '2025',
     title: '125 YEARS OF FC BAYERN',
     era: 'modern-era',
@@ -328,6 +329,7 @@ export const TIMELINE_EVENTS = [
   },
   {
     id: '2025-34th-championship',
+    eventNumber: 18,
     year: '2025',
     title: '34TH GERMAN CHAMPIONSHIP',
     era: 'modern-era',
@@ -343,6 +345,7 @@ export const TIMELINE_EVENTS = [
   },
   {
     id: '2026-35th-championship',
+    eventNumber: 19,
     year: '2026',
     title: '35TH GERMAN CHAMPIONSHIP',
     era: 'modern-era',
@@ -355,5 +358,58 @@ export const TIMELINE_EVENTS = [
     imageCaption: '35th German Championship',
     imagePosition: 'object-[center_68%]',
     trophyBadge: '35th Title'
+  },
+  {
+    id: '2026-kane-ballon-dor',
+    year: '2026',
+    title: 'HARRY KANE — BALLON D\'OR WINNER',
+    subtitle: 'A GOLDEN MOMENT IN BAYERN HISTORY.',
+    era: 'modern-era',
+    eraLabel: 'MODERN ERA',
+    exactDate: '26 October 2026',
+    summary: 'On 26 October 2026, Harry Kane won the Men\'s Ballon d\'Or following an extraordinary 73-goal campaign for club and country—becoming Bayern\'s first winner in 45 years since Karl-Heinz Rummenigge in 1981.',
+    fullStory: 'On 26 October 2026, Harry Kane won the Men&apos;s Ballon d&apos;Or, becoming the first Englishman to receive football&apos;s most prestigious individual award since Michael Owen in 2001. The Bayern Munich and England striker was recognised after an extraordinary 2025/26 campaign, scoring 73 goals across 65 appearances for club and country. Kane also became the first player from the Bundesliga to win the Men&apos;s Ballon d&apos;Or since Matthias Sammer in 1996, and Bayern&apos;s first Ballon d&apos;Or winner in 45 years, following Karl-Heinz Rummenigge&apos;s second consecutive win in 1981.',
+    keyFact: 'Bayern\'s first Ballon d\'Or winner in 45 years (since Karl-Heinz Rummenigge in 1981): 73 goals in 65 games and the Gerd Müller Trophy.',
+    image: '/images/timeline/kane-ballon-dor.jpg',
+    images: [
+      '/images/timeline/kane-ballon-dor.jpg',
+      '/images/timeline/kane-ballon-dor-2.jpg',
+      '/images/timeline/kane-ballon-dor-3.jpg',
+      '/images/timeline/kane-ballon-dor-4.jpg',
+      '/images/timeline/kane-ballon-dor-5.jpg',
+      '/images/timeline/kane-ballon-dor-6.jpg',
+      '/images/timeline/kane-ballon-dor-7.jpg',
+    ],
+    imageCaption: 'Harry Kane crowned 2026 Men’s Ballon d’Or Winner at the Théâtre du Châtelet in Paris',
+    imageCaptions: [
+      'Harry Kane receives the 2026 Men’s Ballon d’Or trophy at the gala in Paris',
+      'Harry Kane addressing the audience at the lectern with the Ballon d’Or',
+      'An emotional moment in the auditorium as Harry Kane is announced as the winner',
+      'Harry Kane hoists the Ballon d’Or trophy high at the 70th Ballon d’Or ceremony',
+      'The Allianz Arena illuminated in gold with "KANE" across the facade in celebration',
+      'Harry Kane presenting the Ballon d’Or trophy to supporters and media',
+      'Official FC Bayern honours celebrating 2026 Ballon d’Or winner Harry Kane'
+    ],
+    imagePosition: 'object-[center_32%]',
+    imagePositions: [
+      'center 32%',
+      'center 42%',
+      'center 38%',
+      'center 24%',
+      'center 48%',
+      'center 35%',
+      'center 30%'
+    ],
+    trophyBadge: '2026 Ballon d’Or',
+    isSpecial: true,
+    isPendingImage: false,
+    eventNumber: 'kane-ballon-dor',
+    specialKicker: '2026 BALLON D\'OR • MEN\'S WINNER',
+    highlightStats: [
+      { label: 'SEASON TALLY', value: '73 GOALS' },
+      { label: 'BALLON D\'OR', value: 'MEN\'S WINNER' },
+      { label: 'GERD MÜLLER TROPHY', value: 'STRIKER OF THE YEAR' },
+      { label: 'BAYERN HISTORY', value: 'FIRST IN 45 YEARS (1981)' },
+    ],
   }
 ];

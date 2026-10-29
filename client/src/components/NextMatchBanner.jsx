@@ -644,7 +644,7 @@ export default function NextMatchBanner({ onNavigate }) {
               return isT1 || isT2;
             });
 
-            return teamMatches.slice(0, 5).map(m => {
+            return teamMatches.slice(0, 4).map(m => {
               const isT1 = m.team1 && (
                 (teamId && m.team1.teamId === teamId) ||
                 (sName && (m.team1.teamName?.toLowerCase().includes(sName) || m.team1.shortName?.toLowerCase() === sName))
