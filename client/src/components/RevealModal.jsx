@@ -94,7 +94,7 @@ export default function RevealModal({
 
           <div className="space-y-1 flex-1">
             <span className="text-[11px] font-display font-bold uppercase tracking-widest text-gray-400 block">
-              THE MYSTERY PLAYER WAS
+              THE HIDDEN PLAYER WAS
             </span>
             <h2 className="font-display font-black text-2xl sm:text-3xl text-white uppercase tracking-tight">
               {mysteryPlayer.name}

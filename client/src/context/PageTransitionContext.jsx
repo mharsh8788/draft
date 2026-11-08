@@ -82,15 +82,17 @@ export function PageTransitionProvider({ children }) {
         window.history.pushState({}, '', next);
       }
       setCurrentPath(next);
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      if (!next.includes('#')) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
     }
 
-    // Hold covered state for 100ms so destination DOM paints completely underneath
+    // Brief 35ms hold to ensure destination DOM commits and paints cleanly before reveal starts
     clearTimeout(holdTimerRef.current);
     holdTimerRef.current = setTimeout(() => {
       transitionStateRef.current = 'revealing';
       setTransitionState('revealing');
-    }, 100);
+    }, 35);
   }, []);
 
   // When all 8 panels finish exiting downward off the screen
@@ -109,11 +111,14 @@ export function PageTransitionProvider({ children }) {
     transitionState,
     isTransitioning,
     isHome: currentPath === '/' || currentPath === '',
-    isMysteryGame: currentPath === '/mystery-player',
-    isCareerPuzzle: currentPath === '/guess-player',
-    isTimeline: currentPath === '/timeline',
-    isArchive: currentPath === '/archive',
-    isFeedback: currentPath === '/feedback',
+    isGamesPage: currentPath === '/games' || currentPath.startsWith('/games'),
+    isMysteryGame: currentPath.startsWith('/mystery-player'),
+    isCareerPuzzle: currentPath.startsWith('/guess-player'),
+    isRoadToImmortality: currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
+    isWouldYouRather: currentPath.startsWith('/would-you-rather'),
+    isTimeline: currentPath.startsWith('/timeline'),
+    isArchive: currentPath.startsWith('/archive'),
+    isFeedback: currentPath.startsWith('/feedback'),
     isMatchCentre: currentPath.startsWith('/match/') || currentPath === '/match',
     fixtureId: currentPath.startsWith('/match/') ? currentPath.replace('/match/', '').split('?')[0] : null
   };

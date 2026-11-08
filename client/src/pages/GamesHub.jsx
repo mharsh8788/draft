@@ -1,16 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GAMES } from '../data/games';
+import { GAMES, ROAD_TO_GLORY_MILESTONES } from '../data/games';
 import { HOMEPAGE_FEATURED_FACT } from '../data/facts';
 import FunFactCard from '../components/FunFactCard';
 import NextMatchBanner from '../components/NextMatchBanner';
 import { sounds } from '../utils/audio';
-import { ArrowRight, Clock, Shield } from 'lucide-react';
+import { ArrowRight, Clock, Shield, Trophy } from 'lucide-react';
 
 export default function GamesHub({ onSelectGame, onNavigate }) {
   const featuredGame = GAMES.find((g) => g.featured) || GAMES[0];
   const moreGames = GAMES.filter((g) => !g.featured);
 
   // Coordinated CTA button interaction group state
+  // Active milestone for Road to Glory (default: 2020 UEFA Champions League - The Journey to Lisbon)
+  const [activeMilestoneId, setActiveMilestoneId] = useState('2020-the-sextuple');
+  const activeMilestone = ROAD_TO_GLORY_MILESTONES.find((m) => m.id === activeMilestoneId) || ROAD_TO_GLORY_MILESTONES[1] || ROAD_TO_GLORY_MILESTONES[0];
+
+  const handleNavigateMilestone = (eventId) => {
+    const targetRoute = `/timeline#timeline-event-${eventId}`;
+    if (onSelectGame) {
+      onSelectGame(targetRoute);
+    } else if (onNavigate) {
+      onNavigate(targetRoute);
+    }
+  };
+
   const [hoveredCta, setHoveredCta] = useState(null);
   const activeCta = hoveredCta || 'games';
 
@@ -191,25 +204,30 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
           2 & 3. CONTINUOUS FULL-WIDTH ALLIANZ ARENA GAMES ATMOSPHERE
           ========================================================= */}
       <section id="games-section" className="relative w-full overflow-hidden bg-[#070b12] -mt-10 sm:-mt-14 md:-mt-18 lg:-mt-22 pt-2 sm:pt-3 pb-8 sm:pb-10 md:pb-12">
-        {/* Full-width Continuous Stadium Background across the entire Games area */}
+        {/* Full-width Continuous Stadium Background across the entire Games area — Crisp architecture and floodlights */}
         <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none scale-105"
           style={{ 
             backgroundImage: "url('/images/allianz-arena-games.jpg')",
-            backgroundPosition: "center center",
-            backgroundSize: "cover"
+            backgroundPosition: "center 18%",
+            backgroundSize: "cover",
+            filter: "contrast(1.08) brightness(1.05)"
           }}
         />
 
-        {/* Dark Overlay so the stadium background remains atmospheric without competing with cards */}
-        <div className="absolute inset-0 bg-[#070b12]/65 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#070b12]/80 via-[#070b12]/50 to-[#070b12]/80 pointer-events-none" />
+        {/* Directional contrast overlay: strengthened dark negative space behind the left-side text, softly tapering to keep stadium atmosphere, architecture, and lighting clearly visible */}
+        <div 
+          className="absolute inset-0 pointer-events-none" 
+          style={{
+            background: "linear-gradient(to right, rgba(7, 11, 18, 0.90) 0%, rgba(7, 11, 18, 0.84) 34%, rgba(7, 11, 18, 0.52) 65%, rgba(7, 11, 18, 0.20) 100%), linear-gradient(to bottom, rgba(7, 11, 18, 0.50) 0%, rgba(7, 11, 18, 0.28) 18%, rgba(7, 11, 18, 0.45) 45%, rgba(7, 11, 18, 0.82) 75%, #070b12 100%)"
+          }}
+        />
 
-        {/* Subtle Soft Dark Edge Fade at Top to blend smoothly with Hero */}
-        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#070b12] via-[#070b12]/50 to-transparent pointer-events-none" />
+        {/* Subtle, restrained top fade transition from Hero (reduced opacity so floodlights are not buried) */}
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070b12]/80 via-[#070b12]/30 to-transparent pointer-events-none" />
 
-        {/* Short, clean dark navy edge fade at bottom */}
-        <div className="absolute inset-x-0 bottom-0 h-16 sm:h-20 bg-gradient-to-t from-[#070b12] to-transparent pointer-events-none" />
+        {/* Clean dark navy edge fade at bottom */}
+        <div className="absolute inset-x-0 bottom-0 h-20 sm:h-24 bg-gradient-to-t from-[#070b12] to-transparent pointer-events-none" />
 
         {/* Centered Constrained Content Container matching max-w-6xl */}
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5 sm:space-y-6">
@@ -220,7 +238,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
           <NextMatchBanner onNavigate={onNavigate} />
 
           {/* =========================================================
-              FEATURED GAME: MYSTERY PLAYER
+              FEATURED GAME: BLIND PICK
               ========================================================= */}
           <div 
             id="mystery-player-section"
@@ -233,8 +251,8 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               <span>FEATURED CHALLENGE</span>
             </div>
 
-            {/* Editorial Content Layout sitting directly on the homepage background */}
-            <div className="border-y border-[#1c2535] py-8 sm:py-10">
+            {/* Editorial Content Layout sitting seamlessly on the stadium background (No rigid borders or boxes) */}
+            <div className="py-6 sm:py-8 lg:py-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12">
                 {/* Left Column (7 cols): Game Metadata, Typography & CTA */}
                 <div className="lg:col-span-7 space-y-4 sm:space-y-5 text-left">
@@ -256,55 +274,58 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   </h2>
 
                   {/* 3. Concise Description */}
-                  <p className="text-base sm:text-lg text-gray-300 font-display font-medium max-w-lg leading-relaxed tracking-wide">
-                    {featuredGame.tagline}
+                  <p className="text-base sm:text-lg text-gray-200 font-sans font-medium max-w-lg leading-relaxed tracking-normal">
+                    One player revealed. One player hidden. Can you make the right choice?
                   </p>
 
                   {/* 4. Editorial Metadata (Clean typography without boxes/pills) */}
-                  {featuredGame.badges && featuredGame.badges.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-display uppercase tracking-wider text-gray-400 font-medium pt-0.5">
-                      {featuredGame.badges.map((badge, idx) => (
-                        <React.Fragment key={idx}>
-                          <span>{badge}</span>
-                          {idx < featuredGame.badges.length - 1 && (
-                            <span className="text-gray-600 select-none" aria-hidden="true">·</span>
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-display uppercase tracking-wider text-gray-300 font-semibold pt-0.5">
+                    <span>11 PLAYERS</span>
+                    <span className="text-gray-600 select-none" aria-hidden="true">·</span>
+                    <span>4-3-3 FORMATION</span>
+                    <span className="text-gray-600 select-none" aria-hidden="true">·</span>
+                    <span>BLIND SELECTION</span>
+                  </div>
 
-                  {/* 5. Primary Contained CTA Button */}
+                  {/* 5. Primary Contained CTA Button with subtle hover transition & arrow slide */}
                   <div className="pt-2 sm:pt-3">
                     <button
                       onClick={handlePlayFeatured}
-                      className="inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-200 ease-out shadow-lg cursor-pointer group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
+                      className="inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-200 ease-out shadow-md cursor-pointer group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
                     >
                       <span>PLAY NOW</span>
-                      <ArrowRight size={18} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
+                      <ArrowRight size={18} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1.5" />
                     </button>
                   </div>
                 </div>
 
-                {/* Right Column (5 cols): Integrated Mystery Player Visual */}
-                <div className="lg:col-span-5 flex flex-col items-center justify-center text-center select-none py-4 lg:py-0">
-                  <div className="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center">
-                    {/* Transparent Footballer Silhouette */}
-                    <img
-                      src="/images/mystery-silhouette-white.png"
-                      alt="Mystery Player Silhouette"
-                      className="w-full h-full object-contain filter drop-shadow-xl"
+                {/* Right Column (5 cols): Integrated Mystery Player Visual (Seamless Multi-Gradient Edge Mask) */}
+                <div className="lg:col-span-5 flex flex-col items-center justify-center text-center select-none py-2 lg:py-0">
+                  <div className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[430px] h-[400px] sm:h-[460px] lg:h-[510px] flex items-end justify-center group/player">
+                    {/* Subtle restrained environmental red spill light matched to stadium floodlights (no artificial outline or glow) */}
+                    <div 
+                      className="absolute inset-0 pointer-events-none" 
+                      style={{
+                        background: 'radial-gradient(ellipse 70% 60% at 50% 45%, rgba(220, 5, 45, 0.12) 0%, rgba(220, 5, 45, 0.03) 50%, transparent 75%)'
+                      }}
                     />
 
-                    {/* Prominent Question Mark Badge */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <span className="font-display font-black text-6xl sm:text-7xl text-white drop-shadow-xl -mt-1">
-                        ?
-                      </span>
-                    </div>
+                    {/* Integrated Mystery Player Asset: multi-gradient masking (radial + linear) with soft irregular transitions */}
+                    <img
+                      src="/images/mystery-player.png"
+                      alt="FC Bayern Blind Pick"
+                      className="relative z-10 w-full h-full object-contain object-bottom pointer-events-none select-none transition-transform duration-300 ease-out group-hover/player:scale-[1.015]"
+                      style={{
+                        maskImage: 'radial-gradient(ellipse 72% 70% at 52% 48%, black 46%, rgba(0,0,0,0.85) 62%, transparent 96%), linear-gradient(to bottom, transparent 0%, black 5%, black 78%, transparent 98%), linear-gradient(to right, transparent 0%, black 10%, black 82%, transparent 98%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse 72% 70% at 52% 48%, black 46%, rgba(0,0,0,0.85) 62%, transparent 96%), linear-gradient(to bottom, transparent 0%, black 5%, black 78%, transparent 98%), linear-gradient(to right, transparent 0%, black 10%, black 82%, transparent 98%)',
+                        maskComposite: 'intersect',
+                        WebkitMaskComposite: 'source-in',
+                        filter: 'contrast(1.02) brightness(1.01)'
+                      }}
+                    />
                   </div>
 
-                  <span className="text-xs font-display font-medium text-gray-400 uppercase tracking-wider mt-3">
+                  <span className="text-xs font-display font-medium text-gray-400 uppercase tracking-wider mt-3 sm:mt-4 block">
                     11 POSITIONS · COMPLETE THE XI
                   </span>
                 </div>
@@ -316,8 +337,8 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
               MORE GAMES SECTION
               ========================================================= */}
           <div className="space-y-6 pt-4 sm:pt-6">
-            {/* Header: Kicker, Title, Description */}
-            <div className="border-b border-[#1c2535] pb-4">
+            {/* Header: Kicker, Title, Description (Soft subtle border) */}
+            <div className="border-b border-[#182233]/70 pb-4">
               <div className="space-y-1 text-left">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-0.5 bg-[#dc052d]" />
@@ -329,189 +350,217 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   MORE GAMES
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-200 font-display leading-relaxed max-w-xl">
-                  Upcoming tactical challenges and archive career puzzles entering through the tunnel.
+                  Upcoming tactical challenges and historical campaigns entering through the tunnel.
                 </p>
               </div>
             </div>
 
-            {/* Foreground Games: Open Editorial Two-Column Showcase */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 relative items-stretch">
-              {/* GAME 1: SEASON STRATEGY (38–0) */}
-              <div className="flex flex-col justify-between space-y-5 md:pr-8 lg:pr-10">
-                {/* Category & Status Header Row */}
+            {/* Foreground Games: Wide Editorial Showcase */}
+            <div className="space-y-10 sm:space-y-12">
+              {/* GAME 1: ROAD TO GLORY (WIDE EDITORIAL CAMPAIGN SPREAD, 90-95% CONTENT WIDTH) */}
+              <div className="w-full space-y-4">
+                {/* 1. Category & Status Header Row */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-display font-bold uppercase tracking-widest text-gray-400">
-                    SEASON STRATEGY
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-gray-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray-500" />
-                    COMING SOON
-                  </span>
-                </div>
-
-                {/* Tactical Visual Graphic */}
-                <div className="relative w-full h-44 sm:h-48 rounded-lg overflow-hidden bg-[#090e17] border border-[#1c2535] flex items-center justify-center select-none">
-                  {/* Subtle pitch pattern watermark */}
-                  <div className="absolute inset-0 opacity-15 pointer-events-none pitch-pattern" />
-
-                  {/* Subtle tactical pitch markings */}
-                  <svg className="absolute inset-0 w-full h-full opacity-15 pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 400 200">
-                    <line x1="200" y1="0" x2="200" y2="200" stroke="#ffffff" strokeWidth="1" strokeDasharray="4 4" />
-                    <circle cx="200" cy="100" r="44" fill="none" stroke="#ffffff" strokeWidth="1" />
-                    <circle cx="200" cy="100" r="2.5" fill="#ffffff" />
-                    <path d="M 110 145 Q 160 115 190 100" fill="none" stroke="#dc052d" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.6" />
-                    <path d="M 290 55 Q 240 85 210 100" fill="none" stroke="#dc052d" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.6" />
-                  </svg>
-
-                  {/* 38-0 Scoreboard Concept in Pure Typography */}
-                  <div className="relative z-10 flex items-center gap-6 sm:gap-8">
-                    <div className="text-center">
-                      <span className="font-display font-black text-4xl sm:text-5xl text-white tracking-tight block leading-none">
-                        38
-                      </span>
-                      <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-400 mt-1.5 block">
-                        MATCHES
-                      </span>
-                    </div>
-
-                    <div className="h-8 w-px bg-white/15" />
-
-                    <div className="text-center">
-                      <span className="font-display font-black text-4xl sm:text-5xl text-[#dc052d] tracking-tight block leading-none">
-                        0
-                      </span>
-                      <span className="text-[10px] font-display font-bold uppercase tracking-widest text-[#dc052d] mt-1.5 block">
-                        LOSSES
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content Hierarchy */}
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <span className="text-xs font-display font-bold uppercase tracking-widest text-gray-400 block">
-                      SINGLE-SEASON SIMULATION
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-display font-bold uppercase tracking-widest text-[#fdb913]">
+                      ROAD TO GLORY
                     </span>
-                    <h4 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight uppercase leading-tight">
-                      38–0
-                    </h4>
-                    <p className="text-sm text-gray-300 font-display leading-relaxed">
-                      Can you guide Bayern through an unbeaten Bundesliga campaign?
-                    </p>
+                    <span className="text-gray-600 text-xs">/</span>
+                    <span className="text-xs font-display font-semibold uppercase tracking-wider text-gray-400">
+                      HISTORICAL MOMENTS
+                    </span>
                   </div>
-
-                  {/* Plain Editorial Typography Tags */}
-                  <div className="text-xs font-display font-bold uppercase tracking-wider text-gray-400">
-                    <span>38 MATCHES</span>
-                    <span className="mx-2 text-gray-600">·</span>
-                    <span>STRATEGY</span>
-                  </div>
-                </div>
-
-                {/* Restrained Editorial Disabled CTA */}
-                <div className="pt-2">
-                  <div
-                    aria-disabled="true"
-                    className="inline-flex items-center gap-2 text-xs font-display font-bold uppercase tracking-widest text-gray-500 select-none py-1.5"
-                  >
-                    <span>COMING SOON</span>
-                    <ArrowRight size={14} className="text-gray-600" />
-                  </div>
-                </div>
-              </div>
-
-              {/* GAME 2: CAREER PUZZLE (WHO AM I?) */}
-              <div className="flex flex-col justify-between space-y-5 md:pl-8 lg:pl-10 md:border-l md:border-[#1c2535] border-t md:border-t-0 border-[#1c2535] pt-8 md:pt-0">
-                {/* Category & Status Header Row */}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-display font-bold uppercase tracking-widest text-[#dc052d]">
-                    CAREER PUZZLE
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-[#dc052d]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#dc052d]" />
+                  <span className="inline-flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-[#fdb913]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#fdb913] animate-pulse" />
                     AVAILABLE NOW
                   </span>
                 </div>
 
-                {/* Editorial Visual Graphic */}
-                <div className="relative w-full h-44 sm:h-48 rounded-lg overflow-hidden bg-[#090e17] border border-[#1c2535] flex items-center justify-center select-none">
-                  {/* Existing historical collage background image */}
-                  <img
-                    src="/images/bayern-historical-collage.jpg"
-                    alt="Bayern Historical Archive"
-                    className="absolute inset-0 w-full h-full object-cover object-center opacity-30 blur-[0.5px] scale-105 pointer-events-none"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#090e17] via-[#090e17]/75 to-[#090e17]/85 pointer-events-none" />
+                {/* 2. Milestone Selectors — Clean Editorial Tab Navigation */}
+                <div className="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto pb-1.5 scrollbar-none select-none">
+                  {ROAD_TO_GLORY_MILESTONES.map((milestone, idx) => {
+                    const isAvailable = milestone.id === '2020-the-sextuple' || milestone.status === 'available';
+                    const isSelected = milestone.id === activeMilestone.id;
 
-                  {/* Deduction Trail in Pure Editorial Typography */}
-                  <div className="relative z-10 flex items-center gap-3 sm:gap-4">
-                    <div className="text-center">
-                      <span className="font-display font-black text-xl sm:text-2xl text-white tracking-tight block leading-none">
-                        1999
-                      </span>
-                      <span className="text-[9px] font-display font-bold uppercase tracking-widest text-gray-400 mt-1 block">
-                        DEBUT
-                      </span>
-                    </div>
-
-                    <div className="w-5 sm:w-7 h-px bg-[#dc052d]" />
-
-                    <div className="text-center">
-                      <span className="font-display font-black text-xl sm:text-2xl text-[#dc052d] tracking-tight block leading-none">
-                        FCB
-                      </span>
-                      <span className="text-[9px] font-display font-bold uppercase tracking-widest text-[#dc052d]/80 mt-1 block">
-                        PEAK
-                      </span>
-                    </div>
-
-                    <div className="w-5 sm:w-7 h-px bg-white/20" />
-
-                    <div className="text-center">
-                      <span className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight block leading-none">
-                        ?
-                      </span>
-                      <span className="text-[9px] font-display font-bold uppercase tracking-widest text-gray-400 mt-1 block">
-                        WHO
-                      </span>
-                    </div>
-                  </div>
+                    return (
+                      <React.Fragment key={milestone.id}>
+                        {idx > 0 && (
+                          <span className="shrink-0 text-white/20 text-xs px-1 select-none" aria-hidden="true">
+                            ·
+                          </span>
+                        )}
+                        {isAvailable ? (
+                          <button
+                            type="button"
+                            onClick={() => setActiveMilestoneId(milestone.id)}
+                            className={`relative py-1 px-1.5 sm:px-2 text-xs font-display font-bold uppercase tracking-wider transition-colors duration-200 cursor-pointer shrink-0 focus-visible:outline-hidden focus-visible:text-[#fdb913] ${
+                              isSelected
+                                ? 'text-[#fdb913]'
+                                : 'text-gray-400 hover:text-gray-100'
+                            }`}
+                          >
+                            <span>{milestone.label}</span>
+                            {isSelected && (
+                              <span className="absolute bottom-0 left-1 right-1 h-[2px] bg-[#fdb913] rounded-full" />
+                            )}
+                          </button>
+                        ) : (
+                          <span
+                            className="inline-flex items-center gap-1.5 py-1 px-1 sm:px-1.5 text-xs font-display font-medium uppercase tracking-wider text-gray-500 cursor-default shrink-0 select-none"
+                            title="Coming Soon"
+                          >
+                            <span>{milestone.label}</span>
+                            <span className="text-[9px] font-display font-bold tracking-widest text-gray-400 uppercase bg-white/5 border border-white/10 px-1.5 py-0.5 rounded leading-none">
+                              COMING SOON
+                            </span>
+                          </span>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
 
-                {/* Content Hierarchy */}
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <span className="text-xs font-display text-[#dc052d] font-bold block uppercase tracking-widest">
-                      DEDUCTION CHALLENGE
-                    </span>
-                    <h4 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight uppercase leading-tight">
-                      WHO AM I?
-                    </h4>
-                    <p className="text-sm text-gray-300 font-display leading-relaxed">
-                      Trace a Bayern player's career from clues.
-                    </p>
-                  </div>
-
-                  {/* Plain Editorial Typography Tags */}
-                  <div className="text-xs font-display font-bold uppercase tracking-wider text-gray-400">
-                    <span>CAREER</span>
-                    <span className="mx-2 text-gray-600">·</span>
-                    <span>PUZZLE</span>
-                    <span className="mx-2 text-gray-600">·</span>
-                    <span>DEDUCTION</span>
-                  </div>
-                </div>
-
-                {/* Primary Interactive Bayern-Red CTA */}
-                <div className="pt-2">
-                  <button
-                    onClick={() => onSelectGame ? onSelectGame('/guess-player') : onNavigate && onNavigate('/guess-player')}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-md bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer shadow-sm group hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 select-none"
+                {/* 3. Wide Editorial Spread Container (58% Text / 42% Visual, Multi-Layer Seamless Edge Blending) */}
+                <div className="relative w-full overflow-hidden select-none group/rtg min-h-[440px] lg:min-h-[470px] p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
+                  {/* DESKTOP & TABLET: Seamless Full-Width Background with Prominent Ball on the Right */}
+                  <div 
+                    className="hidden md:block absolute inset-0 pointer-events-none select-none"
+                    style={{
+                      maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 100%), linear-gradient(to bottom, transparent 0%, black 4%, black 96%, transparent 100%)',
+                      WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 100%), linear-gradient(to bottom, transparent 0%, black 4%, black 96%, transparent 100%)',
+                      maskComposite: 'intersect',
+                      WebkitMaskComposite: 'source-in'
+                    }}
                   >
-                    <span>PLAY NOW</span>
-                    <ArrowRight size={14} className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
-                  </button>
+                    {/* The Champions League football photograph anchored prominently on the right */}
+                    <div 
+                      className="absolute inset-0 bg-no-repeat"
+                      style={{
+                        backgroundImage: `url(${activeMilestone.bgImage || '/images/champions-league-ball.png'})`,
+                        backgroundPosition: 'right 30px center',
+                        backgroundSize: 'cover'
+                      }}
+                    />
+                    {/* Directional gradient: strong dark contrast behind text on the left, smoothly reducing toward the right so football is clearly visible */}
+                    <div 
+                      className="absolute inset-0"
+                      style={{
+                        background: 'linear-gradient(to right, #070b12 0%, #070b12 34%, rgba(7, 11, 18, 0.88) 46%, rgba(7, 11, 18, 0.42) 58%, rgba(7, 11, 18, 0.08) 68%, transparent 78%)'
+                      }}
+                    />
+                  </div>
+
+                  {/* MOBILE VIEW: Seamless Upper Ball Showcase with Smooth Radial & Downward Feathering */}
+                  <div className="block md:hidden relative w-full h-52 sm:h-56 overflow-hidden pointer-events-none select-none -mx-6 -mt-6 mb-6">
+                    <div 
+                      className="absolute inset-0 bg-no-repeat"
+                      style={{
+                        backgroundImage: `url(${activeMilestone.bgImage || '/images/champions-league-ball.png'})`,
+                        backgroundPosition: 'center 42%',
+                        backgroundSize: 'cover',
+                        maskImage: 'radial-gradient(ellipse 90% 85% at 50% 42%, black 65%, rgba(0,0,0,0.9) 80%, transparent 100%), linear-gradient(to bottom, black 0%, black 76%, transparent 100%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse 90% 85% at 50% 42%, black 65%, rgba(0,0,0,0.9) 80%, transparent 100%), linear-gradient(to bottom, black 0%, black 76%, transparent 100%)',
+                        maskComposite: 'intersect',
+                        WebkitMaskComposite: 'source-in'
+                      }}
+                    />
+                    {/* Small Elegant Lisbon 2020 Label (No Clunky Box) */}
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 text-[10px] font-display font-bold uppercase tracking-widest text-[#fdb913]">
+                      <Trophy size={11} className="text-[#fdb913]" />
+                      <span>{activeMilestone.badge}</span>
+                    </div>
+                  </div>
+
+                  {/* Two-Column Grid Layout: 58% Text / 42% Visual */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+                    {/* Left Column (58%): Spacious Typography, Unconstrained Width, Relaxed Copy */}
+                    <div className="lg:col-span-7 space-y-5 text-left">
+                      {/* 1. Kicker & Lisbon 2020 Indicator */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-display font-bold uppercase tracking-widest text-[#fdb913]">
+                          {activeMilestone.kicker}
+                        </span>
+                        <span className="text-gray-600 text-xs select-none">·</span>
+                        <span className="text-xs font-display font-bold uppercase tracking-widest text-gray-400">
+                          {activeMilestone.subtitle}
+                        </span>
+                        <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-display font-bold uppercase tracking-wider text-[#fdb913] ml-2">
+                          <Trophy size={11} className="text-[#fdb913]" />
+                          <span>{activeMilestone.badge}</span>
+                        </span>
+                      </div>
+
+                      {/* 2. Main Heading (Oswald, 38-42px) */}
+                      <h4 className="font-display font-black text-3xl sm:text-[38px] lg:text-[42px] text-white tracking-tight uppercase leading-[1.05]">
+                        {activeMilestone.title}
+                      </h4>
+
+                      {/* 3. Description (Plus Jakarta Sans, 15-16px, Relaxed Line-Height, Unconstrained Width) */}
+                      <p className="font-sans text-[15px] sm:text-base text-gray-300 leading-relaxed max-w-xl font-normal">
+                        {activeMilestone.description}
+                      </p>
+
+                      {/* 4. Statistics Row (Clean Horizontal Row with Appropriate Gaps & Subtle Dividers) */}
+                      <div className="space-y-3 pt-2 sm:pt-3">
+                        <div className="flex items-center gap-6 sm:gap-8">
+                          <div className="text-left">
+                            <span className="font-display font-black text-3xl sm:text-[36px] lg:text-[40px] text-white tracking-tight block leading-none">
+                              {activeMilestone.statPrimary}
+                            </span>
+                            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-[#fdb913] mt-1.5 block">
+                              {activeMilestone.statPrimaryLabel}
+                            </span>
+                          </div>
+
+                          <div className="h-9 w-px bg-white/20 select-none" aria-hidden="true" />
+
+                          <div className="text-left">
+                            <span className="font-display font-black text-3xl sm:text-[36px] lg:text-[40px] text-[#fdb913] tracking-tight block leading-none">
+                              {activeMilestone.statSecondary}
+                            </span>
+                            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-gray-300 mt-1.5 block">
+                              {activeMilestone.statSecondaryLabel}
+                            </span>
+                          </div>
+
+                          <div className="h-9 w-px bg-white/20 select-none" aria-hidden="true" />
+
+                          <div className="text-left">
+                            <span className="font-display font-black text-3xl sm:text-[36px] lg:text-[40px] text-white tracking-tight block leading-none">
+                              {activeMilestone.statTertiary}
+                            </span>
+                            <span className="text-[10px] font-display font-bold uppercase tracking-widest text-[#fdb913] mt-1.5 block">
+                              {activeMilestone.statTertiaryLabel}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Supporting Metadata Line */}
+                        <div className="text-xs font-display font-semibold uppercase tracking-wider text-gray-400 pt-1">
+                          {activeMilestone.stats.split(' · ').map((tag, idx, arr) => (
+                            <React.Fragment key={tag}>
+                              <span>{tag}</span>
+                              {idx < arr.length - 1 && <span className="mx-2 text-gray-600 select-none">·</span>}
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 5. Primary Interactive Gold CTA Button */}
+                      <div className="pt-4 sm:pt-5">
+                        <button
+                          onClick={() => handleNavigateMilestone(activeMilestone.eventId)}
+                          className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-md bg-[#fdb913] hover:bg-[#e0a20f] text-black font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer shadow-md group hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 select-none"
+                        >
+                          <span>EXPLORE THE JOURNEY</span>
+                          <ArrowRight size={15} className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Right Column (42%): Visual Anchor Area (Empty div to hold grid spacing on desktop) */}
+                    <div className="hidden lg:block lg:col-span-5 min-h-[360px]" aria-hidden="true" />
+                  </div>
                 </div>
               </div>
             </div>

@@ -4,25 +4,27 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 /**
  * Bayern Red Stagger Wipe Transition Curtain
  * 
- * Final Specification:
+ * Refined Specification:
  * - 8 equal-width vertical panels (each 12.5% viewport width)
  * - Full viewport height
  * - Solid Bayern red: #dc052d
  * - No gradients, glow, blur, bounce, or 3D
- * - Transition speed: 1000ms
- * - Panel stagger: 75ms (0ms, 75ms, 150ms, 225ms, 300ms, 375ms, 450ms, 525ms)
+ * - Transition phase speed: ~700ms (within 650–750ms requirement)
+ * - Panel duration: 490ms, Panel stagger: 30ms (0ms, 30ms, 60ms, ..., 210ms -> total 700ms)
+ * - Natural smooth cubic-bezier easing: [0.4, 0, 0.2, 1]
  * - State machine: IDLE -> COVERING -> COVERED -> REVEALING -> IDLE
- * - Sweep in: TOP -> BOTTOM
- * - COVERED: panels remain 100% mounted, locking screen in solid Bayern red
+ * - Sweep in: TOP -> BOTTOM behind header
+ * - COVERED: panels remain 100% mounted, locking screen in solid Bayern red (fast DOM swap)
  * - Reveal: TOP -> BOTTOM (top of page revealed first as panels exit downward)
+ * - Stacking: zIndex 9990 (subordinate to Header zIndex 10000, covers all page content)
  * - Zero flash, zero hairlines, zero layout shift
  * - Full prefers-reduced-motion support
  */
 
 const PANEL_COUNT = 8;
-const DURATION = 1.0; // 1000ms
-const STAGGER = 0.075; // 75ms
-const PREMIUM_EASING = [0.76, 0, 0.24, 1]; // Quintic-like easeInOut with buttery deceleration
+const DURATION = 0.49; // 490ms per panel
+const STAGGER = 0.03; // 30ms stagger between panels -> total phase duration: 490 + 7*30 = 700ms
+const PREMIUM_EASING = [0.4, 0, 0.2, 1]; // Smooth, natural easeInOut
 
 export default function TransitionCurtain({
   transitionState, // 'idle' | 'covering' | 'covered' | 'revealing'
@@ -44,7 +46,7 @@ export default function TransitionCurtain({
   // Array of 8 panel indices [0, 1, 2, 3, 4, 5, 6, 7]
   const panels = Array.from({ length: PANEL_COUNT }, (_, i) => i);
 
-  // Total calculated time for all 8 panels to complete (1.0s + 7 * 0.075s = 1.525s)
+  // Total calculated time for all 8 panels to complete (0.49s + 7 * 0.03s = 0.70s / 700ms)
   const totalCoverTimeMs = (DURATION + (PANEL_COUNT - 1) * STAGGER) * 1000 + 40;
   const totalRevealTimeMs = (DURATION + (PANEL_COUNT - 1) * STAGGER) * 1000 + 40;
 
@@ -60,7 +62,7 @@ export default function TransitionCurtain({
           hasCoveredFired.current = true;
           onCovered?.();
         }
-      }, totalCoverTimeMs + 250);
+      }, totalCoverTimeMs + 180);
 
       return () => clearTimeout(safetyCoverTimer.current);
     }
@@ -75,7 +77,7 @@ export default function TransitionCurtain({
           hasCompleteFired.current = true;
           onComplete?.();
         }
-      }, totalRevealTimeMs + 250);
+      }, totalRevealTimeMs + 180);
 
       return () => clearTimeout(safetyRevealTimer.current);
     }
@@ -153,7 +155,7 @@ export default function TransitionCurtain({
         bottom: 0,
         width: '100vw',
         height: '100dvh',
-        zIndex: 99999,
+        zIndex: 9990,
         pointerEvents: isTransitionActive ? 'auto' : 'none',
         overflow: 'hidden',
         visibility: isTransitionActive ? 'visible' : 'hidden',

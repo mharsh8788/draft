@@ -6,16 +6,16 @@ export default function Header({
   onNavigate, 
   onOpenAbout 
 }) {
-  const isGamesActive = currentPath === '/' || currentPath === '/mystery-player' || currentPath === '/guess-player';
-  const isTimelineActive = currentPath === '/timeline';
-  const isArchiveActive = currentPath === '/archive';
-  const isFeedbackActive = currentPath === '/feedback';
+  const isHomeActive = currentPath === '/' || currentPath === '';
+  const isGamesActive = currentPath === '/games' || currentPath.startsWith('/games') || currentPath.startsWith('/mystery-player') || currentPath.startsWith('/guess-player') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft') || currentPath.startsWith('/would-you-rather');
+  const isTimelineActive = currentPath.startsWith('/timeline');
+  const isArchiveActive = currentPath === '/archive' || currentPath.startsWith('/archive');
 
   const navLinks = [
-    { label: 'Games', path: '/', isActive: isGamesActive },
+    { label: 'Home', path: '/', isActive: isHomeActive },
+    { label: 'Games', path: '/games', isActive: isGamesActive },
     { label: 'Timeline', path: '/timeline', isActive: isTimelineActive },
     { label: 'Archive', path: '/archive', isActive: isArchiveActive },
-    { label: 'Feedback', path: '/feedback', isActive: isFeedbackActive },
   ];
 
   const activeItemRef = useRef(null);
@@ -41,7 +41,7 @@ export default function Header({
   }, [currentPath]);
 
   return (
-    <header className="w-full bg-[#dc052d] sticky top-0 z-50 shadow-md select-none m-0 p-0 border-none rounded-none">
+    <header className="w-full bg-[#dc052d] sticky top-0 z-[10000] shadow-md select-none m-0 p-0 border-none rounded-none" style={{ zIndex: 10000 }}>
       {/* Centered Content Container matching the page width */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         

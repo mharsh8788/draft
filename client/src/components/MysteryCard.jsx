@@ -18,7 +18,7 @@ export default function MysteryCard({ player, targetPosition, onSelect, disabled
       <div className="bg-[#0c121c] px-5 py-3 border-b border-[#1c2535] flex items-center justify-between">
         <span className="text-[11px] font-display font-bold uppercase tracking-wider text-[#dc052d] flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-[#dc052d]" />
-          MYSTERY PLAYER
+          BLIND PICK
         </span>
         <span className="px-2 py-0.5 rounded text-[10px] font-display font-bold uppercase tracking-wider bg-white/5 text-gray-300 border border-white/10">
           {positionLabel}
@@ -33,7 +33,7 @@ export default function MysteryCard({ player, targetPosition, onSelect, disabled
             {/* Transparent Footballer Silhouette */}
             <img
               src="/images/mystery-silhouette-white.png"
-              alt="Mystery Player"
+              alt="Blind Pick"
               className="w-full h-full object-contain filter drop-shadow-md transition-transform duration-200 ease-out group-hover:scale-[1.025] select-none pointer-events-none"
             />
 
@@ -79,7 +79,7 @@ export default function MysteryCard({ player, targetPosition, onSelect, disabled
           disabled={disabled}
           className="w-full py-3.5 px-4 rounded-lg bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-base tracking-wider uppercase transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 shadow-sm group/btn hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:hover:translate-y-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
         >
-          <span>CHOOSE MYSTERY PLAYER</span>
+          <span>CHOOSE BLIND PICK</span>
           <ArrowRight size={17} className="transition-transform duration-200 ease-out group-hover/btn:translate-x-1" />
         </button>
       </div>

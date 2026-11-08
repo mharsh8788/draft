@@ -450,6 +450,36 @@ export default function TimelinePage({ onNavigate }) {
     };
   }, []);
 
+  // 1b. HASH ANCHOR SCROLL: Smooth jump to specific timeline event if URL contains hash anchor
+  useEffect(() => {
+    const handleHashScroll = () => {
+      if (typeof window !== 'undefined' && window.location.hash) {
+        const hashId = window.location.hash.replace('#', '');
+        const targetEl = document.getElementById(hashId);
+        if (targetEl) {
+          isNavigatingRef.current = true;
+          const headerOffset = window.innerWidth >= 640 ? 145 : 125;
+          const elementPosition = targetEl.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          });
+          setTimeout(() => {
+            isNavigatingRef.current = false;
+          }, 800);
+        }
+      }
+    };
+
+    const timer = setTimeout(handleHashScroll, 350);
+    window.addEventListener('hashchange', handleHashScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('hashchange', handleHashScroll);
+    };
+  }, []);
+
   // 2. ERA NAVIGATION: Smooth scroll jump to relevant era
   const handleOpenModal = (event, initialImageIndex = 0) => {
     setActiveImageIndex(typeof initialImageIndex === 'number' ? initialImageIndex : 0);
@@ -640,11 +670,11 @@ export default function TimelinePage({ onNavigate }) {
                 }}
               />
 
-              {/* Subdued Dark Navy Archive Overlay */}
-              <div className="absolute inset-0 bg-[#070b12]/40 pointer-events-none" />
+              {/* Subdued Dark Navy Archive Overlay - softened to make the historical photographs clearly recognizable */}
+              <div className="absolute inset-0 bg-[#070b12]/15 pointer-events-none" />
 
-              {/* Seamless Top & Bottom Gradient: Smooth dark fade from #070b12 at the top, revealing archive atmosphere in the center, and fading to #070b12 at bottom */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#070b12] via-[#070b12]/20 to-[#070b12] pointer-events-none" />
+              {/* Seamless Top & Bottom Gradient: Smooth dark fade at outer era boundaries while keeping center photographic details vivid */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#070b12] via-transparent to-[#070b12] pointer-events-none" />
             </div>
           );
         })}
@@ -1057,27 +1087,58 @@ export default function TimelinePage({ onNavigate }) {
       {/* =========================================================
           5. END OF TIMELINE CLOSING SECTION
           ========================================================= */}
-      <section className="relative z-10 w-full overflow-hidden bg-[#0a0f18] border-t border-[#1c2535] py-12 sm:py-16 text-center">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 space-y-6">
+      <section className="relative z-10 w-full overflow-hidden bg-[#070b12] py-12 sm:py-16 text-center border-t border-[#1c2535]">
+        {/* Background Image Container - bg.png */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none select-none"
+          style={{ backgroundImage: "url('/images/bg.png')" }}
+          aria-hidden="true"
+        />
+
+        {/* Subtle Dark Overlay to preserve text contrast without dimming artwork details */}
+        <div 
+          className="absolute inset-0 bg-[#070b12]/45 pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Smooth Edge Transitions to naturally blend into dark navy timeline */}
+        <div 
+          className="absolute inset-x-0 top-0 h-12 sm:h-16 bg-gradient-to-b from-[#070b12] to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute inset-x-0 bottom-0 h-12 sm:h-16 bg-gradient-to-t from-[#070b12] to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r from-[#070b12] to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute inset-y-0 right-0 w-12 sm:w-20 bg-gradient-to-l from-[#070b12] to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
+
+        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 space-y-5 sm:space-y-6">
           <img
             src="/images/bayern-crest.png"
             alt="FC Bayern München Crest"
-            className="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain select-none"
+            className="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain select-none drop-shadow-md"
           />
 
           <div className="space-y-2">
-            <h2 className="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
+            <h2 className="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight drop-shadow-md">
               125+ YEARS OF MIA SAN MIA
             </h2>
-            <p className="text-sm text-gray-300 font-display max-w-lg mx-auto">
+            <p className="text-sm text-gray-200 font-display max-w-lg mx-auto leading-relaxed drop-shadow-sm">
               From a Munich football club founded in 1900 to one of Europe&apos;s most decorated and revered clubs.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
             <button
               onClick={scrollToTop}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-display text-xs font-bold uppercase tracking-wider border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70"
+              className="w-full sm:w-auto px-6 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/15 text-gray-200 hover:text-white font-display text-xs font-bold uppercase tracking-wider border border-white/20 hover:border-white/35 transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]/70 shadow-sm"
             >
               <ArrowUp size={15} />
               <span>BACK TO TOP</span>
@@ -1085,7 +1146,7 @@ export default function TimelinePage({ onNavigate }) {
 
             <button
               onClick={() => onNavigate && onNavigate('/archive')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
+              className="w-full sm:w-auto px-6 py-2.5 sm:py-3 rounded-xl bg-[#dc052d] hover:bg-[#b80425] text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             >
               <span>EXPLORE THE ARCHIVE</span>
               <ArrowRight size={16} />

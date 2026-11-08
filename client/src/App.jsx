@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import GamesHub from './pages/GamesHub';
+import GamesPage from './pages/GamesPage';
 import ArchivePage from './pages/ArchivePage';
 import CareerPuzzlePage from './pages/CareerPuzzlePage';
+import RoadToImmortalityPage from './pages/RoadToImmortalityPage';
+import WouldYouRatherPage from './pages/WouldYouRatherPage';
 import TimelinePage from './pages/TimelinePage';
 import FeedbackPage from './pages/FeedbackPage';
 import MatchCentrePage from './pages/MatchCentrePage';
@@ -26,14 +29,19 @@ export default function App() {
     currentPath, 
     navigate,
     isHome, 
+    isGamesPage,
     isMysteryGame, 
-    isCareerPuzzle, 
+    isCareerPuzzle,
+    isRoadToImmortality,
+    isWouldYouRather,
     isTimeline, 
     isArchive, 
     isFeedback,
     isMatchCentre,
-    fixtureId 
+    fixtureId
   } = useRouter();
+
+  const isEmbeddedGame = isRoadToImmortality || isWouldYouRather;
 
   const {
     gameStatus,
@@ -59,6 +67,10 @@ export default function App() {
   } = useDraftGame();
 
   const handleSelectGame = (route) => {
+    if (typeof route === 'string' && route.startsWith('http')) {
+      window.open(route, '_blank', 'noopener,noreferrer');
+      return;
+    }
     if (route === '/mystery-player') {
       navigate('/mystery-player');
       if (gameStatus === 'completed') {
@@ -66,15 +78,21 @@ export default function App() {
       }
     } else if (route === '/guess-player') {
       navigate('/guess-player');
-    } else if (route === '/timeline') {
-      navigate('/timeline');
+    } else if (route === '/road-to-immortality' || route === '/ucl-draft') {
+      navigate('/road-to-immortality');
+    } else if (route === '/would-you-rather') {
+      navigate('/would-you-rather');
+    } else if (route === '/games') {
+      navigate('/games');
+    } else if (route && route.startsWith('/timeline')) {
+      navigate(route);
     } else if (route === '/archive') {
       navigate('/archive');
     }
   };
 
   const handleBackToGames = () => {
-    navigate('/');
+    navigate('/games');
   };
 
   const handleRestartDraft = () => {
@@ -91,18 +109,25 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full m-0 p-0 bg-[#0b0f17] text-white flex flex-col font-display selection:bg-[#dc052d] selection:text-white">
-      {/* 1. Global Club Header (Full-Width Bayern Red Navigation Bar) */}
-      <Header
-        currentPath={currentPath}
-        onNavigate={navigate}
-        onOpenAbout={() => setIsAboutOpen(true)}
-      />
+      {/* 1. Global Club Header (Full-Width Bayern Red Navigation Bar - Hidden in full-screen embedded games) */}
+      {!isEmbeddedGame && (
+        <Header
+          currentPath={currentPath}
+          onNavigate={navigate}
+          onOpenAbout={() => setIsAboutOpen(true)}
+        />
+      )}
 
       {/* Main View Area */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col w-full">
         {/* ROUTE 1: Home Games Hub */}
         {isHome && (
           <GamesHub onSelectGame={handleSelectGame} onNavigate={navigate} />
+        )}
+
+        {/* ROUTE 1B: Dedicated Games Landing Page */}
+        {isGamesPage && (
+          <GamesPage onNavigate={navigate} onSelectGame={handleSelectGame} />
         )}
 
         {/* ROUTE 2: Mystery Player Game */}
@@ -265,6 +290,16 @@ export default function App() {
           <CareerPuzzlePage onBackToGames={handleBackToGames} onNavigate={navigate} />
         )}
 
+        {/* ROUTE 3B: Road to Immortality (All-Time UCL Draft) */}
+        {isRoadToImmortality && (
+          <RoadToImmortalityPage onBackToGames={handleBackToGames} onNavigate={navigate} />
+        )}
+
+        {/* ROUTE 3C: Would You Rather (Bayern Legends Edition) */}
+        {isWouldYouRather && (
+          <WouldYouRatherPage onBackToGames={handleBackToGames} onNavigate={navigate} />
+        )}
+
         {/* ROUTE 4: Standalone Historical Timeline */}
         {isTimeline && (
           <TimelinePage onNavigate={navigate} />
@@ -289,8 +324,9 @@ export default function App() {
       {/* About Modal */}
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
 
-      {/* Editorial Footer */}
-      <footer className="relative z-20 w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-display select-none">
+      {/* Editorial Footer (Hidden in full-screen embedded games) */}
+      {!isEmbeddedGame && (
+        <footer className="relative z-20 w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-display select-none">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div className="space-y-0.5">
             <p className="font-display font-bold text-sm text-white tracking-wide uppercase">
@@ -300,10 +336,17 @@ export default function App() {
               Fan-made project · Not affiliated with FC Bayern München.
             </p>
           </div>
-          <div className="flex items-center gap-4 text-xs font-display font-semibold text-white/85">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 text-xs font-display font-semibold text-white/85">
             <button 
               onClick={() => navigate('/')}
               className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/' ? 'text-white font-bold' : 'text-white/85'}`}
+            >
+              Home
+            </button>
+            <span className="text-white/50">•</span>
+            <button 
+              onClick={() => navigate('/games')}
+              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/games' ? 'text-white font-bold' : 'text-white/85'}`}
             >
               Games
             </button>
@@ -331,6 +374,7 @@ export default function App() {
           </div>
         </div>
       </footer>
+      )}
     </div>
   );
 }

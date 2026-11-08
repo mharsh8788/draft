@@ -35,6 +35,12 @@ Thumbs.db
 # Raw Backup Reference Assets
 Bproject/
 draft/
+# Standalone Reference Repositories
+/ucl-draft/
+/would-you-rather/
+
+# Root Reference Images
+/bg*.png
 
 # Unused Download Artifacts in Client Public
 client/public/images/players/gomez.html

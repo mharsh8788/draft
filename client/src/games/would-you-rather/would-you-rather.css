@@ -1,0 +1,492 @@
+/* Scoped Would You Rather (Bayern Legends Edition) Styles */
+.would-you-rather-scope {
+  --paper: #f2efe4;
+  --card: #fbf9f3;
+  --card2: #f7f4ea;
+  --ink: #191510;
+  --dim: #6d6455;
+  --dim2: #948a78;
+  --rule: #ddd5c2;
+  --rule2: #c8bfa8;
+  --acc: #c2181f; /* programme red */
+  --acc2: #9b1218;
+  --green: #186b45;
+  --warn: #a8700f;
+  --bad: #b3261e;
+  --gold: #96701c;
+  --mono: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+  --disp: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --sans: "Archivo", system-ui, -apple-system, sans-serif;
+  --r: 3px;
+
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.012) 0 1px,
+    transparent 1px 3px
+  );
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Color & Font Utility Classes for Tailwind compatibility */
+.would-you-rather-scope .bg-card { background-color: var(--card) !important; }
+.would-you-rather-scope .bg-card2 { background-color: var(--card2) !important; }
+.would-you-rather-scope .bg-paper { background-color: var(--paper) !important; }
+.would-you-rather-scope .bg-acc { background-color: var(--acc) !important; }
+.would-you-rather-scope .bg-acc\/10 { background-color: rgba(194, 24, 31, 0.1) !important; }
+.would-you-rather-scope .border-acc\/20 { border-color: rgba(194, 24, 31, 0.2) !important; }
+
+.would-you-rather-scope .text-ink { color: var(--ink) !important; }
+.would-you-rather-scope .text-dim { color: var(--dim) !important; }
+.would-you-rather-scope .text-dim2 { color: var(--dim2) !important; }
+.would-you-rather-scope .text-acc { color: var(--acc) !important; }
+.would-you-rather-scope .text-acc2 { color: var(--acc2) !important; }
+.would-you-rather-scope .text-green { color: var(--green) !important; }
+.would-you-rather-scope .text-gold { color: var(--gold) !important; }
+
+.would-you-rather-scope .border-rule { border-color: var(--rule) !important; }
+.would-you-rather-scope .border-rule2 { border-color: var(--rule2) !important; }
+.would-you-rather-scope .border-acc { border-color: var(--acc) !important; }
+
+.would-you-rather-scope .font-disp { font-family: var(--disp) !important; }
+.would-you-rather-scope .font-mono { font-family: var(--mono) !important; }
+.would-you-rather-scope .font-sans { font-family: var(--sans) !important; }
+
+/* Layout container */
+.would-you-rather-scope .wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* Typography */
+.would-you-rather-scope h1 {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(42px, 7vw, 74px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
+}
+
+.would-you-rather-scope h1 em,
+.would-you-rather-scope h2 em {
+  font-style: italic;
+  color: var(--acc);
+}
+
+.would-you-rather-scope h2 {
+  font-family: var(--disp);
+  font-size: clamp(32px, 4.6vw, 46px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--ink);
+}
+
+.would-you-rather-scope h3 {
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0;
+  color: var(--ink);
+}
+
+.would-you-rather-scope .sec {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.17em;
+  color: var(--ink);
+  margin: 30px 0 11px;
+  font-weight: 700;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.would-you-rather-scope .sec em {
+  font-style: normal;
+  font-size: 10px;
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--dim2);
+  font-weight: 400;
+  margin-left: auto;
+}
+
+.would-you-rather-scope .eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--acc);
+  margin-bottom: 11px;
+  font-weight: 500;
+}
+
+.would-you-rather-scope .lede {
+  color: var(--dim);
+  margin-top: 16px;
+  font-size: 16px;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.would-you-rather-scope .tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim2);
+}
+
+/* Cards */
+.would-you-rather-scope .card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 15px;
+  text-align: left;
+  transition: border-color 0.11s, background-color 0.11s;
+}
+
+.would-you-rather-scope .card:hover {
+  border-color: var(--ink);
+  background: #ffffff;
+}
+
+/* Buttons */
+.would-you-rather-scope .btn {
+  background: var(--acc);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  padding: 11px 18px;
+  border-radius: var(--r);
+  display: inline-block;
+  text-align: center;
+  transition: background-color 0.11s, border-color 0.11s;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.would-you-rather-scope .btn:hover {
+  background: var(--acc2);
+}
+
+.would-you-rather-scope .btn.sec {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--rule2);
+}
+
+.would-you-rather-scope .btn.sec:hover {
+  border-color: var(--ink);
+  background: #ffffff;
+}
+
+.would-you-rather-scope .btn:disabled {
+  background: var(--rule);
+  color: var(--dim2);
+  cursor: not-allowed;
+}
+
+/* Header */
+.would-you-rather-scope header {
+  border-bottom: 2px solid var(--ink);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+}
+
+.would-you-rather-scope .hd {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 60px;
+}
+
+.would-you-rather-scope .logo {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: 25px;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.would-you-rather-scope .logo b {
+  color: var(--acc);
+  font-weight: 400;
+}
+
+.would-you-rather-scope .hd nav {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+
+.would-you-rather-scope .hd nav button {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 600;
+  color: var(--dim);
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.11s, border-bottom-color 0.11s;
+}
+
+.would-you-rather-scope .hd nav button.active,
+.would-you-rather-scope .hd nav button:hover {
+  border-bottom-color: var(--acc);
+  color: var(--ink);
+}
+
+/* Strip */
+.would-you-rather-scope .strip {
+  border-bottom: 1px solid var(--rule);
+  background: var(--card2);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  padding: 6px 0;
+}
+
+.would-you-rather-scope .strip .wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Tactical Pitch */
+.would-you-rather-scope .pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 9px;
+  padding: 12px 8px;
+  background: linear-gradient(180deg, #eef0e6, #e8ebdf);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  position: relative;
+}
+
+.would-you-rather-scope .prow2 {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.would-you-rather-scope .pl {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 3px;
+  border-radius: 2px;
+  color: #ffffff;
+  max-width: 72px;
+  border: none;
+  cursor: pointer;
+  transition: outline 0.11s, transform 0.11s;
+  font-family: inherit;
+}
+
+.would-you-rather-scope .pl b {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.would-you-rather-scope .pl i {
+  font-style: normal;
+  font-size: 9.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  opacity: 0.95;
+}
+
+.would-you-rather-scope .pl[data-player]:hover,
+.would-you-rather-scope .pl:hover {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+/* Rating / Position pill colors */
+.would-you-rather-scope .r90 { background: #12603c; } /* elite green */
+.would-you-rather-scope .r84 { background: #3f7a46; } /* medium green */
+.would-you-rather-scope .r78 { background: #8a6a1c; } /* gold amber */
+.would-you-rather-scope .r70 { background: #7d7566; } /* muted grey-brown */
+.would-you-rather-scope .r00 { background: #9d3b32; } /* brick red */
+
+.would-you-rather-scope .xiavg {
+  margin-left: auto;
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+}
+
+.would-you-rather-scope .benchline {
+  font-size: 11.5px;
+  color: var(--dim);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.would-you-rather-scope .benchline b {
+  font-family: var(--mono);
+  color: var(--ink);
+}
+
+/* Modal and Career Sheet */
+.would-you-rather-scope .modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 21, 16, 0.55);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 16px;
+  overflow: auto;
+}
+
+.would-you-rather-scope .sheet {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: var(--r);
+  padding: 22px 24px 26px;
+  max-width: 620px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.would-you-rather-scope .xbtn {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 15px;
+  color: var(--dim);
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.would-you-rather-scope .xbtn:hover {
+  background: var(--rule);
+  color: var(--ink);
+}
+
+.would-you-rather-scope .ph {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: 34px;
+  margin-top: 2px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.would-you-rather-scope .pmeta {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-bottom: 4px;
+}
+
+.would-you-rather-scope .pmeta span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.would-you-rather-scope .pmeta i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim2);
+}
+
+.would-you-rather-scope .pmeta b {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.would-you-rather-scope .pmeta b.chip {
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 14px;
+  display: inline-block;
+  width: max-content;
+}
+
+/* Tables & Meters */
+.would-you-rather-scope table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.would-you-rather-scope td {
+  padding: 6px 7px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+
+.would-you-rather-scope .meter {
+  height: 4px;
+  background: var(--rule);
+  overflow: hidden;
+  border-radius: 1px;
+}
+
+.would-you-rather-scope .meter i {
+  display: block;
+  height: 100%;
+  background: var(--acc);
+}
+
+.would-you-rather-scope footer.wrap {
+  padding: 34px 22px 50px;
+  font-size: 12px;
+  color: var(--dim2);
+  border-top: 1px solid var(--rule);
+  margin-top: 50px;
+  line-height: 1.6;
+}

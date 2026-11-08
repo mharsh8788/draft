@@ -20,9 +20,9 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     topClass: 'top-0',
     heightClass: 'h-[2200px]',
     position: 'center top',
-    opacity: 0.24,
-    blur: 'blur-[0.3px]',
-    filter: 'grayscale(15%) contrast(100%)'
+    opacity: 0.44,
+    blur: '',
+    filter: 'contrast(108%) saturate(105%)'
   },
   'golden-years': {
     image: '/images/timeline/backgrounds/golden-years.webp',
@@ -31,9 +31,9 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     topClass: 'top-[1250px]',
     heightClass: 'h-[3200px]',
     position: 'center 15%',
-    opacity: 0.18,
+    opacity: 0.42,
     blur: '',
-    filter: 'grayscale(15%) contrast(105%)'
+    filter: 'contrast(110%) saturate(105%)'
   },
   dominance: {
     image: '/images/timeline/backgrounds/dominance.jpg',
@@ -42,9 +42,9 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     topClass: 'top-[4100px]',
     heightClass: 'h-[1600px]',
     position: 'center 90px',
-    opacity: 0.18,
+    opacity: 0.42,
     blur: '',
-    filter: 'grayscale(15%) contrast(105%)'
+    filter: 'contrast(110%) saturate(105%)'
   },
   'european-glory': {
     image: '/images/timeline/backgrounds/european-glory.jpg',
@@ -53,9 +53,9 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     topClass: 'top-[5050px]',
     heightClass: 'h-[1850px]',
     position: 'center 10%',
-    opacity: 0.18,
+    opacity: 0.42,
     blur: '',
-    filter: 'grayscale(15%) contrast(105%)'
+    filter: 'contrast(110%) saturate(105%)'
   },
   'modern-era': {
     image: '/images/timeline/backgrounds/modern-era.jpg',
@@ -64,9 +64,9 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     topClass: 'top-[6400px]',
     heightClass: 'bottom-0',
     position: 'center 20%',
-    opacity: 0.18,
+    opacity: 0.42,
     blur: '',
-    filter: 'grayscale(15%) contrast(105%)'
+    filter: 'contrast(110%) saturate(105%)'
   }
 };
 

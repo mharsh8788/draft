@@ -1,0 +1,167 @@
+/* Scoped UCL Draft (Road to Immortality) Styles */
+.ucl-draft-scope {
+  --font-heading: 'Barlow Condensed', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sports: 'Teko', 'Bebas Neue', 'Barlow Condensed', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* 7a0.org Authentic Dark Theme Design Tokens */
+  --color-bg-page: #06121A;
+  --color-panel-white: #081923;
+  --color-text-primary: #E6F0F6;
+  --color-text-muted: #6A889C;
+  --color-border: #162E3D;
+  --color-accent: #00D26A;
+
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.ucl-draft-scope [data-theme='light'] {
+  --color-bg-page: #F6F8FA;
+  --color-panel-white: #FFFFFF;
+  --color-text-primary: #172638;
+  --color-text-muted: #697789;
+  --color-border: #DCE3EA;
+  --color-accent: #10B981;
+}
+
+.ucl-draft-scope h1,
+.ucl-draft-scope h2,
+.ucl-draft-scope h3,
+.ucl-draft-scope h4,
+.ucl-draft-scope .font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+}
+
+.ucl-draft-scope .font-sports {
+  font-family: var(--font-sports);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+}
+
+/* Light Natural Tactical Pitch Background Pattern */
+.ucl-draft-scope .pitch-turf-green {
+  background: 
+    linear-gradient(180deg, #2e8342 0%, #257037 100%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.045) 0px,
+      rgba(255, 255, 255, 0.045) 34px,
+      rgba(0, 0, 0, 0.04) 34px,
+      rgba(0, 0, 0, 0.04) 68px
+    );
+}
+
+/* Dark Authentic 7a0 Pitch Background Pattern - Phosphorescent Stadium Turf */
+.ucl-draft-scope .pitch-turf-green-dark {
+  background-color: #0d2e19;
+  background-image: 
+    radial-gradient(ellipse 90% 85% at 50% 50%, rgba(20, 75, 40, 0.45) 0%, rgba(8, 30, 16, 0.8) 100%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(24, 82, 45, 0.95) 0px,
+      rgba(24, 82, 45, 0.95) 36px,
+      rgba(14, 50, 27, 0.95) 36px,
+      rgba(14, 50, 27, 0.95) 72px
+    );
+}
+
+/* Phosphorescent Green Atmosphere (Dark Mode) */
+.ucl-draft-scope .phosphor-glow-backdrop {
+  position: absolute;
+  inset: -24px -16px;
+  background: radial-gradient(ellipse 75% 70% at 50% 50%, rgba(0, 210, 106, 0.22) 0%, rgba(0, 180, 80, 0.08) 50%, transparent 80%);
+  filter: blur(32px);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 36px;
+}
+
+.ucl-draft-scope .hero-glow-backdrop {
+  position: absolute;
+  top: -40px;
+  left: -30px;
+  width: 420px;
+  height: 380px;
+  background: radial-gradient(circle at 40% 40%, rgba(0, 210, 106, 0.16) 0%, rgba(0, 180, 80, 0.05) 55%, transparent 75%);
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Clean Scrollbars */
+.ucl-draft-scope ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.ucl-draft-scope ::-webkit-scrollbar-track {
+  background: #081923;
+}
+
+.ucl-draft-scope ::-webkit-scrollbar-thumb {
+  background: #162E3D;
+  border-radius: 4px;
+}
+
+.ucl-draft-scope ::-webkit-scrollbar-thumb:hover {
+  background: #25465c;
+}
+
+/* Tactile Button Hover Lift */
+.ucl-draft-scope .btn-lift {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+  will-change: transform;
+}
+
+.ucl-draft-scope .btn-lift:hover:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.35);
+}
+
+.ucl-draft-scope .btn-lift:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(0);
+}
+
+.ucl-draft-scope .btn-lift:disabled,
+.ucl-draft-scope .btn-lift[disabled] {
+  transform: none !important;
+  cursor: not-allowed !important;
+}
+
+.ucl-draft-scope .btn-lift-primary {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  will-change: transform;
+}
+
+.ucl-draft-scope .btn-lift-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(-2px);
+}
+
+.ucl-draft-scope .btn-lift-primary:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(0);
+}
+
+.ucl-draft-scope .btn-lift-primary:disabled,
+.ucl-draft-scope .btn-lift-primary[disabled] {
+  transform: none !important;
+  cursor: not-allowed !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ucl-draft-scope .btn-lift,
+  .ucl-draft-scope .btn-lift-primary,
+  .ucl-draft-scope .btn-lift:hover:not(:disabled):not([aria-disabled="true"]),
+  .ucl-draft-scope .btn-lift-primary:hover:not(:disabled):not([aria-disabled="true"]),
+  .ucl-draft-scope .btn-lift:active:not(:disabled):not([aria-disabled="true"]),
+  .ucl-draft-scope .btn-lift-primary:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: none !important;
+    transition: none !important;
+  }
+}
