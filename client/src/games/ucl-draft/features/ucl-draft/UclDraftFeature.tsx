@@ -246,6 +246,9 @@ export const UclDraftFeature: React.FC<UclDraftFeatureProps> = ({
               onSelectPlayerForDraft={(player) => {
                 if (isLocked) return;
                 setSelectedPlayerForDraft(player);
+                if (player && state.selectedSlotId) {
+                  dispatch({ type: 'SELECT_SLOT', payload: null });
+                }
               }}
               onSelectFormation={(id) => {
                 if (isLocked) {

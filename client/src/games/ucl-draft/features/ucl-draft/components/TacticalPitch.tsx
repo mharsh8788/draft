@@ -365,7 +365,7 @@ export const TacticalPitch: React.FC<TacticalPitchProps> = ({
                       className={`group flex items-center justify-center transition-all duration-150 focus:outline-none cursor-pointer ${
                         isEligibleForSelectedPlayer || isCompatibleWithMoving
                           ? 'scale-110'
-                          : isSelectedSlot
+                          : isSelectedSlot && !selectedPlayerForDraft
                           ? 'scale-105'
                           : 'hover:scale-105'
                       }`}
@@ -375,9 +375,9 @@ export const TacticalPitch: React.FC<TacticalPitchProps> = ({
                           isEligibleForSelectedPlayer || isCompatibleWithMoving
                             ? 'border-[#10B981] dark:border-[#00D26A] bg-[#10B981]/25 dark:bg-[#00D26A]/25 text-[#10B981] dark:text-[#00FFA3] ring-2 ring-[#00D26A]/60 shadow-[0_0_20px_rgba(0,210,106,0.6)] animate-pulse'
                             : selectedPlayerForDraft
-                            ? 'border-amber-400/40 bg-[#172638]/20 dark:bg-[#06121A]/40 text-amber-300/40 opacity-50 cursor-not-allowed'
+                            ? 'border-amber-400/30 bg-[#172638]/20 dark:bg-[#06121A]/40 text-amber-300/30 opacity-40 cursor-not-allowed'
                             : isSelectedSlot
-                            ? 'border-white bg-[#10B981] dark:bg-[#00D26A] text-white dark:text-slate-950 ring-3 ring-amber-300 shadow-md dark:shadow-[0_0_18px_rgba(0,210,106,0.5)]'
+                            ? 'border-amber-300 bg-amber-400/20 text-amber-200 ring-2 ring-amber-400/60 shadow-[0_0_12px_rgba(245,158,11,0.4)]'
                             : 'border-amber-400/85 bg-[#172638]/40 dark:bg-[#06121A]/60 hover:bg-[#172638]/60 dark:hover:bg-[#06121A]/80 text-amber-300 hover:border-white'
                         }`}
                       >

@@ -72,6 +72,7 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
         ...state,
         status: 'drafting',
         isLocked: false,
+        selectedSlotId: null,
         currentRollClub: challenge.club,
         currentRollEra: '2026-27',
         rerollsRemaining: 3,
@@ -96,6 +97,7 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
       });
       return {
         ...state,
+        selectedSlotId: null,
         currentRollClub: challenge.club,
         currentRollEra: '2026-27',
         awaitingNextRoll: false,
@@ -193,7 +195,7 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
       if (isLineupLocked(state)) return state;
       return {
         ...state,
-        selectedSlotId: state.selectedSlotId === action.payload ? null : action.payload,
+        selectedSlotId: action.payload ? (state.selectedSlotId === action.payload ? null : action.payload) : null,
       };
     }
 
@@ -214,6 +216,7 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
       });
       return {
         ...state,
+        selectedSlotId: null,
         currentRollClub: challenge.club,
         rerollsRemaining: state.rerollsRemaining - 1,
         notification: {
@@ -236,6 +239,7 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
       }
       return {
         ...state,
+        selectedSlotId: null,
         currentRollEra: '2026-27',
         rerollsRemaining: state.rerollsRemaining - 1,
         notification: {
@@ -284,8 +288,14 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
           };
         }
       } else if (state.selectedSlotId) {
-        slotToFill = formation.slots.find((s) => s.id === state.selectedSlotId) || null;
-        if (!slotToFill || state.squad[slotToFill.id] !== null) {
+        const potentialSlot = formation.slots.find((s) => s.id === state.selectedSlotId) || null;
+        if (
+          potentialSlot &&
+          state.squad[potentialSlot.id] === null &&
+          isPlayerEligibleForSlot(player, potentialSlot.allowedPositions, potentialSlot.category)
+        ) {
+          slotToFill = potentialSlot;
+        } else {
           slotToFill = findFirstEligibleEmptySlot(formation.slots, state.squad, player);
         }
       } else {
@@ -332,9 +342,6 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
       const totalDrafted = Object.values(nextSquad).filter((p) => p !== null).length;
       const isComplete = totalDrafted === 11;
 
-      // Next empty slot targeting
-      const nextEmpty = formation.slots.find((s) => s.id !== slotToFill!.id && nextSquad[s.id] === null);
-
       let simResult = state.simulationResult;
       if (isComplete) {
         const metrics = calculateSquadMetrics(nextSquad, formation, state.tacticalStyle);
@@ -344,7 +351,7 @@ export function uclDraftReducer(state: DraftState, action: DraftAction): DraftSt
       return {
         ...state,
         squad: nextSquad,
-        selectedSlotId: nextEmpty ? nextEmpty.id : null,
+        selectedSlotId: null,
         history: [...state.history, historyItem],
         status: isComplete ? 'completed' : 'drafting',
         isLocked: isComplete,

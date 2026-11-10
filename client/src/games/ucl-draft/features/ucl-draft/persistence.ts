@@ -18,7 +18,7 @@ export function saveDraftState(state: DraftState): void {
       squadPlayerIds: Object.fromEntries(
         Object.entries(state.squad).map(([slotId, player]) => [slotId, player ? player.id : null])
       ),
-      selectedSlotId: state.selectedSlotId,
+      selectedSlotId: null,
       currentRollClub: state.currentRollClub,
       currentRollEra: state.currentRollEra,
       rerollsRemaining: state.rerollsRemaining,
@@ -95,7 +95,7 @@ export function loadDraftState(): Partial<DraftState> | null {
       challenge,
       tacticalStyle,
       squad,
-      selectedSlotId: parsed.selectedSlotId || null,
+      selectedSlotId: null,
       currentRollClub,
       currentRollEra: '2026-27',
       rerollsRemaining: typeof parsed.rerollsRemaining === 'number' ? parsed.rerollsRemaining : 3,
