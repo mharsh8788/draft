@@ -21,6 +21,7 @@
   width: 100%;
 }
 
+.ucl-draft-scope[data-theme='light'],
 .ucl-draft-scope [data-theme='light'] {
   --color-bg-page: #F6F8FA;
   --color-panel-white: #FFFFFF;
@@ -112,6 +113,21 @@
 
 .ucl-draft-scope ::-webkit-scrollbar-thumb:hover {
   background: #25465c;
+}
+
+.ucl-draft-scope[data-theme='light'] ::-webkit-scrollbar-track,
+.ucl-draft-scope [data-theme='light'] ::-webkit-scrollbar-track {
+  background: #F6F8FA;
+}
+
+.ucl-draft-scope[data-theme='light'] ::-webkit-scrollbar-thumb,
+.ucl-draft-scope [data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #DCE3EA;
+}
+
+.ucl-draft-scope[data-theme='light'] ::-webkit-scrollbar-thumb:hover,
+.ucl-draft-scope [data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #b0c2d3;
 }
 
 /* Tactile Button Hover Lift */

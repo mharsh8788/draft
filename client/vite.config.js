@@ -8,6 +8,9 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  resolve: {
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+  },
   server: {
     port: 5173,
     proxy: {

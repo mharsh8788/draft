@@ -326,54 +326,16 @@ export default function App() {
 
       {/* Editorial Footer (Hidden in full-screen embedded games) */}
       {!isEmbeddedGame && (
-        <footer className="relative z-20 w-full py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-display select-none">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <div className="space-y-0.5">
-            <p className="font-display font-bold text-sm text-white tracking-wide uppercase">
+        <footer className="relative z-20 w-full py-4 sm:py-5 px-4 sm:px-6 lg:px-8 bg-[#dc052d] text-xs font-display select-none">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-center sm:text-left">
+            <p className="font-display font-bold text-xs sm:text-sm text-white tracking-wider uppercase whitespace-nowrap">
               FC BAYERN GAMES
             </p>
-            <p className="text-[11px] text-white/80">
+            <p className="text-[11px] sm:text-xs text-white/85 font-medium tracking-normal">
               Fan-made project · Not affiliated with FC Bayern München.
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 text-xs font-display font-semibold text-white/85">
-            <button 
-              onClick={() => navigate('/')}
-              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/' ? 'text-white font-bold' : 'text-white/85'}`}
-            >
-              Home
-            </button>
-            <span className="text-white/50">•</span>
-            <button 
-              onClick={() => navigate('/games')}
-              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/games' ? 'text-white font-bold' : 'text-white/85'}`}
-            >
-              Games
-            </button>
-            <span className="text-white/50">•</span>
-            <button 
-              onClick={() => navigate('/timeline')}
-              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/timeline' ? 'text-white font-bold' : 'text-white/85'}`}
-            >
-              Timeline
-            </button>
-            <span className="text-white/50">•</span>
-            <button 
-              onClick={() => navigate('/archive')}
-              className={`transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs ${currentPath === '/archive' ? 'text-white font-bold' : 'text-white/85'}`}
-            >
-              Archive
-            </button>
-            <span className="text-white/50">•</span>
-            <button 
-              onClick={() => setIsAboutOpen(true)}
-              className="transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 hover:text-white text-white/85 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:rounded-xs"
-            >
-              About
-            </button>
-          </div>
-        </div>
-      </footer>
+        </footer>
       )}
     </div>
   );

@@ -17,14 +17,24 @@ import { GameGuideModal } from './components/GameGuideModal';
 import { ResetConfirmModal } from './components/ResetConfirmModal';
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 
-export const UclDraftFeature: React.FC = () => {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+export interface UclDraftFeatureProps {
+  theme?: 'light' | 'dark';
+  onToggleTheme?: () => void;
+}
+
+export const UclDraftFeature: React.FC<UclDraftFeatureProps> = ({
+  theme: controlledTheme,
+  onToggleTheme: controlledToggleTheme,
+}) => {
+  const [internalTheme, setInternalTheme] = useState<'light' | 'dark'>(() => {
     try {
       const saved = localStorage.getItem('ucl_draft_theme');
       if (saved === 'light' || saved === 'dark') return saved;
     } catch {}
     return 'dark'; // matches 7a0.org default in screenshots
   });
+
+  const theme = controlledTheme ?? internalTheme;
 
   const [state, dispatch] = useReducer(uclDraftReducer, initialDraftState, () => {
     const saved = loadDraftState();
@@ -63,13 +73,17 @@ export const UclDraftFeature: React.FC = () => {
 
   // Persist theme to localStorage
   const handleToggleTheme = () => {
-    setTheme((prev) => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      try {
-        localStorage.setItem('ucl_draft_theme', next);
-      } catch {}
-      return next;
-    });
+    if (controlledToggleTheme) {
+      controlledToggleTheme();
+    } else {
+      setInternalTheme((prev) => {
+        const next = prev === 'dark' ? 'light' : 'dark';
+        try {
+          localStorage.setItem('ucl_draft_theme', next);
+        } catch {}
+        return next;
+      });
+    }
   };
 
   // Dismiss notification banner automatically
@@ -195,7 +209,7 @@ export const UclDraftFeature: React.FC = () => {
       <section
         id="draft-zone"
         ref={draftZoneRef}
-        className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-4"
+        className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-4 scroll-mt-16"
       >
         {/* Section Heading matching Screenshot 2 & 3 */}
         <div className="pb-2">

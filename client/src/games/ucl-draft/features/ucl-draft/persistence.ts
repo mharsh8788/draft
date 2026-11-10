@@ -1,6 +1,6 @@
 import { DraftState, GameMode, DraftChallenge, TacticalStyle } from './types';
 import { FORMATIONS, DEFAULT_FORMATION_ID } from '../../data/formations';
-import { PLAYERS } from '../../data/players';
+import { PLAYERS, UCL_2026_27_CLUBS } from '../../data/players';
 import { getFormationById, initializeSquad } from '../../utils/draftLogic';
 import { Player, SquadPicks } from '../../types/draft';
 
@@ -81,6 +81,12 @@ export function loadDraftState(): Partial<DraftState> | null {
     const draftedCount = Object.values(squad).filter((p) => p !== null).length;
     const isCompleted = parsed.status === 'completed' || draftedCount === 11;
 
+    const currentRollClub =
+      typeof parsed.currentRollClub === 'string' &&
+      UCL_2026_27_CLUBS.some((c) => c.toLowerCase() === parsed.currentRollClub.toLowerCase())
+        ? parsed.currentRollClub
+        : null;
+
     return {
       status: isCompleted ? 'completed' : parsed.status === 'drafting' ? 'drafting' : 'setup',
       isLocked: Boolean(parsed.isLocked || isCompleted),
@@ -90,7 +96,7 @@ export function loadDraftState(): Partial<DraftState> | null {
       tacticalStyle,
       squad,
       selectedSlotId: parsed.selectedSlotId || null,
-      currentRollClub: typeof parsed.currentRollClub === 'string' ? parsed.currentRollClub : null,
+      currentRollClub,
       currentRollEra: '2026-27',
       rerollsRemaining: typeof parsed.rerollsRemaining === 'number' ? parsed.rerollsRemaining : 3,
       awaitingNextRoll: typeof parsed.awaitingNextRoll === 'boolean' ? parsed.awaitingNextRoll : false,

@@ -7,7 +7,9 @@ export default function GameCard({ game, onPlay }) {
 
   const handleAction = () => {
     if (isAvailable) {
-      sounds.playWhistle();
+      if (game?.route !== '/would-you-rather') {
+        sounds.playWhistle();
+      }
       if (game.isExternal || (game.route && game.route.startsWith('http'))) {
         window.open(game.route, '_blank', 'noopener,noreferrer');
       } else if (onPlay) {

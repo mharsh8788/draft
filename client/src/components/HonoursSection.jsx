@@ -32,16 +32,9 @@ export default function HonoursSection() {
     1: false,
     2: false,
   });
-  const [slideAnimated, setSlideAnimated] = useState({
-    0: false,
-    1: false,
-    2: false,
-  });
-  const slideAnimatedRef = useRef({
-    0: false,
-    1: false,
-    2: false,
-  });
+  // Single global continuous counting sequence state
+  const [isCountingTriggered, setIsCountingTriggered] = useState(false);
+  const countingTriggeredRef = useRef(false);
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSectionInView, setIsSectionInView] = useState(false);
@@ -116,7 +109,7 @@ export default function HonoursSection() {
 
   // 2. Viewport visibility observation: detect when section enters the viewport
   useEffect(() => {
-    if (slideAnimatedRef.current[0] && slideAnimatedRef.current[1] && slideAnimatedRef.current[2]) return;
+    if (countingTriggeredRef.current) return;
 
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === 'undefined') {
@@ -150,15 +143,16 @@ export default function HonoursSection() {
     };
   }, []);
 
-  // 3. Trigger count-up animation per slide when it is active, its images are ready, and section is in view
+  // 3. Trigger continuous count-up animation across all trophies when section is in view and images are ready
   useEffect(() => {
     if (!isSectionInView || !isTransitionIdle) return;
+    if (countingTriggeredRef.current) return;
 
-    if (!slideAnimatedRef.current[activeSlide] && slideImagesReady[activeSlide]) {
-      slideAnimatedRef.current[activeSlide] = true;
-      setSlideAnimated((prev) => ({ ...prev, [activeSlide]: true }));
+    if (slideImagesReady[0]) {
+      countingTriggeredRef.current = true;
+      setIsCountingTriggered(true);
     }
-  }, [activeSlide, isSectionInView, isTransitionIdle, slideImagesReady]);
+  }, [isSectionInView, isTransitionIdle, slideImagesReady]);
 
   // 4. Observe horizontal intersection of slide key cards within carousel
   useEffect(() => {
@@ -330,10 +324,10 @@ export default function HonoursSection() {
                   }}
                   trophy={trophy}
                   index={index}
-                  allImagesReady={slideImagesReady[slideIdx]}
+                  allImagesReady={slideImagesReady[slideIdx] || !!processedImages[trophy.id]}
                   processedSrc={processedImages[trophy.id]}
                   hasError={!!failedImages[trophy.id]}
-                  isTriggered={slideAnimated[slideIdx]}
+                  isTriggered={isCountingTriggered}
                 />
               );
             })}

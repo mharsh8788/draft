@@ -111,11 +111,11 @@ export default function OutcomeResult({
 
       {/* 3. The User's Answer Breakdown (Collapsible Accordion) */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between border-b border-rule pb-2">
-          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-ink">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 border-b border-rule pb-2">
+          <h2 className="font-disp text-2xl sm:text-3xl text-ink leading-tight tracking-tight">
             Your 10 Matchday Decisions in this Session
           </h2>
-          <span className="font-mono text-[10.5px] text-dim2">
+          <span className="font-mono text-[10px] sm:text-[10.5px] text-dim2 tracking-wider uppercase shrink-0">
             OPINION-BASED COMPARISON
           </span>
         </div>
@@ -129,12 +129,12 @@ export default function OutcomeResult({
             className="w-full card p-3 flex items-center justify-between bg-card2 hover:bg-white border border-rule transition-colors cursor-pointer text-left font-sans"
           >
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-semibold text-ink">
+              <span className="font-sans text-xs font-bold text-ink">
                 {isBreakdownExpanded
                   ? 'Hide all 10 questions'
                   : `View all ${breakdown.length || 10} questions`}
               </span>
-              <span className="text-[11px] font-mono text-dim2">
+              <span className="text-[11px] font-sans text-dim2">
                 ({isBreakdownExpanded ? 'Click to collapse' : 'Click to expand'})
               </span>
             </div>

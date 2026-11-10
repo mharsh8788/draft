@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.ucl-draft-scope[data-theme="dark"], .ucl-draft-scope[data-theme="dark"] *, .ucl-draft-scope.dark, .ucl-draft-scope.dark *));
+
 @theme {
   --color-fcb-red: #dc052d;
   --color-fcb-darkred: #9e0018;
@@ -24,6 +26,10 @@ html, body, button, input, textarea, select {
   font-family: 'Oswald', sans-serif;
 }
 
+html {
+  scroll-padding-top: 84px;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -31,7 +37,7 @@ html, body {
   background-color: #0b0f17;
   color: #f1f5f9;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 #root {

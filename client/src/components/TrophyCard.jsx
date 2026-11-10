@@ -75,6 +75,7 @@ export default function TrophyCard({
     <div
       ref={cardRef}
       data-trophy-id={trophy.id}
+      data-trophy-index={index}
       className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md"
     >
       {/* 1. Trophy Visual Area: 58% of height with subtle museum backlight */}
@@ -127,8 +128,7 @@ export default function TrophyCard({
             <OdometerNumber
               value={trophy.count}
               isTriggered={isTriggered}
-              delay={0}
-              index={0}
+              index={index}
             />
           </span>
           <span className="text-[10px] font-display font-bold tracking-widest text-[#dc052d] uppercase mt-1">

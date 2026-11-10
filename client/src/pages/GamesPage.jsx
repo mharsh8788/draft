@@ -5,8 +5,10 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
   const [activeFilter, setActiveFilter] = useState('all');
 
   const handlePlayGame = (gameOrRoute) => {
-    sounds.playWhistle();
     const route = typeof gameOrRoute === 'string' ? gameOrRoute : gameOrRoute?.route;
+    if (route !== '/would-you-rather') {
+      sounds.playWhistle();
+    }
     const isExternal = typeof gameOrRoute === 'object' ? (gameOrRoute.isExternal || route?.startsWith('http')) : route?.startsWith('http');
 
     if (isExternal && route) {

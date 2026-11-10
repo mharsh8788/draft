@@ -334,7 +334,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
           </div>
 
           {/* =========================================================
-              MORE GAMES SECTION
+              THE BAYERN EXPERIENCE SECTION
               ========================================================= */}
           <div className="space-y-6 pt-4 sm:pt-6">
             {/* Header: Kicker, Title, Description (Soft subtle border) */}
@@ -347,7 +347,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                   </span>
                 </div>
                 <h3 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-white uppercase tracking-tight">
-                  MORE GAMES
+                  THE BAYERN EXPERIENCE
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-200 font-display leading-relaxed max-w-xl">
                   Upcoming tactical challenges and historical campaigns entering through the tunnel.
@@ -549,11 +549,13 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                       {/* 5. Primary Interactive Gold CTA Button */}
                       <div className="pt-4 sm:pt-5">
                         <button
-                          onClick={() => handleNavigateMilestone(activeMilestone.eventId)}
-                          className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-md bg-[#fdb913] hover:bg-[#e0a20f] text-black font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 ease-out cursor-pointer shadow-md group hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 select-none"
+                          type="button"
+                          disabled
+                          aria-disabled="true"
+                          className="inline-flex items-center justify-center px-8 py-3.5 rounded-md bg-[#fdb913] text-black font-display font-bold text-xs sm:text-sm tracking-wider uppercase shadow-md select-none cursor-default"
                         >
-                          <span>EXPLORE THE JOURNEY</span>
-                          <ArrowRight size={15} className="transition-transform duration-200 ease-out group-hover:translate-x-1" />
+                          <span>COMING SOON</span>
+
                         </button>
                       </div>
                     </div>
