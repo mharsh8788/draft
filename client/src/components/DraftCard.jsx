@@ -31,7 +31,14 @@ export default function DraftCard({ player, onSelect, disabled }) {
           <img
             src={displayImage}
             alt={player.name}
-            onError={() => setImageError(true)}
+            onError={(e) => {
+              if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                e.currentTarget.dataset.fallbackTried = 'true';
+                e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+              } else {
+                setImageError(true);
+              }
+            }}
             className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
           />
 

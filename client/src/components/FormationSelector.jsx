@@ -38,7 +38,7 @@ export default function FormationSelector({
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none opacity-45"
         style={{ 
-          backgroundImage: "url('/images/allianz-arena-interior.jpg')",
+          backgroundImage: "url('/images/allianz-arena-interior.webp')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat"

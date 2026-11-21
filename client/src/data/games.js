@@ -39,15 +39,15 @@ export const GAMES = [
     actionText: "PLAY NOW →"
   },
   {
-    id: "road-to-immortality",
-    title: "ROAD TO IMMORTALITY",
+    id: "road-to-ucl",
+    title: "ROAD TO UCL",
     image: "/images/bg3.png",
     category: "EUROPEAN DRAFT",
     tagline: "Build your all-time Champions League XI and compete for European glory.",
     description: "Build your all-time Champions League XI and compete for European glory.",
     badges: ["CHAMPIONS LEAGUE", "11 ROUNDS", "AVAILABLE"],
     status: "available",
-    route: "/road-to-immortality",
+    route: "/road-to-ucl",
     featured: false,
     actionText: "PLAY NOW →"
   },

@@ -144,7 +144,7 @@ export const RightScorecard: React.FC<RightScorecardProps> = ({
 
       {/* Footer Info */}
       <div className="pt-3 border-t border-[#DCE3EA] dark:border-[#162E3D] text-[10px] text-[#697789] dark:text-[#6A889C] text-center">
-        ROAD TO IMMORTALITY Scoring Engine
+        ROAD TO UCL Scoring Engine
       </div>
     </div>
   );

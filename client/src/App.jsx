@@ -32,6 +32,7 @@ export default function App() {
     isGamesPage,
     isMysteryGame, 
     isCareerPuzzle,
+    isRoadToUcl,
     isRoadToImmortality,
     isWouldYouRather,
     isTimeline, 
@@ -41,7 +42,7 @@ export default function App() {
     fixtureId
   } = useRouter();
 
-  const isEmbeddedGame = isRoadToImmortality || isWouldYouRather;
+  const isEmbeddedGame = isRoadToUcl || isRoadToImmortality || isWouldYouRather;
 
   const {
     gameStatus,
@@ -78,8 +79,8 @@ export default function App() {
       }
     } else if (route === '/guess-player') {
       navigate('/guess-player');
-    } else if (route === '/road-to-immortality' || route === '/ucl-draft') {
-      navigate('/road-to-immortality');
+    } else if (route === '/road-to-ucl' || route === '/road-to-immortality' || route === '/ucl-draft') {
+      navigate('/road-to-ucl');
     } else if (route === '/would-you-rather') {
       navigate('/would-you-rather');
     } else if (route === '/games') {
@@ -149,7 +150,7 @@ export default function App() {
                 <div 
                   className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none blur-[1.5px] scale-105"
                   style={{ 
-                    backgroundImage: "url('/images/bayern-newspaper-archive.jpg')",
+                    backgroundImage: "url('/images/bayern-newspaper-archive.webp')",
                     backgroundPosition: "center center",
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat"
@@ -290,8 +291,8 @@ export default function App() {
           <CareerPuzzlePage onBackToGames={handleBackToGames} onNavigate={navigate} />
         )}
 
-        {/* ROUTE 3B: Road to Immortality (All-Time UCL Draft) */}
-        {isRoadToImmortality && (
+        {/* ROUTE 3B: Road to UCL (All-Time UCL Draft) */}
+        {(isRoadToUcl || isRoadToImmortality) && (
           <RoadToImmortalityPage onBackToGames={handleBackToGames} onNavigate={navigate} />
         )}
 

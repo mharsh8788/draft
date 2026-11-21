@@ -13,7 +13,11 @@ export function useRouter() {
     currentPath,
     navigate: (path) => {
       if (typeof window !== 'undefined') {
-        window.history.pushState({}, '', path);
+        let normalized = path;
+        if (normalized && normalized.startsWith('/road-to-immortality')) {
+          normalized = normalized.replace('/road-to-immortality', '/road-to-ucl');
+        }
+        window.history.pushState({}, '', normalized);
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     },
@@ -23,7 +27,8 @@ export function useRouter() {
     isGamesPage: currentPath === '/games' || currentPath.startsWith('/games'),
     isMysteryGame: currentPath === '/mystery-player',
     isCareerPuzzle: currentPath === '/guess-player',
-    isRoadToImmortality: currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
+    isRoadToUcl: currentPath.startsWith('/road-to-ucl') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
+    isRoadToImmortality: currentPath.startsWith('/road-to-ucl') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
     isWouldYouRather: currentPath.startsWith('/would-you-rather'),
     isTimeline: currentPath.startsWith('/timeline'),
     isArchive: currentPath === '/archive',

@@ -7,7 +7,7 @@ export default function Header({
   onOpenAbout 
 }) {
   const isHomeActive = currentPath === '/' || currentPath === '';
-  const isGamesActive = currentPath === '/games' || currentPath.startsWith('/games') || currentPath.startsWith('/mystery-player') || currentPath.startsWith('/guess-player') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft') || currentPath.startsWith('/would-you-rather');
+  const isGamesActive = currentPath === '/games' || currentPath.startsWith('/games') || currentPath.startsWith('/mystery-player') || currentPath.startsWith('/guess-player') || currentPath.startsWith('/road-to-ucl') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft') || currentPath.startsWith('/would-you-rather');
   const isTimelineActive = currentPath.startsWith('/timeline');
   const isArchiveActive = currentPath === '/archive' || currentPath.startsWith('/archive');
 

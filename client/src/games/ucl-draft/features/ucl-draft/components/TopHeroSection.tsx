@@ -1,4 +1,5 @@
 import React from 'react';
+import { HelpCircle } from 'lucide-react';
 import { Formation } from '../../../types/draft';
 import { GameMode } from '../types';
 
@@ -9,6 +10,7 @@ interface TopHeroSectionProps {
   onSelectFormation: (id: string) => void;
   onSelectMode: (mode: GameMode) => void;
   onPlayNow: () => void;
+  onOpenHowToPlay?: () => void;
 }
 
 export const TopHeroSection: React.FC<TopHeroSectionProps> = ({
@@ -18,13 +20,26 @@ export const TopHeroSection: React.FC<TopHeroSectionProps> = ({
   onSelectFormation,
   onSelectMode,
   onPlayNow,
+  onOpenHowToPlay,
 }) => {
   return (
-    <section className="bg-white dark:bg-[#06121A] border-b border-[#DCE3EA] dark:border-[#162E3D] pt-6 pb-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+    <section className="relative bg-white dark:bg-[#06121A] border-b border-[#DCE3EA] dark:border-[#162E3D] pt-6 pb-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200 overflow-hidden isolate">
+      {/* Subtle atmospheric UCL background image from bg3.webp */}
+      <div
+        className="absolute inset-0 w-full h-full bg-cover bg-center opacity-10 dark:opacity-15 pointer-events-none select-none -z-10"
+        style={{ backgroundImage: "url('/images/bg3.webp')" }}
+        aria-hidden="true"
+      />
+      {/* Subtle contrast gradient for optimal headline readability */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent dark:from-[#06121A]/95 dark:via-[#06121A]/85 dark:to-transparent pointer-events-none -z-10" 
+        aria-hidden="true"
+      />
+
       <div className="max-w-7xl mx-auto">
         {/* Subtitle letterspaced */}
         <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#697789] dark:text-[#6A889C] mb-4">
-          ROAD TO IMMORTALITY • BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI
+          ROAD TO UCL • BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI
         </div>
 
         {/* 2-Column Hero: Left Headline/Controls & Right Pitch Preview */}
@@ -37,9 +52,9 @@ export const TopHeroSection: React.FC<TopHeroSectionProps> = ({
               className="hero-glow-backdrop opacity-0 dark:opacity-100 transition-opacity duration-300 pointer-events-none"
             />
 
-            {/* Massive ROAD TO IMMORTALITY headline with phosphorescent green atmospheric shadow in dark mode */}
+            {/* Massive ROAD TO UCL headline with phosphorescent green atmospheric shadow in dark mode */}
             <div className="relative z-10 font-sports text-5xl sm:text-6xl md:text-7xl font-black text-[#172638] dark:text-white dark:drop-shadow-[0_0_35px_rgba(0,210,106,0.28)] tracking-tight leading-none uppercase">
-              ROAD TO IMMORTALITY
+              ROAD TO UCL
             </div>
 
             {/* Subtitle */}
@@ -50,16 +65,27 @@ export const TopHeroSection: React.FC<TopHeroSectionProps> = ({
 
             {/* Description */}
             <p className="relative z-10 text-xs sm:text-sm text-[#697789] dark:text-[#6A889C] max-w-xl leading-relaxed">
-              Play a football draft game built for Champions League fans: roll a European powerhouse club, draft one player at a time, and see whether your starting XI can achieve immortality in European football.
+              Play a football draft game built for Champions League fans: roll a European powerhouse club, draft one player at a time, and see whether your starting XI can conquer European football.
             </p>
 
-            {/* Play Now Button + With Friends pill */}
+            {/* Play Now Button + How to Play Button + With Friends pill */}
             <div className="relative z-10 flex flex-wrap items-center gap-3 pt-2">
               <button
                 onClick={onPlayNow}
                 className="flex-1 sm:flex-none px-8 py-3.5 rounded-xl bg-[#10B981] dark:bg-[#00D26A] hover:bg-[#059669] dark:hover:bg-[#00b85c] active:scale-98 text-white dark:text-slate-950 font-sports text-2xl font-black uppercase tracking-wider shadow-sm dark:shadow-[0_4px_22px_-2px_rgba(0,210,106,0.45)] dark:hover:shadow-[0_4px_30px_0px_rgba(0,210,106,0.65)] btn-lift-primary text-center cursor-pointer"
               >
                 PLAY NOW
+              </button>
+
+              {/* Prominent Bayern Red HOW TO PLAY Button */}
+              <button
+                type="button"
+                onClick={onOpenHowToPlay}
+                className="flex-1 sm:flex-none px-6 py-3.5 rounded-xl bg-[#dc052d] hover:bg-[#b50425] active:scale-98 text-white font-sports text-xl font-black uppercase tracking-wider shadow-sm hover:shadow-[0_4px_20px_rgba(220,5,45,0.4)] flex items-center justify-center gap-2 cursor-pointer transition-all duration-200"
+                title="How to Play Road to UCL"
+              >
+                <HelpCircle className="w-5 h-5 shrink-0" />
+                <span>HOW TO PLAY</span>
               </button>
 
               <span className="px-4 py-3 rounded-xl bg-[#F6F8FA] dark:bg-[#081923] border border-[#DCE3EA] dark:border-[#162E3D] text-[#697789] dark:text-[#6A889C] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-not-allowed">

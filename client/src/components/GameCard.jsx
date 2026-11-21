@@ -7,9 +7,6 @@ export default function GameCard({ game, onPlay }) {
 
   const handleAction = () => {
     if (isAvailable) {
-      if (game?.route !== '/would-you-rather') {
-        sounds.playWhistle();
-      }
       if (game.isExternal || (game.route && game.route.startsWith('http'))) {
         window.open(game.route, '_blank', 'noopener,noreferrer');
       } else if (onPlay) {
@@ -55,12 +52,12 @@ export default function GameCard({ game, onPlay }) {
           </div>
         )}
 
-        {/* --- GAME 2: ROAD TO IMMORTALITY / UCL DRAFT --- */}
-        {game.id === 'road-to-immortality' && (
+        {/* --- GAME 2: ROAD TO UCL / UCL DRAFT --- */}
+        {(game.id === 'road-to-ucl' || game.id === 'road-to-immortality') && (
           <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 w-full h-full">
             <div 
               className="absolute inset-0 w-full h-full bg-cover bg-center opacity-30 pointer-events-none filter blur-[0.5px]"
-              style={{ backgroundImage: "url('/images/ucl-bg.jpg')" }}
+              style={{ backgroundImage: "url('/images/bg3.png')" }}
             />
             <div className="relative w-24 h-24 flex items-center justify-center z-10">
               <img

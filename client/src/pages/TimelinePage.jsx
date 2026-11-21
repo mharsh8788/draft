@@ -95,6 +95,7 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
       if (isCurrent) {
         if (resolved.length > 0) {
           setImages(resolved);
+          setHasError(false);
         } else {
           setHasError(true);
         }
@@ -367,7 +368,7 @@ function TimelineCardImage({ event, eventNumber, onClick }) {
         <span>VIEW</span>
       </div>
 
-      <span className="absolute bottom-2 left-3 text-[10px] font-display uppercase text-gray-300 tracking-wider pointer-events-none z-20">
+      <span className={`absolute bottom-2 left-3 text-[10px] font-display uppercase text-gray-300 tracking-wider pointer-events-none z-20 ${images.length > 1 ? 'hidden sm:block' : ''}`}>
         {event.exactDate}
       </span>
     </div>
@@ -381,11 +382,34 @@ export default function TimelinePage({ onNavigate }) {
   const [eventImages, setEventImages] = useState([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [modalImageLoaded, setModalImageLoaded] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(80);
   
   const timelineTopRef = useRef(null);
   const timelineContainerRef = useRef(null);
   const progressLineRef = useRef(null);
   const isNavigatingRef = useRef(false);
+
+  // Measure sticky header height dynamically to ensure modal photo never collides
+  useEffect(() => {
+    const measureHeader = () => {
+      const headerEl = document.querySelector('header');
+      if (headerEl) {
+        const rect = headerEl.getBoundingClientRect();
+        if (rect.height > 0) {
+          setHeaderHeight(Math.round(rect.height));
+        }
+      }
+    };
+
+    measureHeader();
+    window.addEventListener('resize', measureHeader);
+    const timer = setTimeout(measureHeader, 100);
+
+    return () => {
+      window.removeEventListener('resize', measureHeader);
+      clearTimeout(timer);
+    };
+  }, []);
 
   // 1. SCROLL-REACTIVE TIMELINE: Active event detection & timeline progress fill line
   useEffect(() => {
@@ -617,7 +641,7 @@ export default function TimelinePage({ onNavigate }) {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none select-none blur-[0.5px] opacity-35 scale-105"
           style={{ 
-            backgroundImage: "url('/images/bayern-historical-collage.jpg')",
+            backgroundImage: "url('/images/bayern-historical-collage.webp')",
             backgroundPosition: "center center"
           }}
         />
@@ -925,22 +949,27 @@ export default function TimelinePage({ onNavigate }) {
           ========================================================= */}
       {activeEvent && (
         <div 
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#070b12]/95 select-none modal-backdrop-animate"
+          className="fixed inset-x-0 bottom-0 z-50 flex flex-col items-center justify-center p-4 sm:p-6 select-none modal-backdrop-animate overflow-y-auto"
+          style={{
+            top: `${headerHeight}px`,
+            height: `calc(100vh - ${headerHeight}px)`,
+            backgroundColor: 'rgba(7, 11, 18, 0.95)'
+          }}
           onClick={() => setActiveEvent(null)}
           role="dialog"
           aria-modal="true"
         >
-          {/* Close Button (Fixed Top-Right) */}
+          {/* Close Button (Positioned relative to viewer below sticky header) */}
           <button
             onClick={() => setActiveEvent(null)}
             aria-label="Close viewer"
-            className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 p-2.5 rounded-full text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 border border-white/10 hover:border-white/25 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
+            className="absolute top-3 right-3 sm:top-5 sm:right-6 z-50 p-2 sm:p-2.5 rounded-full text-gray-300 hover:text-white bg-black/60 hover:bg-black/90 border border-white/15 hover:border-white/30 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80 shadow-lg"
             title="Close (Esc)"
           >
             <X size={20} />
           </button>
 
-          {/* Previous Arrow (Fixed Left Edge) */}
+          {/* Previous Arrow (Vertically Centered in viewer) */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -948,14 +977,14 @@ export default function TimelinePage({ onNavigate }) {
             }}
             disabled={activeIndexInModal <= 0 && activeImageIndex <= 0}
             aria-label="Previous photo"
-            className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/10 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60 hover:-translate-y-0.5 disabled:hover:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/10 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60 hover:-translate-y-0.5 disabled:hover:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             title="Previous (Arrow Left)"
           >
             <ChevronLeft size={22} className="sm:hidden" />
             <ChevronLeft size={26} className="hidden sm:block" />
           </button>
 
-          {/* Next Arrow (Fixed Right Edge) */}
+          {/* Next Arrow (Vertically Centered in viewer) */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -963,7 +992,7 @@ export default function TimelinePage({ onNavigate }) {
             }}
             disabled={activeIndexInModal >= TIMELINE_EVENTS.length - 1 && activeImageIndex >= eventImages.length - 1}
             aria-label="Next photo"
-            className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/10 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60 hover:-translate-y-0.5 disabled:hover:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-[#dc052d] border border-white/10 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg disabled:opacity-20 disabled:cursor-not-allowed hover:disabled:bg-black/60 hover:-translate-y-0.5 disabled:hover:translate-y-0 active:scale-[0.95] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
             title="Next (Arrow Right)"
           >
             <ChevronRight size={22} className="sm:hidden" />
@@ -973,7 +1002,7 @@ export default function TimelinePage({ onNavigate }) {
           {/* Centered Archival Image & Caption Content */}
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default modal-content-animate"
+            className="relative flex flex-col items-center justify-center max-w-full max-h-full cursor-default modal-content-animate my-auto pt-2 pb-2"
           >
             {eventImages.length > 0 ? (
               <div className="relative flex flex-col items-center justify-center min-h-[220px] sm:min-h-[320px] md:min-h-[400px]">
@@ -991,16 +1020,19 @@ export default function TimelinePage({ onNavigate }) {
                     src={eventImages[activeImageIndex]}
                     alt={`${activeEvent.title}${eventImages.length > 1 ? ` - Photo ${activeImageIndex + 1}` : ''}`}
                     onLoad={() => setModalImageLoaded(true)}
-                    className={`max-w-[90vw] max-h-[75vh] w-auto h-auto object-contain mx-auto shadow-2xl rounded-sm select-none transition-opacity duration-150 ${
+                    className={`max-w-[88vw] sm:max-w-[85vw] w-auto h-auto object-contain mx-auto shadow-2xl rounded-sm select-none transition-opacity duration-150 ${
                       modalImageLoaded ? 'opacity-100' : 'opacity-0 absolute'
                     }`}
+                    style={{
+                      maxHeight: `calc(100vh - ${headerHeight}px - 170px)`
+                    }}
                   />
                 )}
 
                 {/* Image Counter Badge (when multiple images exist for the event) */}
                 {eventImages.length > 1 && modalImageLoaded && (
-                  <div className={`absolute top-3 right-3 px-2.5 py-1 rounded bg-black/75 border text-[11px] font-display font-bold shadow-md ${
-                    activeEvent.isSpecial ? 'border-[#fdb913]/40 text-[#fdb913]' : 'border-white/10 text-gray-200'
+                  <div className={`absolute top-2.5 right-2.5 px-2.5 py-1 rounded bg-black/80 backdrop-blur-xs border text-[11px] font-display font-bold shadow-md pointer-events-none z-10 ${
+                    activeEvent.isSpecial ? 'border-[#fdb913]/40 text-[#fdb913]' : 'border-white/15 text-gray-200'
                   }`}>
                     {activeImageIndex + 1} / {eventImages.length}
                   </div>
@@ -1088,10 +1120,10 @@ export default function TimelinePage({ onNavigate }) {
           5. END OF TIMELINE CLOSING SECTION
           ========================================================= */}
       <section className="relative z-10 w-full overflow-hidden bg-[#070b12] py-12 sm:py-16 text-center border-t border-[#1c2535]">
-        {/* Background Image Container - bg.png */}
+        {/* Background Image Container - bg.webp */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none select-none"
-          style={{ backgroundImage: "url('/images/bg.png')" }}
+          style={{ backgroundImage: "url('/images/bg.webp')" }}
           aria-hidden="true"
         />
 
@@ -1121,7 +1153,7 @@ export default function TimelinePage({ onNavigate }) {
 
         <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 space-y-5 sm:space-y-6">
           <img
-            src="/images/bayern-crest.png"
+            src="/images/bayern-crest.webp"
             alt="FC Bayern München Crest"
             className="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain select-none drop-shadow-md"
           />

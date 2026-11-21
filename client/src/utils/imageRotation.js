@@ -1,8 +1,8 @@
 /**
  * Centralized Image Resolver & Rotation System for FC Bayern Players
  *
- * Automatically resolves player images from player ID using convention:
- * `/images/players/${player.id}.jpg`
+ * Automatically resolves player images from player ID using WebP convention:
+ * `/images/players/${player.id}.webp` (with automatic .jpg fallback)
  *
  * Also maintains deterministic round-robin rotation if multiple images exist.
  */
@@ -11,7 +11,7 @@ const appearanceCounts = new Map();
 
 /**
  * Returns the primary or rotated image URL for a player.
- * Automatically derives `/images/players/${player.id}.jpg` from player.id.
+ * Automatically derives `/images/players/${player.id}.webp` from player.id.
  *
  * @param {Object|string} player - The player object or player ID string.
  * @param {boolean} increment - Whether to increment the appearance counter.
@@ -20,21 +20,21 @@ const appearanceCounts = new Map();
 export function getPlayerImage(player, increment = false) {
   if (!player) return null;
   if (typeof player === 'string') {
-    return `/images/players/${player}.jpg`;
+    return `/images/players/${player}.webp`;
   }
   if (player.isMystery) return null;
   if (!player.id) return null;
 
   // Build images list:
   // If player.images is explicitly defined and non-empty, cycle through them.
-  // Otherwise, default automatically to `/images/players/${player.id}.jpg`.
+  // Otherwise, default automatically to `/images/players/${player.id}.webp`.
   let images = [];
   if (Array.isArray(player.images) && player.images.length > 0) {
-    images = player.images;
+    images = player.images.map(img => typeof img === 'string' ? img.replace(/\.jpg$/, '.webp') : img);
   } else if (player.image) {
-    images = [player.image];
+    images = [typeof player.image === 'string' ? player.image.replace(/\.jpg$/, '.webp') : player.image];
   } else {
-    images = [`/images/players/${player.id}.jpg`];
+    images = [`/images/players/${player.id}.webp`];
   }
 
   const currentCount = appearanceCounts.get(player.id) || 0;
@@ -74,8 +74,8 @@ export function resolvePlayerWithRotatedImage(player, increment = false) {
     ...player,
     image,
     images: Array.isArray(player.images) && player.images.length > 0
-      ? player.images
-      : (image ? [image] : [`/images/players/${player.id}.jpg`])
+      ? player.images.map(img => typeof img === 'string' ? img.replace(/\.jpg$/, '.webp') : img)
+      : (image ? [image] : [`/images/players/${player.id}.webp`])
   };
 }
 

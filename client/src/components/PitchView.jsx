@@ -34,7 +34,14 @@ function PitchPlayerSlot({ player, isLatest, slot, isComputer = false, compact =
           <img
             src={playerImg}
             alt={player.name}
-            onError={() => setImgErr(true)}
+            onError={(e) => {
+              if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                e.currentTarget.dataset.fallbackTried = 'true';
+                e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+              } else {
+                setImgErr(true);
+              }
+            }}
             className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
           />
 

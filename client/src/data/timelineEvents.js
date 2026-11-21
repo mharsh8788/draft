@@ -14,7 +14,7 @@ export const TIMELINE_ERAS = [
 // Used as subtle historical textures behind the timeline for each era
 export const TIMELINE_ERA_BACKGROUNDS = {
   foundation: {
-    image: '/images/timeline/backgrounds/foundation-document.jpg',
+    image: '/images/timeline/backgrounds/foundation-document.webp',
     label: 'FC Bayern Founding Charter (1900)',
     era: 'foundation',
     topClass: 'top-0',
@@ -36,7 +36,7 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     filter: 'contrast(110%) saturate(105%)'
   },
   dominance: {
-    image: '/images/timeline/backgrounds/dominance.jpg',
+    image: '/images/timeline/backgrounds/dominance.webp',
     label: 'Lothar Matthäus & Record Champions Era (1980–1999)',
     era: 'dominance',
     topClass: 'top-[4100px]',
@@ -47,7 +47,7 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     filter: 'contrast(110%) saturate(105%)'
   },
   'european-glory': {
-    image: '/images/timeline/backgrounds/european-glory.jpg',
+    image: '/images/timeline/backgrounds/european-glory.webp',
     label: 'Oliver Kahn Champions League Triumph (2001)',
     era: 'european-glory',
     topClass: 'top-[5050px]',
@@ -58,7 +58,7 @@ export const TIMELINE_ERA_BACKGROUNDS = {
     filter: 'contrast(110%) saturate(105%)'
   },
   'modern-era': {
-    image: '/images/timeline/backgrounds/modern-era.jpg',
+    image: '/images/timeline/backgrounds/modern-era.webp',
     label: 'Südkurve München Supporters & Modern Glory (2020–PRESENT)',
     era: 'modern-era',
     topClass: 'top-[6400px]',
@@ -370,15 +370,15 @@ export const TIMELINE_EVENTS = [
     summary: 'On 26 October 2026, Harry Kane won the Men\'s Ballon d\'Or following an extraordinary 73-goal campaign for club and country—becoming Bayern\'s first winner in 45 years since Karl-Heinz Rummenigge in 1981.',
     fullStory: 'On 26 October 2026, Harry Kane won the Men&apos;s Ballon d&apos;Or, becoming the first Englishman to receive football&apos;s most prestigious individual award since Michael Owen in 2001. The Bayern Munich and England striker was recognised after an extraordinary 2025/26 campaign, scoring 73 goals across 65 appearances for club and country. Kane also became the first player from the Bundesliga to win the Men&apos;s Ballon d&apos;Or since Matthias Sammer in 1996, and Bayern&apos;s first Ballon d&apos;Or winner in 45 years, following Karl-Heinz Rummenigge&apos;s second consecutive win in 1981.',
     keyFact: 'Bayern\'s first Ballon d\'Or winner in 45 years (since Karl-Heinz Rummenigge in 1981): 73 goals in 65 games and the Gerd Müller Trophy.',
-    image: '/images/timeline/kane-ballon-dor.jpg',
+    image: '/images/timeline/kane-ballon-dor.webp',
     images: [
-      '/images/timeline/kane-ballon-dor.jpg',
-      '/images/timeline/kane-ballon-dor-2.jpg',
-      '/images/timeline/kane-ballon-dor-3.jpg',
-      '/images/timeline/kane-ballon-dor-4.jpg',
-      '/images/timeline/kane-ballon-dor-5.jpg',
-      '/images/timeline/kane-ballon-dor-6.jpg',
-      '/images/timeline/kane-ballon-dor-7.jpg',
+      '/images/timeline/kane-ballon-dor.webp',
+      '/images/timeline/kane-ballon-dor-2.webp',
+      '/images/timeline/kane-ballon-dor-3.webp',
+      '/images/timeline/kane-ballon-dor-4.webp',
+      '/images/timeline/kane-ballon-dor-5.webp',
+      '/images/timeline/kane-ballon-dor-6.webp',
+      '/images/timeline/kane-ballon-dor-7.webp',
     ],
     imageCaption: 'Harry Kane receives the 2026 Men\'s Ballon d\'Or trophy at the gala in London',
     imageCaptions: [

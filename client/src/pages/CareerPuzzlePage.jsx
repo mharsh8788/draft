@@ -46,7 +46,14 @@ function PlayerThumbnail({ playerId, playerName }) {
       <img
         src={src}
         alt={playerName || 'Player'}
-        onError={() => setImgError(true)}
+        onError={(e) => {
+          if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+            e.currentTarget.dataset.fallbackTried = 'true';
+            e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+          } else {
+            setImgError(true);
+          }
+        }}
         className="w-full h-full object-cover object-[center_top]"
       />
     </div>
@@ -222,7 +229,7 @@ export default function CareerPuzzlePage({ onBackToGames }) {
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none blur-[1.5px] scale-[1.02]"
         style={{ 
-          backgroundImage: "url('/images/bayern-historical-collage.jpg')",
+          backgroundImage: "url('/images/bayern-historical-collage.webp')",
           backgroundPosition: "center center",
           backgroundSize: "cover"
         }}
@@ -334,6 +341,12 @@ export default function CareerPuzzlePage({ onBackToGames }) {
                       <img
                         src={targetImage}
                         alt={targetPlayer.name}
+                        onError={(e) => {
+                          if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                            e.currentTarget.dataset.fallbackTried = 'true';
+                            e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+                          }
+                        }}
                         className={`w-full h-full object-cover ${targetPlayer.imagePosition || 'object-[center_top]'}`}
                       />
                     </div>

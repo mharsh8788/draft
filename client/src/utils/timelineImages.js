@@ -5,19 +5,19 @@
  *   client/public/images/timeline/
  *
  * Numbering convention:
- *   `<event-number>.jpg`     = Primary/default image for the timeline event (1-based index)
- *   `<event-number>-2.jpg`   = Additional image 2 for the VIEW MOMENT viewer
- *   `<event-number>-3.jpg`   = Additional image 3 for the VIEW MOMENT viewer
+ *   `<event-number>.webp`     = Primary/default image for the timeline event (1-based index)
+ *   `<event-number>-2.webp`   = Additional image 2 for the VIEW MOMENT viewer
+ *   `<event-number>-3.webp`   = Additional image 3 for the VIEW MOMENT viewer
  *   ...
  *
  * Examples:
  *   Event 1 (1900 Foundation):
- *     /images/timeline/1.jpg
- *     /images/timeline/1-2.jpg
+ *     /images/timeline/1.webp
+ *     /images/timeline/1-2.webp
  *
  *   Event 2 (1932 Championship):
- *     /images/timeline/2.jpg
- *     /images/timeline/2-2.jpg
+ *     /images/timeline/2.webp
+ *     /images/timeline/2-2.webp
  */
 
 import { TIMELINE_EVENTS } from '../data/timelineEvents';
@@ -46,7 +46,7 @@ export function getTimelineEventNumber(event) {
  */
 export function getTimelinePrimaryImageUrl(eventNumber) {
   if (!eventNumber) return null;
-  return `/images/timeline/${eventNumber}.jpg`;
+  return `/images/timeline/${eventNumber}.webp`;
 }
 
 /**
@@ -57,7 +57,7 @@ export function getTimelinePrimaryImageUrl(eventNumber) {
  */
 export function getTimelineAdditionalImageUrl(eventNumber, subIndex) {
   if (!eventNumber || !subIndex) return null;
-  return `/images/timeline/${eventNumber}-${subIndex}.jpg`;
+  return `/images/timeline/${eventNumber}-${subIndex}.webp`;
 }
 
 /**
@@ -90,8 +90,8 @@ const eventImagesCache = new Map();
 
 /**
  * Asynchronously discovers and resolves all available images for a timeline event:
- * 1. Checks `/images/timeline/${eventNumber}.jpg`
- * 2. Checks `/images/timeline/${eventNumber}-2.jpg`, `-3.jpg`, etc.
+ * 1. Checks `/images/timeline/${eventNumber}.webp` (with fallback to .jpg)
+ * 2. Checks `/images/timeline/${eventNumber}-2.webp`, `-3.webp`, etc. (with fallback to .jpg)
  * 3. Falls back to `event.image` if primary does not exist yet.
  *
  * @param {Object} event
@@ -113,11 +113,19 @@ export async function resolveTimelineEventImages(event) {
   }
 
   let activeEventNumber = eventNum;
-  const primaryUrl = getTimelinePrimaryImageUrl(eventNum);
+  let primaryUrl = getTimelinePrimaryImageUrl(eventNum);
   const images = [];
 
-  // 1. Verify Primary Image
+  // 1. Verify Primary Image (.webp first, fallback to .jpg)
   let primaryExists = await checkImageExists(primaryUrl);
+  if (!primaryExists) {
+    const jpgFallback = `/images/timeline/${eventNum}.jpg`;
+    if (await checkImageExists(jpgFallback)) {
+      primaryUrl = jpgFallback;
+      primaryExists = true;
+    }
+  }
+
   if (primaryExists) {
     images.push(primaryUrl);
   } else {
@@ -128,8 +136,15 @@ export async function resolveTimelineEventImages(event) {
     if (index !== -1) {
       const numericNum = index + 1;
       if (numericNum !== eventNum) {
-        const numericCandidateUrl = getTimelinePrimaryImageUrl(numericNum);
-        const numericExists = await checkImageExists(numericCandidateUrl);
+        let numericCandidateUrl = getTimelinePrimaryImageUrl(numericNum);
+        let numericExists = await checkImageExists(numericCandidateUrl);
+        if (!numericExists) {
+          const numericJpgFallback = `/images/timeline/${numericNum}.jpg`;
+          if (await checkImageExists(numericJpgFallback)) {
+            numericCandidateUrl = numericJpgFallback;
+            numericExists = true;
+          }
+        }
         if (numericExists) {
           images.push(numericCandidateUrl);
           primaryExists = true;
@@ -144,11 +159,18 @@ export async function resolveTimelineEventImages(event) {
     images.push(event.image);
   }
 
-  // 2. Discover additional images: ${activeEventNumber}-2.jpg, ${activeEventNumber}-3.jpg, ...
+  // 2. Discover additional images: ${activeEventNumber}-2.webp, ${activeEventNumber}-3.webp, ...
   if (primaryExists) {
     for (let sub = 2; sub <= 10; sub++) {
-      const candidateUrl = getTimelineAdditionalImageUrl(activeEventNumber, sub);
-      const exists = await checkImageExists(candidateUrl);
+      let candidateUrl = getTimelineAdditionalImageUrl(activeEventNumber, sub);
+      let exists = await checkImageExists(candidateUrl);
+      if (!exists) {
+        const candidateJpg = `/images/timeline/${activeEventNumber}-${sub}.jpg`;
+        if (await checkImageExists(candidateJpg)) {
+          candidateUrl = candidateJpg;
+          exists = true;
+        }
+      }
       if (exists) {
         images.push(candidateUrl);
       } else {

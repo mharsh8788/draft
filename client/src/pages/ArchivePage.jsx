@@ -11,7 +11,7 @@ export default function ArchivePage({ onNavigate }) {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
           style={{ 
-            backgroundImage: "url('/images/olympiastadion-archive.jpg')",
+            backgroundImage: "url('/images/olympiastadion-archive.webp')",
             backgroundPosition: "center center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat"

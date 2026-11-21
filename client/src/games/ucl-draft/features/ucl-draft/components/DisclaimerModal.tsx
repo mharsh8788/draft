@@ -36,7 +36,7 @@ export const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClos
               1. Classic vs. Almanac Modes
             </h3>
             <p className="text-[#697789] dark:text-[#6A889C] text-xs leading-normal">
-              ROAD TO IMMORTALITY Game Modes:
+              ROAD TO UCL Game Modes:
               <br />
               • <strong>Classic Mode</strong> displays player ratings, criteria, and live squad averages for calculated squad-building.
               <br />

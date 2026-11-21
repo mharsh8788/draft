@@ -8,7 +8,7 @@ export const HOMEPAGE_FEATURED_FACT = {
   tag: "DER KAISER",
   imageCaption: "FRANZ BECKENBAUER",
   title: "THE SLAP THAT CHANGED BAYERN'S HISTORY",
-  image: "/images/archive/beckenbauer.jpg",
+  image: "/images/archive/beckenbauer.webp",
   imagePosition: "object-[center_15%]",
   introduction: [
     "In 1958, a slap from an 1860 Munich player changed 13-year-old Franz Beckenbauer's mind.",
@@ -67,7 +67,7 @@ export const ARCHIVE_FUN_FACTS = [
     tag: "ORIGINAL COLOURS",
     imageCaption: "WHITE & BLUE • 1902",
     title: "BAYERN WASN'T ALWAYS RED.",
-    image: "/images/archive/original-colours.jpg",
+    image: "/images/archive/original-colours.webp",
     imagePosition: "object-[center_35%]",
     introduction: [
       "Bayern's original club colours were white and blue.",
@@ -108,7 +108,7 @@ export const ARCHIVE_FUN_FACTS = [
     tag: "ALLIANZ ARENA",
     imageCaption: "BERNI • FCB MASCOT",
     title: "BERNI HAS HIS OWN HOUSE.",
-    image: "/images/archive/berni.jpg",
+    image: "/images/archive/berni.webp",
     imagePosition: "object-[center_20%]",
     graphicType: "berni",
     introduction: [
@@ -147,7 +147,7 @@ export const ARCHIVE_FUN_FACTS = [
     tag: "FAMOUS OUTBURST",
     imageCaption: "JÜRGEN KLINSMANN • 1997",
     title: "KLINSMANN KICKED A HOLE IN HISTORY.",
-    image: "/images/archive/klinsmann.jpg",
+    image: "/images/archive/klinsmann.webp",
     imagePosition: "object-[center_15%]",
     graphicType: "drum",
     introduction: [
@@ -186,7 +186,7 @@ export const ARCHIVE_FUN_FACTS = [
     tag: "UCL RECORD",
     imageCaption: "ROY MAKAAY • 2007",
     title: "10.12 SECONDS.",
-    image: "/images/archive/makaay.jpg",
+    image: "/images/archive/makaay.webp",
     imagePosition: "object-[center_15%]",
     graphicType: "timer",
     introduction: [

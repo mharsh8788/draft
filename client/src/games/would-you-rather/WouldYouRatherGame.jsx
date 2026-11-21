@@ -124,6 +124,17 @@ export default function WouldYouRatherGame({ onBackToGames }) {
             WorldFootball.net Archives
           </a>
         </div>
+        <div className="mt-3 text-[11px] font-mono text-dim">
+          UI/UX inspired by{' '}
+          <a
+            href="https://redraftfc.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-ink hover:text-acc underline font-medium transition-colors"
+          >
+            Redraft FC
+          </a>
+        </div>
       </footer>
     </div>
   );

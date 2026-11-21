@@ -40,7 +40,6 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
   };
 
   const handlePlayFeatured = () => {
-    sounds.playWhistle();
     if (onSelectGame && featuredGame.route) {
       onSelectGame(featuredGame.route);
     } else if (onNavigate) {
@@ -82,7 +81,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
           style={{ 
-            backgroundImage: "url('/images/allianz-arena-home.jpg')",
+            backgroundImage: "url('/images/allianz-arena-home.webp')",
             backgroundPosition: "center 38%"
           }}
         />
@@ -208,7 +207,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none scale-105"
           style={{ 
-            backgroundImage: "url('/images/allianz-arena-games.jpg')",
+            backgroundImage: "url('/images/allianz-arena-games.webp')",
             backgroundPosition: "center 18%",
             backgroundSize: "cover",
             filter: "contrast(1.08) brightness(1.05)"
@@ -312,7 +311,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
 
                     {/* Integrated Mystery Player Asset: multi-gradient masking (radial + linear) with soft irregular transitions */}
                     <img
-                      src="/images/mystery-player.png"
+                      src="/images/mystery-player.webp"
                       alt="FC Bayern Blind Pick"
                       className="relative z-10 w-full h-full object-contain object-bottom pointer-events-none select-none transition-transform duration-300 ease-out group-hover/player:scale-[1.015]"
                       style={{
@@ -436,7 +435,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                     <div 
                       className="absolute inset-0 bg-no-repeat"
                       style={{
-                        backgroundImage: `url(${activeMilestone.bgImage || '/images/champions-league-ball.png'})`,
+                        backgroundImage: `url(${activeMilestone.bgImage || '/images/champions-league-ball.webp'})`,
                         backgroundPosition: 'right 30px center',
                         backgroundSize: 'cover'
                       }}
@@ -455,7 +454,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
                     <div 
                       className="absolute inset-0 bg-no-repeat"
                       style={{
-                        backgroundImage: `url(${activeMilestone.bgImage || '/images/champions-league-ball.png'})`,
+                        backgroundImage: `url(${activeMilestone.bgImage || '/images/champions-league-ball.webp'})`,
                         backgroundPosition: 'center 42%',
                         backgroundSize: 'cover',
                         maskImage: 'radial-gradient(ellipse 90% 85% at 50% 42%, black 65%, rgba(0,0,0,0.9) 80%, transparent 100%), linear-gradient(to bottom, black 0%, black 76%, transparent 100%)',
@@ -579,7 +578,7 @@ export default function GamesHub({ onSelectGame, onNavigate }) {
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
           style={{ 
-            backgroundImage: "url('/images/bayern-supporters-archive.jpg')",
+            backgroundImage: "url('/images/bayern-supporters-archive.webp')",
             backgroundPosition: "center 20%",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat"

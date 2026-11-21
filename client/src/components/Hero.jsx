@@ -4,7 +4,6 @@ import { sounds } from '../utils/audio';
 
 export default function Hero({ onStartDraft }) {
   const handleStart = () => {
-    sounds.playWhistle();
     onStartDraft();
   };
 

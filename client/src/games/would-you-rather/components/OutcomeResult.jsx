@@ -30,7 +30,12 @@ export default function OutcomeResult({
                 alt={player.name}
                 className="w-full h-full object-cover object-top rounded-full"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none';
+                  if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                    e.currentTarget.dataset.fallbackTried = 'true';
+                    e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+                  } else {
+                    e.currentTarget.style.display = 'none';
+                  }
                 }}
               />
             </div>

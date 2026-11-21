@@ -6,9 +6,6 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
 
   const handlePlayGame = (gameOrRoute) => {
     const route = typeof gameOrRoute === 'string' ? gameOrRoute : gameOrRoute?.route;
-    if (route !== '/would-you-rather') {
-      sounds.playWhistle();
-    }
     const isExternal = typeof gameOrRoute === 'object' ? (gameOrRoute.isExternal || route?.startsWith('http')) : route?.startsWith('http');
 
     if (isExternal && route) {
@@ -33,7 +30,7 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
         <div 
           className="w-full h-full transition-opacity duration-300"
           style={{
-            backgroundImage: "url('/images/bg5.png')",
+            backgroundImage: "url('/images/bg5.webp')",
             backgroundPosition: "center top",
             backgroundSize: "100% auto",
             backgroundRepeat: "no-repeat",
@@ -104,7 +101,7 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
                 aria-label="Play Would You Rather"
               >
                 <img
-                  src="/images/bg2.png"
+                  src="/images/bg2.webp"
                   alt="Would You Rather"
                   className="w-full h-auto block select-none pointer-events-none transition-[filter,transform] duration-200 ease-out"
                   style={{
@@ -120,26 +117,26 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
             </section>
           )}
 
-          {/* SECTION: ROAD TO IMMORTALITY FULL-WIDTH FEATURED BANNER */}
+          {/* SECTION: ROAD TO UCL FULL-WIDTH FEATURED BANNER */}
           {(activeFilter === 'all' || activeFilter === 'playable') && (
-            <section className="w-full select-none" aria-label="Road to Immortality">
+            <section className="w-full select-none" aria-label="Road to UCL">
               <div
-                onClick={() => handlePlayGame('/road-to-immortality')}
+                onClick={() => handlePlayGame('/road-to-ucl')}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    handlePlayGame('/road-to-immortality');
+                    handlePlayGame('/road-to-ucl');
                   }
                 }}
                 className="w-full block overflow-hidden cursor-pointer transition-transform duration-200 ease-out hover:scale-[1.008] active:scale-[0.995] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#dc052d]"
-                title="Play Road to Immortality"
-                aria-label="Play Road to Immortality"
+                title="Play Road to UCL"
+                aria-label="Play Road to UCL"
               >
                 <img
-                  src="/images/bg3.png"
-                  alt="Road to Immortality"
+                  src="/images/bg3.webp"
+                  alt="Road to UCL"
                   className="w-full h-auto block select-none pointer-events-none"
                   style={{ aspectRatio: '1672 / 941', width: '100%', height: 'auto', display: 'block' }}
                   loading="eager"
@@ -166,7 +163,7 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
                 aria-label="Play Who Am I?"
               >
                 <img
-                  src="/images/bg4.png"
+                  src="/images/bg4.webp"
                   alt="Who Am I?"
                   className="w-full h-auto block select-none pointer-events-none"
                   style={{ aspectRatio: '1672 / 941', width: '100%', height: 'auto', display: 'block' }}

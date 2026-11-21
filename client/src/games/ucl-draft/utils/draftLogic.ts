@@ -230,7 +230,7 @@ export function generateShareableSummary(
   metrics: SquadMetrics
 ): string {
   const lines: string[] = [];
-  lines.push(`⭐ ROAD TO IMMORTALITY — BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI ⭐`);
+  lines.push(`⭐ ROAD TO UCL — BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI ⭐`);
   lines.push(`Formation: ${formation.name} (${formation.id})`);
   lines.push(`Overall Rating: ${metrics.overallRating} OVR | Chemistry: +${metrics.chemistryBonus}`);
   lines.push(`FWD: ${metrics.attackRating || '-'} | MID: ${metrics.midfieldRating || '-'} | DEF: ${metrics.defenseRating || '-'} | GK: ${metrics.goalkeeperRating || '-'}`);
@@ -257,7 +257,7 @@ export function generateShareableSummary(
   }
 
   lines.push(``);
-  lines.push(`Play ROAD TO IMMORTALITY: Build Your All-Time Champions League XI`);
+  lines.push(`Play ROAD TO UCL: Build Your All-Time Champions League XI`);
 
   return lines.join('\n');
 }

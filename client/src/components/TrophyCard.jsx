@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Shield } from 'lucide-react';
 import ImageSkeleton from './ImageSkeleton';
 import OdometerNumber from './OdometerNumber';
@@ -7,17 +7,26 @@ import { loadAndDecodeTrophy } from '../utils/trophyImageService';
 export default function TrophyCard({
   trophy,
   index = 0,
-  isTriggered = false,
   cardRef,
   allImagesReady = null, // Boolean when coordinated by HonoursSection, or null when standalone
   processedSrc: externalProcessedSrc = undefined,
   hasError: externalHasError = undefined,
+  isSectionInView = true,
+  isTransitionIdle = true,
+  isSlideTriggered = false,
+  isTriggered: externalIsTriggered = false,
 }) {
+  const internalCardRef = useRef(null);
   const [internalSrc, setInternalSrc] = useState(null);
   const [internalReady, setInternalReady] = useState(false);
   const [internalError, setInternalError] = useState(false);
 
-  const rawImageSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
+  // Visibility and one-time counting trigger state
+  const [isCardInView, setIsCardInView] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const hasAnimatedRef = useRef(false);
+
+  const rawImageSrc = trophy.image || `/images/trophies/${trophy.id}.png`;
 
   // Fallback standalone loading if not coordinated by HonoursSection
   useEffect(() => {
@@ -62,6 +71,7 @@ export default function TrophyCard({
   }, [resolvedSrc]);
 
   const hasError = (isCoordinated ? externalHasError : internalError) || imgFailed;
+  const isAssetReady = isImageReady || hasError;
 
   const handleImageError = () => {
     if (activeSrc !== rawImageSrc && rawImageSrc) {
@@ -71,9 +81,108 @@ export default function TrophyCard({
     }
   };
 
+  // Combine external cardRef callback/ref and internalCardRef
+  const setCardRef = useCallback(
+    (node) => {
+      internalCardRef.current = node;
+      if (typeof cardRef === 'function') {
+        cardRef(node);
+      } else if (cardRef && typeof cardRef === 'object') {
+        cardRef.current = node;
+      }
+    },
+    [cardRef]
+  );
+
+  // Check card visibility within window and scroll container
+  const checkCardVisibility = useCallback(() => {
+    if (hasAnimatedRef.current) return;
+    const el = internalCardRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+
+    const verticallyVisible = rect.top < windowHeight - 30 && rect.bottom > 30;
+    const horizontallyVisible = rect.left < windowWidth - 20 && rect.right > 20;
+
+    let containerVisible = true;
+    const scrollContainer = el.closest('.overflow-x-auto');
+    if (scrollContainer) {
+      const cRect = scrollContainer.getBoundingClientRect();
+      containerVisible = rect.left < cRect.right - 20 && rect.right > cRect.left + 20;
+    }
+
+    if (verticallyVisible && horizontallyVisible && containerVisible) {
+      setIsCardInView(true);
+    }
+  }, []);
+
+  // IntersectionObserver for card-level viewport detection
+  useEffect(() => {
+    if (hasAnimatedRef.current) return;
+
+    const el = internalCardRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsCardInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
+          setIsCardInView(true);
+        }
+      },
+      {
+        threshold: [0.1, 0.25],
+        rootMargin: '0px',
+      }
+    );
+
+    observer.observe(el);
+
+    // Initial check
+    checkCardVisibility();
+
+    // Listen to scroll events on container and window
+    const scrollContainer = el.closest('.overflow-x-auto');
+    scrollContainer?.addEventListener('scroll', checkCardVisibility, { passive: true });
+    window.addEventListener('scroll', checkCardVisibility, { passive: true });
+    window.addEventListener('resize', checkCardVisibility, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      scrollContainer?.removeEventListener('scroll', checkCardVisibility);
+      window.removeEventListener('scroll', checkCardVisibility);
+      window.removeEventListener('resize', checkCardVisibility);
+    };
+  }, [checkCardVisibility]);
+
+  // Counting trigger logic:
+  // Requires:
+  // 1. Visible (via card viewport detection or slide trigger)
+  // 2. Section is in view (not triggered just because page loaded)
+  // 3. Asset is loaded/ready (never animate before image loaded)
+  // 4. Transition is idle
+  useEffect(() => {
+    if (hasAnimatedRef.current) return;
+
+    const isVisible = (isCardInView || isSlideTriggered) && isSectionInView;
+    const canTrigger = (isVisible || externalIsTriggered) && isAssetReady && isTransitionIdle;
+
+    if (canTrigger) {
+      hasAnimatedRef.current = true;
+      setHasAnimated(true);
+    }
+  }, [isCardInView, isSlideTriggered, isSectionInView, isAssetReady, isTransitionIdle, externalIsTriggered]);
+
+  const staggerDelay = (index % 4) * 0.075;
+
   return (
     <div
-      ref={cardRef}
+      ref={setCardRef}
       data-trophy-id={trophy.id}
       data-trophy-index={index}
       className="group relative w-[220px] sm:w-[240px] lg:w-[calc((100%-3*1.25rem)/4)] shrink-0 bg-[#121824] border border-[#1c2535] hover:border-[#dc052d]/40 rounded-xl overflow-hidden flex flex-col transition-all duration-200 ease-out select-none hover:-translate-y-0.5 shadow-md"
@@ -127,7 +236,8 @@ export default function TrophyCard({
           <span className="font-display font-black text-3xl sm:text-4xl text-white tracking-tight leading-none">
             <OdometerNumber
               value={trophy.count}
-              isTriggered={isTriggered}
+              isTriggered={hasAnimated || externalIsTriggered}
+              delay={staggerDelay}
               index={index}
             />
           </span>

@@ -48,7 +48,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'franz_beckenbauer',
     name: 'Franz Beckenbauer',
-    image: '/images/players/beckenbauer.jpg',
+    image: '/images/players/beckenbauer.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Der Kaiser & Playmaking Libero',
     headline: 'Regal Composure & Deep Defensive Playmaking',
@@ -72,7 +72,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'manuel_neuer',
     name: 'Manuel Neuer',
-    image: '/images/players/neuer.jpg',
+    image: '/images/players/neuer.webp',
     roleSubspace: ROLE_SUBSPACES.GOALKEEPER,
     role: 'Sweeper-Keeper Pioneer & Captain',
     headline: 'Ice-Cold Authority & Tactical Revolution',
@@ -96,7 +96,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'oliver_kahn',
     name: 'Oliver Kahn',
-    image: '/images/players/kahn.jpg',
+    image: '/images/players/kahn.webp',
     roleSubspace: ROLE_SUBSPACES.GOALKEEPER,
     role: 'Der Titan & Uncompromising Warrior',
     headline: 'Ferocious Willpower & Big-Game Intimidation',
@@ -120,7 +120,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'philipp_lahm',
     name: 'Philipp Lahm',
-    image: '/images/players/lahm.jpg',
+    image: '/images/players/lahm.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'The Magic Dwarf & Cerebral Mastermind',
     headline: 'Flawless Consistency & Positional Perfection',
@@ -144,7 +144,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'thomas_muller',
     name: 'Thomas Müller',
-    image: '/images/players/muller.jpg',
+    image: '/images/players/muller.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Der Raumdeuter & Living Bayern DNA',
     headline: 'Selfless Team Play & Instinctive Space Mastery',
@@ -168,7 +168,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'arjen_robben',
     name: 'Arjen Robben',
-    image: '/images/players/robben.jpg',
+    image: '/images/players/robben.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Wembley Hero & Clutch Match-Winner',
     headline: 'Ruthless Directness & Decisive Finishing',
@@ -192,7 +192,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'franck_ribery',
     name: 'Franck Ribéry',
-    image: '/images/players/ribery.jpg',
+    image: '/images/players/ribery.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'The Street Fighter & Creative Virtuoso',
     headline: 'Unscripted Dribbling & Fierce Fighting Spirit',
@@ -216,7 +216,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'bastian_schweinsteiger',
     name: 'Bastian Schweinsteiger',
-    image: '/images/players/schweinsteiger.jpg',
+    image: '/images/players/schweinsteiger.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Der Fußballgott & Beating Heart',
     headline: 'Visceral Resilience & Emotional Leadership',
@@ -240,7 +240,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'gerd_muller',
     name: 'Gerd Müller',
-    image: '/images/players/gerd-muller.jpg',
+    image: '/images/players/gerd-muller.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Der Bomber & Instinctive Goal Machine',
     headline: 'Instinctive Finishing & Lethal Box Supremacy',
@@ -264,7 +264,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'robert_lewandowski',
     name: 'Robert Lewandowski',
-    image: '/images/players/lewandowski.jpg',
+    image: '/images/players/lewandowski.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'The 41-Goal Record-Breaking Predator',
     headline: 'Clinical Finishing & Relentless Productivity',
@@ -288,7 +288,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'harry_kane',
     name: 'Harry Kane',
-    image: '/images/players/kane.jpg',
+    image: '/images/players/kane.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Complete Forward & Playmaking Striker',
     headline: 'All-Round Finishing & Masterful Link-Up Play',
@@ -312,7 +312,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'joshua_kimmich',
     name: 'Joshua Kimmich',
-    image: '/images/players/kimmich.jpg',
+    image: '/images/players/kimmich.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'The Relentless Driver & Fierce Competitor',
     headline: 'Inexhaustible Work Ethic & Vocal Leadership',
@@ -336,7 +336,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'jamal_musiala',
     name: 'Jamal Musiala',
-    image: '/images/players/musiala.jpg',
+    image: '/images/players/musiala.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Bambi & Generational Dribbling Magician',
     headline: 'Hypnotic Slalom Dribbling & Pure Imagination',
@@ -360,7 +360,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'michael_olise',
     name: 'Michael Olise',
-    image: '/images/players/olise.jpg',
+    image: '/images/players/olise.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'Left-Footed Virtuoso & Wing Playmaker',
     headline: 'Silky Playmaking & Deceptive Wing Danger',
@@ -384,7 +384,7 @@ export const BAYERN_PLAYERS = [
   {
     id: 'alphonso_davies',
     name: 'Alphonso Davies',
-    image: '/images/players/davies.jpg',
+    image: '/images/players/davies.webp',
     roleSubspace: ROLE_SUBSPACES.OUTFIELD,
     role: 'The Roadrunner & Scintillating Wing-Back',
     headline: 'Blistering Directness & Unstoppable Recovery Pace',

@@ -203,6 +203,7 @@ export const UclDraftFeature: React.FC<UclDraftFeatureProps> = ({
         }}
         onSelectMode={(m) => dispatch({ type: 'SET_MODE', payload: m })}
         onPlayNow={scrollToDraftZone}
+        onOpenHowToPlay={() => dispatch({ type: 'SET_GAME_GUIDE_OPEN', payload: true })}
       />
 
       {/* 3. Main Draft Zone Section (matching Screenshots 2, 3, 4, 5) */}
@@ -217,7 +218,7 @@ export const UclDraftFeature: React.FC<UclDraftFeatureProps> = ({
             DRAFT ZONE / START NOW
           </div>
           <h2 className="font-sports text-4xl sm:text-5xl font-black uppercase text-[#172638] dark:text-white tracking-tight leading-none mt-0.5">
-            PLAY ROAD TO IMMORTALITY NOW
+            PLAY ROAD TO UCL NOW
           </h2>
           <p className="text-xs sm:text-sm text-[#697789] dark:text-[#6A889C] mt-1 max-w-2xl leading-relaxed">
             Choose a mode, lock in a formation, and start building your UCL XI. Every turn gives you one squad, one decision, and one chance to keep the XI balanced.
@@ -366,7 +367,7 @@ export const UclDraftFeature: React.FC<UclDraftFeatureProps> = ({
       <footer className="border-t border-[#DCE3EA] dark:border-[#162E3D] bg-white dark:bg-[#06121A] py-6 text-center text-xs text-[#697789] dark:text-[#6A889C] mt-8 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p>
-            ROAD TO IMMORTALITY — BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI • An original football draft game.
+            ROAD TO UCL — BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI • An original football draft game.
           </p>
           <div className="flex items-center gap-3">
             <button

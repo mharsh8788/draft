@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { UclDraftFeature } from '../games/ucl-draft/features/ucl-draft/UclDraftFeature';
 import '../games/ucl-draft/ucl-draft.css';
 
 export default function RoadToImmortalityPage({ onBackToGames }) {
+  useEffect(() => {
+    // If accessed via legacy /road-to-immortality URL, canonicalize to /road-to-ucl
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/road-to-immortality')) {
+      window.history.replaceState({}, '', '/road-to-ucl');
+    }
+    const previousTitle = document.title;
+    document.title = 'Road to UCL | FC Bayern Games';
+    return () => {
+      document.title = previousTitle;
+    };
+  }, []);
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem('ucl_draft_theme');
@@ -44,7 +55,7 @@ export default function RoadToImmortalityPage({ onBackToGames }) {
         <span>BACK TO GAMES</span>
       </button>
 
-      {/* Native Road to Immortality (UCL Draft) */}
+      {/* Native Road to UCL (UCL Draft) */}
       <UclDraftFeature theme={theme} onToggleTheme={handleToggleTheme} />
     </div>
   );

@@ -301,7 +301,7 @@ export function generateShareableSummary(
   simulationResult: SimulationResult | null
 ): string {
   const lines: string[] = [];
-  lines.push(`⭐ ROAD TO IMMORTALITY — BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI ⭐`);
+  lines.push(`⭐ ROAD TO UCL — BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI ⭐`);
   lines.push(`Mode: ${mode === 'classic' ? 'Classic (Stats)' : 'Almanac (From Memory)'}`);
   lines.push(`Formation: ${formation.name} (${formation.id})`);
   lines.push(`Squad Rating: ${metrics.overallRating} OVR | Chemistry: +${metrics.chemistryBonus}`);

@@ -32,10 +32,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
     <header className="bg-white dark:bg-[#06121A] text-[#172638] dark:text-white border-b border-[#DCE3EA] dark:border-[#162E3D] sticky top-0 z-40 shadow-xs transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 py-2.5 sm:px-6">
         <div className="flex items-center justify-between">
-          {/* Logo / Title: ROAD TO IMMORTALITY */}
+          {/* Logo / Title: ROAD TO UCL */}
           <div className="flex items-center gap-2.5">
             <div className="font-sports text-2xl sm:text-3xl font-black text-amber-500 dark:text-amber-400 tracking-tight leading-none uppercase">
-              ROAD TO IMMORTALITY
+              ROAD TO UCL
             </div>
             <span className="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest text-[#697789] dark:text-[#6A889C] bg-[#F6F8FA] dark:bg-[#0B1E2B] border border-[#DCE3EA] dark:border-[#162E3D] px-2 py-0.5 rounded-md">
               BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI
@@ -86,14 +86,14 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
               <span>Reset</span>
             </button>
 
-            {/* Game Guide Control */}
+            {/* How to Play Control */}
             <button
               onClick={onOpenGameGuide}
-              title="How to Play UCL Draft (Rules & Strategy)"
-              className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-[#F6F8FA] dark:bg-[#081923] hover:bg-[#E5E9F0] dark:hover:bg-[#0B1E2B] border border-[#DCE3EA] dark:border-[#162E3D] text-xs font-bold font-heading uppercase text-[#172638] dark:text-white btn-lift cursor-pointer"
+              title="How to Play Road to UCL (Rules & Strategy)"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-[#dc052d]/15 hover:bg-[#dc052d] text-[#dc052d] hover:text-white border border-[#dc052d]/40 hover:border-[#dc052d] text-xs font-bold font-heading uppercase transition-all duration-150 cursor-pointer"
             >
-              <HelpCircle className="w-3.5 h-3.5 text-[#10B981] dark:text-[#00D26A]" />
-              <span className="hidden md:inline">Guide</span>
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>HOW TO PLAY</span>
             </button>
 
             {/* Theme Toggle (matching Screenshot 1 [DARK] / [LIGHT] control) */}

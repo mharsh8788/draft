@@ -32,9 +32,17 @@ export default function HonoursSection() {
     1: false,
     2: false,
   });
-  // Single global continuous counting sequence state
-  const [isCountingTriggered, setIsCountingTriggered] = useState(false);
-  const countingTriggeredRef = useRef(false);
+  // Slide-by-slide counting animation trigger state
+  const [triggeredSlides, setTriggeredSlides] = useState({
+    0: false,
+    1: false,
+    2: false,
+  });
+  const triggeredSlidesRef = useRef({
+    0: false,
+    1: false,
+    2: false,
+  });
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSectionInView, setIsSectionInView] = useState(false);
@@ -71,7 +79,7 @@ export default function HonoursSection() {
       try {
         await Promise.allSettled(
           HONOURS.map(async (trophy, idx) => {
-            const rawSrc = trophy.image || `/images/trophies/${trophy.id}.jpg`;
+            const rawSrc = trophy.image || `/images/trophies/${trophy.id}.png`;
             const sIdx = getSlideIndexForCard(idx);
             try {
               const url = await loadAndDecodeTrophy(rawSrc);
@@ -109,8 +117,6 @@ export default function HonoursSection() {
 
   // 2. Viewport visibility observation: detect when section enters the viewport
   useEffect(() => {
-    if (countingTriggeredRef.current) return;
-
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === 'undefined') {
       setIsSectionInView(true);
@@ -134,7 +140,7 @@ export default function HonoursSection() {
     // Initial check in case section is already in viewport on mount
     const rect = el.getBoundingClientRect();
     const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-    if (rect.top < windowHeight - 60 && rect.bottom > 60) {
+    if (rect.top < windowHeight - 50 && rect.bottom > 50) {
       setIsSectionInView(true);
     }
 
@@ -143,16 +149,20 @@ export default function HonoursSection() {
     };
   }, []);
 
-  // 3. Trigger continuous count-up animation across all trophies when section is in view and images are ready
+  // 3. Trigger count-up animation for slides when section is in view, transition is idle, and slide images are ready
   useEffect(() => {
     if (!isSectionInView || !isTransitionIdle) return;
-    if (countingTriggeredRef.current) return;
 
-    if (slideImagesReady[0]) {
-      countingTriggeredRef.current = true;
-      setIsCountingTriggered(true);
-    }
-  }, [isSectionInView, isTransitionIdle, slideImagesReady]);
+    [0, 1, 2].forEach((sIdx) => {
+      if (triggeredSlidesRef.current[sIdx]) return;
+
+      // Slide triggers when active and its images are ready
+      if (activeSlide === sIdx && slideImagesReady[sIdx]) {
+        triggeredSlidesRef.current[sIdx] = true;
+        setTriggeredSlides((prev) => ({ ...prev, [sIdx]: true }));
+      }
+    });
+  }, [isSectionInView, isTransitionIdle, activeSlide, slideImagesReady]);
 
   // 4. Observe horizontal intersection of slide key cards within carousel
   useEffect(() => {
@@ -277,7 +287,7 @@ export default function HonoursSection() {
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
         style={{ 
-          backgroundImage: "url('/images/bayern-trophy-museum.jpg')",
+          backgroundImage: "url('/images/bayern-trophy-museum.webp')",
           backgroundPosition: "center 25%",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat"
@@ -324,10 +334,14 @@ export default function HonoursSection() {
                   }}
                   trophy={trophy}
                   index={index}
+                  slideIndex={slideIdx}
+                  activeSlide={activeSlide}
+                  isSectionInView={isSectionInView}
+                  isTransitionIdle={isTransitionIdle}
+                  isSlideTriggered={triggeredSlides[slideIdx]}
                   allImagesReady={slideImagesReady[slideIdx] || !!processedImages[trophy.id]}
                   processedSrc={processedImages[trophy.id]}
                   hasError={!!failedImages[trophy.id]}
-                  isTriggered={isCountingTriggered}
                 />
               );
             })}

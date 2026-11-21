@@ -82,7 +82,7 @@ export const CompletedModal: React.FC<CompletedModalProps> = ({
               )}
             </div>
             <h2 className="font-heading text-2xl font-black uppercase tracking-tight text-[#172638] dark:text-white mt-0.5">
-              ROAD TO IMMORTALITY
+              ROAD TO UCL
             </h2>
             <p className="text-[11px] uppercase font-bold text-[#697789] dark:text-[#6A889C] tracking-wider mt-0.5">
               BUILD YOUR ALL-TIME CHAMPIONS LEAGUE XI

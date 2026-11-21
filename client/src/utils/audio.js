@@ -146,31 +146,9 @@ class SoundManager {
     }
   }
 
-  // Card select sound
+  // Card select sound (Disabled: generic click sound removed across website)
   playSelect() {
-    if (!this.enabled) return;
-    try {
-      this.initContext();
-      if (!this.audioCtx) return;
-
-      const osc = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-      
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(260, this.audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(520, this.audioCtx.currentTime + 0.08);
-
-      gain.gain.setValueAtTime(0.15, this.audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.12);
-
-      osc.connect(gain);
-      gain.connect(this.audioCtx.destination);
-
-      osc.start();
-      osc.stop(this.audioCtx.currentTime + 0.12);
-    } catch {
-      // Audio playback failed silently
-    }
+    // Intentional no-op: UI click/selection sounds disabled
   }
 
   // Dramatic mystery reveal chime
@@ -203,38 +181,9 @@ class SoundManager {
     }
   }
 
-  // Football referee whistle (start / finish)
+  // Football referee whistle (start / finish) - (Disabled for UI button/card clicks)
   playWhistle() {
-    if (!this.enabled) return;
-    try {
-      this.initContext();
-      if (!this.audioCtx) return;
-
-      const osc1 = this.audioCtx.createOscillator();
-      const osc2 = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-
-      osc1.type = 'sawtooth';
-      osc2.type = 'sine';
-
-      osc1.frequency.setValueAtTime(2500, this.audioCtx.currentTime);
-      osc2.frequency.setValueAtTime(2530, this.audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.12, this.audioCtx.currentTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.35);
-
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(this.audioCtx.destination);
-
-      osc1.start();
-      osc2.start();
-      osc1.stop(this.audioCtx.currentTime + 0.35);
-      osc2.stop(this.audioCtx.currentTime + 0.35);
-    } catch {
-      // ignore
-    }
+    // Intentional no-op: button/card click sounds disabled
   }
 }
 

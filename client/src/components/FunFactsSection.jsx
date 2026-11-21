@@ -262,7 +262,7 @@ export default function FunFactsSection({
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-no-repeat pointer-events-none select-none"
         style={{ 
-          backgroundImage: "url('/images/bayern-vintage-squad.jpg')",
+          backgroundImage: "url('/images/bayern-vintage-squad.webp')",
           backgroundPosition: "center 30%",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat"

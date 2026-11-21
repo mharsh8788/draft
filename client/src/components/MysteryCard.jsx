@@ -32,8 +32,14 @@ export default function MysteryCard({ player, targetPosition, onSelect, disabled
           <div className="relative w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center">
             {/* Transparent Footballer Silhouette */}
             <img
-              src="/images/mystery-silhouette-white.png"
+              src="/images/mystery-silhouette-white.webp"
               alt="Blind Pick"
+              onError={(e) => {
+                if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                  e.currentTarget.dataset.fallbackTried = 'true';
+                  e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.png');
+                }
+              }}
               className="w-full h-full object-contain filter drop-shadow-md transition-transform duration-200 ease-out group-hover:scale-[1.025] select-none pointer-events-none"
             />
 

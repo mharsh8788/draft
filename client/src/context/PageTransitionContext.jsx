@@ -4,9 +4,18 @@ import TransitionCurtain from '../components/TransitionCurtain';
 export const PageTransitionContext = createContext(null);
 
 export function PageTransitionProvider({ children }) {
-  const [currentPath, setCurrentPath] = useState(() => 
-    typeof window !== 'undefined' ? window.location.pathname : '/'
-  );
+  const [currentPath, setCurrentPath] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname;
+      if (p.startsWith('/road-to-immortality')) {
+        const canonical = p.replace('/road-to-immortality', '/road-to-ucl');
+        window.history.replaceState({}, '', canonical);
+        return canonical;
+      }
+      return p;
+    }
+    return '/';
+  });
   const [targetPath, setTargetPath] = useState(null);
   const [transitionState, setTransitionState] = useState('idle'); // 'idle' | 'covering' | 'covered' | 'revealing'
 
@@ -27,7 +36,12 @@ export function PageTransitionProvider({ children }) {
   // Listen to popstate (browser back/forward buttons)
   useEffect(() => {
     const handlePopState = () => {
-      const nextPath = window.location.pathname;
+      let nextPath = window.location.pathname;
+      if (nextPath.startsWith('/road-to-immortality')) {
+        const canonical = nextPath.replace('/road-to-immortality', '/road-to-ucl');
+        window.history.replaceState({}, '', canonical);
+        nextPath = canonical;
+      }
       if (nextPath !== currentPath) {
         if (transitionStateRef.current === 'idle') {
           isPopStateRef.current = true;
@@ -49,7 +63,10 @@ export function PageTransitionProvider({ children }) {
   const navigate = useCallback((path, options = {}) => {
     if (typeof window === 'undefined') return;
 
-    const normalizedPath = (path || '/').trim();
+    let normalizedPath = (path || '/').trim();
+    if (normalizedPath.startsWith('/road-to-immortality')) {
+      normalizedPath = normalizedPath.replace('/road-to-immortality', '/road-to-ucl');
+    }
 
     // 1. Same route click check: avoid duplicate transition, scroll to top
     if (normalizedPath === currentPath) {
@@ -114,7 +131,8 @@ export function PageTransitionProvider({ children }) {
     isGamesPage: currentPath === '/games' || currentPath.startsWith('/games'),
     isMysteryGame: currentPath.startsWith('/mystery-player'),
     isCareerPuzzle: currentPath.startsWith('/guess-player'),
-    isRoadToImmortality: currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
+    isRoadToUcl: currentPath.startsWith('/road-to-ucl') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
+    isRoadToImmortality: currentPath.startsWith('/road-to-ucl') || currentPath.startsWith('/road-to-immortality') || currentPath.startsWith('/ucl-draft'),
     isWouldYouRather: currentPath.startsWith('/would-you-rather'),
     isTimeline: currentPath.startsWith('/timeline'),
     isArchive: currentPath.startsWith('/archive'),

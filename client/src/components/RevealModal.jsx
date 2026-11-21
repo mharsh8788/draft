@@ -78,7 +78,14 @@ export default function RevealModal({
               <img
                 src={mysteryImage}
                 alt={mysteryPlayer.name}
-                onError={() => setMysteryImgErr(true)}
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                    e.currentTarget.dataset.fallbackTried = 'true';
+                    e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+                  } else {
+                    setMysteryImgErr(true);
+                  }
+                }}
                 className={`w-full h-full object-cover ${mysteryPlayer.imagePosition || 'object-[center_top]'} filter contrast-105`}
               />
               <span className="absolute bottom-0 right-0 bg-[#dc052d] text-white text-[9px] font-black px-1.5 py-0.5 rounded-tl font-display">
@@ -120,7 +127,14 @@ export default function RevealModal({
               <img
                 src={userImage}
                 alt={userPick.name}
-                onError={() => setUserImgErr(true)}
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                    e.currentTarget.dataset.fallbackTried = 'true';
+                    e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+                  } else {
+                    setUserImgErr(true);
+                  }
+                }}
                 className={`w-11 h-13 sm:w-12 sm:h-14 rounded object-cover ${userPick.imagePosition || 'object-[center_top]'} border border-[#dc052d]/40 shadow shrink-0 hidden xs:block`}
               />
             ) : (
@@ -159,7 +173,14 @@ export default function RevealModal({
               <img
                 src={opponentImage}
                 alt={opponentPick.name}
-                onError={() => setOppImgErr(true)}
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
+                    e.currentTarget.dataset.fallbackTried = 'true';
+                    e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
+                  } else {
+                    setOppImgErr(true);
+                  }
+                }}
                 className={`w-11 h-13 sm:w-12 sm:h-14 rounded object-cover ${opponentPick.imagePosition || 'object-[center_top]'} border border-white/10 shadow shrink-0 hidden xs:block`}
               />
             ) : (
