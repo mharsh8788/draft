@@ -112,6 +112,7 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
                     filter: 'brightness(0.78) contrast(1.05) saturate(1.08)'
                   }}
                   loading="eager"
+                  fetchPriority="high"
                 />
               </div>
             </section>
@@ -139,7 +140,8 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
                   alt="Road to UCL"
                   className="w-full h-auto block select-none pointer-events-none"
                   style={{ aspectRatio: '1672 / 941', width: '100%', height: 'auto', display: 'block' }}
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </section>
@@ -167,7 +169,8 @@ export default function GamesPage({ onNavigate, onSelectGame }) {
                   alt="Who Am I?"
                   className="w-full h-auto block select-none pointer-events-none"
                   style={{ aspectRatio: '1672 / 941', width: '100%', height: 'auto', display: 'block' }}
-                  loading="eager"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </section>

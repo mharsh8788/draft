@@ -48,3 +48,4 @@ client/public/images/players/gomez_files/
 
 # Temporary scratch scripts
 scratch/
+*.bak

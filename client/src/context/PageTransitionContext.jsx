@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import TransitionCurtain from '../components/TransitionCurtain';
+import { preloadRoute } from '../utils/routePreloader';
 
 export const PageTransitionContext = createContext(null);
 
@@ -44,6 +45,7 @@ export function PageTransitionProvider({ children }) {
       }
       if (nextPath !== currentPath) {
         if (transitionStateRef.current === 'idle') {
+          preloadRoute(nextPath);
           isPopStateRef.current = true;
           transitionStateRef.current = 'covering';
           setTargetPath(nextPath);
@@ -81,6 +83,9 @@ export function PageTransitionProvider({ children }) {
       return;
     }
 
+    // Preload target route chunk immediately while the transition curtain is covering
+    preloadRoute(normalizedPath);
+
     isPopStateRef.current = !!options.isPopState;
     transitionStateRef.current = 'covering';
     setTargetPath(normalizedPath);
@@ -94,22 +99,35 @@ export function PageTransitionProvider({ children }) {
     setTransitionState('covered');
 
     const next = targetPathRef.current;
-    if (next) {
-      if (!isPopStateRef.current) {
-        window.history.pushState({}, '', next);
-      }
-      setCurrentPath(next);
-      if (!next.includes('#')) {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      }
-    }
 
-    // Brief 35ms hold to ensure destination DOM commits and paints cleanly before reveal starts
-    clearTimeout(holdTimerRef.current);
-    holdTimerRef.current = setTimeout(() => {
-      transitionStateRef.current = 'revealing';
-      setTransitionState('revealing');
-    }, 35);
+    const commitAndReveal = () => {
+      if (next) {
+        if (!isPopStateRef.current) {
+          window.history.pushState({}, '', next);
+        }
+        setCurrentPath(next);
+        if (!next.includes('#')) {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+      }
+
+      // Brief 35ms hold to ensure destination DOM commits and paints cleanly before reveal starts
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = setTimeout(() => {
+        transitionStateRef.current = 'revealing';
+        setTransitionState('revealing');
+      }, 35);
+    };
+
+    if (next) {
+      // Ensure chunk is resolved before opening the curtain, with a safety timeout of 1500ms
+      Promise.race([
+        preloadRoute(next),
+        new Promise((resolve) => setTimeout(resolve, 1500))
+      ]).then(commitAndReveal).catch(commitAndReveal);
+    } else {
+      commitAndReveal();
+    }
   }, []);
 
   // When all 8 panels finish exiting downward off the screen
