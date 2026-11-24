@@ -1,4 +1,5 @@
 import React, { useState, Suspense, lazy } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import { useRouter } from './hooks/useRouter';
 
@@ -170,6 +171,9 @@ export default function App() {
           </div>
         </footer>
       )}
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   );
 }
