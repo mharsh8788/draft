@@ -4,12 +4,14 @@ import { sounds } from '../utils/audio';
 import { getPlayerImage } from '../utils/imageRotation';
 
 export default function DraftCard({ player, onSelect, disabled }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const displayImage = getPlayerImage(player);
   const hasImage = Boolean(displayImage && !imageError);
 
   useEffect(() => {
+    setImageLoaded(false);
     setImageError(false);
   }, [player?.id, displayImage]);
 
@@ -25,30 +27,52 @@ export default function DraftCard({ player, onSelect, disabled }) {
 
   return (
     <div className="group relative flex flex-col h-full bg-[#121824] rounded-xl border border-[#1c2535] hover:border-[#dc052d]/40 overflow-hidden transition-all duration-200 ease-out hover:-translate-y-0.5 shadow-sm text-left">
-      {/* 1. Full-Bleed Historical Player Image (Fills 100% of card) */}
-      {hasImage && (
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+      {/* 1. Full-Bleed Historical Player Image Container (Fills 100% of card) */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-[#121824]">
+        {/* Subtle Bayern-themed silhouette placeholder while loading */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-[#0e1420] animate-pulse">
+            <div className="relative w-28 h-28 opacity-15 flex items-center justify-center">
+              <img
+                src="/images/mystery-silhouette-white.webp"
+                alt=""
+                className="w-full h-full object-contain filter brightness-75 select-none"
+              />
+            </div>
+            <div className="absolute inset-0 bg-radial from-[#dc052d]/5 to-transparent pointer-events-none" />
+          </div>
+        )}
+
+        {hasImage && (
           <img
+            key={displayImage}
             src={displayImage}
             alt={player.name}
+            decoding="async"
+            onLoad={() => {
+              setImageLoaded(true);
+            }}
             onError={(e) => {
               if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
                 e.currentTarget.dataset.fallbackTried = 'true';
                 e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
               } else {
                 setImageError(true);
+                setImageLoaded(true);
               }
             }}
-            className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-transform duration-200 ease-out group-hover:scale-[1.025]`}
+            className={`w-full h-full object-cover ${player.imagePosition || 'object-[center_top]'} filter contrast-[1.03] transition-all duration-300 ease-out group-hover:scale-[1.025] ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
           />
+        )}
 
-          {/* Natural cinematic bottom-to-top gradient:
-              - Upper 40-45%: completely transparent (historical photo, face & trophy fully visible)
-              - Lower portion: translucent dark wash directly behind player text for crisp legibility
-              - Bottom base: fades smoothly into dark navy (#121824) where button sits */}
-          <div className="absolute inset-x-0 bottom-0 h-[64%] bg-gradient-to-t from-[#121824] from-15% via-[#121824]/85 via-50% via-[#121824]/35 via-75% to-transparent pointer-events-none" />
-        </div>
-      )}
+        {/* Natural cinematic bottom-to-top gradient:
+            - Upper 40-45%: completely transparent (historical photo, face & trophy fully visible)
+            - Lower portion: translucent dark wash directly behind player text for crisp legibility
+            - Bottom base: fades smoothly into dark navy (#121824) where button sits */}
+        <div className="absolute inset-x-0 bottom-0 h-[64%] bg-gradient-to-t from-[#121824] from-15% via-[#121824]/85 via-50% via-[#121824]/35 via-75% to-transparent pointer-events-none" />
+      </div>
 
       {/* 2. Floating Position Badge in Top-Right */}
       <div className="absolute top-3.5 right-3.5 z-20 pointer-events-none">

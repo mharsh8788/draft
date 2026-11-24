@@ -1,9 +1,19 @@
 import { useState, useCallback, useRef } from 'react';
 import { PLAYERS, isPositionEligible } from '../data/players';
 import { getFormation, FORMATIONS } from '../data/formations';
-import { api } from '../services/api';
-import { resolvePlayerWithRotatedImage } from '../utils/imageRotation';
+import { resolvePlayerWithRotatedImage, getPlayerImage } from '../utils/imageRotation';
 import { generateComputerXI } from '../utils/computerDraft';
+
+const preloadedImageUrls = new Set();
+
+function preloadImageUrl(url) {
+  if (!url || typeof window === 'undefined') return;
+  if (preloadedImageUrls.has(url)) return;
+  preloadedImageUrls.add(url);
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
+}
 
 function shuffle(array) {
   const arr = [...array];
@@ -32,10 +42,11 @@ export function useDraftGame() {
   const [wrongCount, setWrongCount] = useState(0);
   const [lastRoundResult, setLastRoundResult] = useState(null);
 
-  const [backendDraftId, setBackendDraftId] = useState(null);
-
   // Private ref holding the full mystery player object so it is never exposed in visible UI state
   const hiddenMysteryPlayerRef = useRef(null);
+
+  // Pre-generated next round pair ref (prepared while reveal modal is displayed)
+  const nextPairRef = useRef(null);
 
   const activeFormation = getFormation(selectedFormation);
 
@@ -67,6 +78,17 @@ export function useDraftGame() {
     // Available choice receives rotated image (appearance recorded)
     const resolvedRevealed = resolvePlayerWithRotatedImage(fullRevealed, true);
 
+    // Preload revealed player image immediately
+    if (resolvedRevealed?.image) {
+      preloadImageUrl(resolvedRevealed.image);
+    }
+
+    // Preload mystery player portrait immediately so reveal modal has it cached
+    const mysteryImgUrl = getPlayerImage(fullMystery);
+    if (mysteryImgUrl) {
+      preloadImageUrl(mysteryImgUrl);
+    }
+
     return {
       revealedPlayer: resolvedRevealed,
       // Public state receives strictly masked mystery object (NO image, NO rotation leak)
@@ -78,8 +100,8 @@ export function useDraftGame() {
     };
   }, [selectedFormation]);
 
-  // Start fresh draft for chosen formation
-  const startDraft = useCallback(async (formationKey) => {
+  // Start fresh draft for chosen formation (pure client initialization without dead /api/drafts 404 delay)
+  const startDraft = useCallback((formationKey) => {
     const chosenFormation = formationKey || selectedFormation;
     setSelectedFormation(chosenFormation);
     setScore(0);
@@ -88,27 +110,7 @@ export function useDraftGame() {
     setCorrectCount(0);
     setWrongCount(0);
     setLastRoundResult(null);
-
-    // Try backend initialization first
-    const backendData = await api.createDraft(chosenFormation);
-    if (backendData && backendData.id) {
-      setBackendDraftId(backendData.id);
-      setCurrentRound(backendData.currentRound || 1);
-      setUserTeam([]);
-      setOpponentTeam([]);
-      setUsedPlayerIds([backendData.revealedPlayer.id, backendData.mysteryPlayer.id]);
-
-      // Resolve rotated image for available choice
-      const resolvedRevealed = resolvePlayerWithRotatedImage(backendData.revealedPlayer, true);
-
-      setCurrentPair({
-        revealedPlayer: resolvedRevealed,
-        mysteryPlayer: backendData.mysteryPlayer // strictly masked from backend
-      });
-      setLastChoice(null);
-      setGameStatus('playing');
-      return;
-    }
+    nextPairRef.current = null;
 
     // Client-side initialization
     const initialUsed = [];
@@ -124,71 +126,9 @@ export function useDraftGame() {
   }, [selectedFormation, generatePairForRound]);
 
   // Handle user making a selection
-  const makeChoice = useCallback(async (choice) => {
+  const makeChoice = useCallback((choice) => {
     if (gameStatus !== 'playing' || !currentPair.revealedPlayer || !currentPair.mysteryPlayer) {
       return;
-    }
-
-    // Try backend choice if available
-    if (backendDraftId) {
-      const backendRes = await api.choosePlayer(
-        backendDraftId,
-        choice,
-        currentPair.revealedPlayer.id,
-        currentPair.mysteryPlayer.id
-      );
-
-      if (backendRes && backendRes.userPick) {
-        // At reveal time, resolve rotated image for the revealed mystery player
-        const resolvedMystery = resolvePlayerWithRotatedImage(backendRes.revealedMysteryPlayer, true);
-        const resolvedRevealed = currentPair.revealedPlayer;
-
-        const userPick = choice === 'mystery' ? resolvedMystery : resolvedRevealed;
-        const opponentPick = choice === 'mystery' ? resolvedRevealed : resolvedMystery;
-
-        // Determine if choice is correct (user got equal or higher rated player)
-        const isCorrect = userPick.overall >= opponentPick.overall;
-        const newStreak = isCorrect ? streak + 1 : 0;
-        const newBestStreak = Math.max(bestStreak, newStreak);
-        const xpEarned = isCorrect ? 250 : 0;
-
-        if (isCorrect) {
-          setScore(prev => prev + xpEarned);
-          setStreak(newStreak);
-          setBestStreak(newBestStreak);
-          setCorrectCount(prev => prev + 1);
-        } else {
-          setStreak(0);
-          setWrongCount(prev => prev + 1);
-        }
-
-        setUserTeam(prev => [...prev, userPick]);
-        setOpponentTeam(prev => [...prev, opponentPick]);
-        setLastChoice(choice);
-
-        setLastRoundResult({
-          userPick,
-          opponentPick,
-          revealedMysteryPlayer: resolvedMystery,
-          isCorrect,
-          xpEarned,
-          streak: newStreak,
-          bestStreak: newBestStreak,
-          diff: userPick.overall - opponentPick.overall
-        });
-
-        setGameStatus('revealing');
-
-        if (backendRes.nextRound) {
-          // Pre-resolve rotated image for next round's revealed player
-          const nextRevealed = resolvePlayerWithRotatedImage(backendRes.nextRound.revealedPlayer, true);
-          setCurrentPair({
-            revealedPlayer: nextRevealed,
-            mysteryPlayer: backendRes.nextRound.mysteryPlayer
-          });
-        }
-        return;
-      }
     }
 
     // Local client logic: fetch unmasked mystery player
@@ -236,40 +176,49 @@ export function useDraftGame() {
       diff: userSelected.overall - opponentSelected.overall
     });
 
+    // While user views the reveal modal, prepare and preload the next round's pair
+    const nextRoundNum = currentRound + 1;
+    const formation = getFormation(selectedFormation);
+    if (nextRoundNum <= formation.slots.length) {
+      const nextPair = generatePairForRound(nextRoundNum, newUsed, selectedFormation);
+      nextPairRef.current = nextPair;
+      if (nextPair?.revealedPlayer?.image) {
+        preloadImageUrl(nextPair.revealedPlayer.image);
+      }
+      if (hiddenMysteryPlayerRef.current) {
+        const nextMysteryImg = getPlayerImage(hiddenMysteryPlayerRef.current);
+        if (nextMysteryImg) {
+          preloadImageUrl(nextMysteryImg);
+        }
+      }
+    } else {
+      nextPairRef.current = null;
+    }
+
     setGameStatus('revealing');
-  }, [gameStatus, currentPair, backendDraftId, usedPlayerIds, streak, bestStreak]);
+  }, [gameStatus, currentPair, usedPlayerIds, streak, bestStreak, currentRound, selectedFormation, generatePairForRound]);
 
   // Proceed to next round or finish
-  const continueToNextRound = useCallback(async () => {
+  const continueToNextRound = useCallback(() => {
     const formation = getFormation(selectedFormation);
     if (currentRound >= formation.slots.length) {
-      if (backendDraftId) {
-        const finishRes = await api.finishDraft(backendDraftId);
-        if (finishRes && finishRes.opponentTeam && finishRes.opponentTeam.length === 11) {
-          setOpponentTeam(finishRes.opponentTeam);
-        } else {
-          const compXI = generateComputerXI(selectedFormation, userTeam, opponentTeam);
-          setOpponentTeam(compXI);
-        }
-      } else {
-        const compXI = generateComputerXI(selectedFormation, userTeam, opponentTeam);
-        setOpponentTeam(compXI);
-      }
+      const compXI = generateComputerXI(selectedFormation, userTeam, opponentTeam);
+      setOpponentTeam(compXI);
       setGameStatus('completed');
     } else {
       const nextRound = currentRound + 1;
       setCurrentRound(nextRound);
 
-      // If backend didn't pre-populate next round, generate client pair
-      if (!backendDraftId) {
-        const nextPair = generatePairForRound(nextRound, usedPlayerIds, selectedFormation);
-        setCurrentPair(nextPair);
-      }
+      // Use pre-generated next pair if available, ensuring exact consistency
+      const nextPair = nextPairRef.current || generatePairForRound(nextRound, usedPlayerIds, selectedFormation);
+      nextPairRef.current = null;
+      setCurrentPair(nextPair);
+
       setLastChoice(null);
       setLastRoundResult(null);
       setGameStatus('playing');
     }
-  }, [currentRound, backendDraftId, usedPlayerIds, selectedFormation, userTeam, opponentTeam, generatePairForRound]);
+  }, [currentRound, usedPlayerIds, selectedFormation, userTeam, opponentTeam, generatePairForRound]);
 
   // Go to formation selection screen
   const openFormationSelection = useCallback(() => {
@@ -286,8 +235,8 @@ export function useDraftGame() {
     setCorrectCount(0);
     setWrongCount(0);
     setLastRoundResult(null);
-    setBackendDraftId(null);
     hiddenMysteryPlayerRef.current = null;
+    nextPairRef.current = null;
   }, []);
 
   // Reset draft
@@ -305,8 +254,8 @@ export function useDraftGame() {
     setCorrectCount(0);
     setWrongCount(0);
     setLastRoundResult(null);
-    setBackendDraftId(null);
     hiddenMysteryPlayerRef.current = null;
+    nextPairRef.current = null;
   }, []);
 
   return {

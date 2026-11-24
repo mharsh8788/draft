@@ -9,6 +9,7 @@ export default function RevealModal({
   isLastRound, 
   onContinue 
 }) {
+  const [mysteryImgLoaded, setMysteryImgLoaded] = useState(false);
   const [mysteryImgErr, setMysteryImgErr] = useState(false);
   const [userImgErr, setUserImgErr] = useState(false);
   const [oppImgErr, setOppImgErr] = useState(false);
@@ -36,6 +37,11 @@ export default function RevealModal({
   const mysteryImage = getPlayerImage(mysteryPlayer);
   const userImage = getPlayerImage(userPick);
   const opponentImage = getPlayerImage(opponentPick);
+
+  useEffect(() => {
+    setMysteryImgLoaded(false);
+    setMysteryImgErr(false);
+  }, [mysteryImage]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm modal-backdrop-animate">
@@ -75,20 +81,36 @@ export default function RevealModal({
         <div className="p-4 rounded-lg bg-[#0a0e14] border border-[#1c2535] flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
           {mysteryImage && !mysteryImgErr ? (
             <div className="relative w-20 h-24 sm:w-24 sm:h-28 rounded-lg overflow-hidden border-2 border-[#dc052d] shadow-lg shrink-0 bg-[#121824]">
+              {/* Subtle silhouette placeholder while mystery image loads */}
+              {!mysteryImgLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-[#0e1420] animate-pulse">
+                  <img
+                    src="/images/mystery-silhouette-white.webp"
+                    alt=""
+                    className="w-10 h-10 object-contain opacity-25 select-none"
+                  />
+                </div>
+              )}
               <img
+                key={mysteryImage}
                 src={mysteryImage}
                 alt={mysteryPlayer.name}
+                decoding="async"
+                onLoad={() => setMysteryImgLoaded(true)}
                 onError={(e) => {
                   if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
                     e.currentTarget.dataset.fallbackTried = 'true';
                     e.currentTarget.src = e.currentTarget.src.replace(/\.webp$/, '.jpg');
                   } else {
                     setMysteryImgErr(true);
+                    setMysteryImgLoaded(true);
                   }
                 }}
-                className={`w-full h-full object-cover ${mysteryPlayer.imagePosition || 'object-[center_top]'} filter contrast-105`}
+                className={`w-full h-full object-cover ${mysteryPlayer.imagePosition || 'object-[center_top]'} filter contrast-105 transition-opacity duration-200 ${
+                  mysteryImgLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
               />
-              <span className="absolute bottom-0 right-0 bg-[#dc052d] text-white text-[9px] font-black px-1.5 py-0.5 rounded-tl font-display">
+              <span className="absolute bottom-0 right-0 bg-[#dc052d] text-white text-[9px] font-black px-1.5 py-0.5 rounded-tl font-display z-10">
                 {mysteryPlayer.position}
               </span>
             </div>
@@ -125,8 +147,10 @@ export default function RevealModal({
           <div className="p-3.5 rounded-lg bg-[#0c121c] border border-[#1c2535] flex items-start gap-3">
             {userImage && !userImgErr ? (
               <img
+                key={userImage}
                 src={userImage}
                 alt={userPick.name}
+                decoding="async"
                 onError={(e) => {
                   if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
                     e.currentTarget.dataset.fallbackTried = 'true';
@@ -171,8 +195,10 @@ export default function RevealModal({
           <div className="p-3.5 rounded-lg bg-[#0c121c] border border-[#1c2535] flex items-start gap-3">
             {opponentImage && !oppImgErr ? (
               <img
+                key={opponentImage}
                 src={opponentImage}
                 alt={opponentPick.name}
+                decoding="async"
                 onError={(e) => {
                   if (!e.currentTarget.dataset.fallbackTried && e.currentTarget.src.endsWith('.webp')) {
                     e.currentTarget.dataset.fallbackTried = 'true';

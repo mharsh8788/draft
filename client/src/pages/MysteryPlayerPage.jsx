@@ -153,6 +153,7 @@ export default function MysteryPlayerPage({ onBackToGames, onNavigate }) {
               {/* Secondary: Option A Choice Card */}
               <div className="flex flex-col">
                 <DraftCard
+                  key={currentPair?.revealedPlayer?.id || currentRound}
                   player={currentPair?.revealedPlayer}
                   onSelect={makeChoice}
                   disabled={gameStatus === 'revealing'}
